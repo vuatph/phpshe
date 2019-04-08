@@ -1,7 +1,7 @@
 <?php
 $menumark = 'ask';
 switch($act) {
-	//#####################@ 咨询列表 @#####################//
+	//####################// 咨询列表 //####################//
 	default:
 		$info_list = $db->pe_selectall('ask', array('user_id'=>$_s_user_id, 'order by'=>'ask_id desc'), '*', array(20, $_g_page));
 		

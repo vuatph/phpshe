@@ -6,7 +6,7 @@
 $menumark = 'admin';
 $adminlevel_list = $db->index('adminlevel_id')->pe_selectall('adminlevel');
 switch ($act) {
-	//#####################@ 帐号添加 @#####################//
+	//####################// 帐号添加 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -21,7 +21,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加帐号', '', '', 'admin');
 		include(pe_tpl('admin_add.html'));
 	break;
-	//#####################@ 帐号修改 @#####################//
+	//####################// 帐号修改 //####################//
 	case 'edit':
 		$admin_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -38,7 +38,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改帐号', '', '', 'admin');
 		include(pe_tpl('admin_add.html'));
 	break;
-	//#####################@ 帐号删除 @#####################//
+	//####################// 帐号删除 //####################//
 	case 'del':
 		pe_token_match();
 		$_g_id == 1 && pe_error('默认帐号不可删除...');
@@ -49,11 +49,11 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 管理帐号 @#####################//
+	//####################// 管理帐号 //####################//
 	default:
-		$info_list = $db->pe_selectall('admin', '', '*', array(20, $_g_page));
+		$info_list = $db->pe_selectall('admin', '', '*', array(50, $_g_page));
 		$tongji['all'] = $db->pe_num('admin');
-		$seo = pe_seo($menutitle='管理列表', '', '', 'admin');
+		$seo = pe_seo($menutitle='管理账号', '', '', 'admin');
 		include(pe_tpl('admin_list.html'));
 	break;
 }

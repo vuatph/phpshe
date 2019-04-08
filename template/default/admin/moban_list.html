@@ -1,8 +1,8 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=moban" <!--{if($act!='shop'):}-->class="sel"<!--{endif;}-->>本地模板</a>
-		<a href="http://www.phpshe.com/phpshe#moban" target="_blank">模板商店</a>
+		<a href="admin.php?mod=moban" <!--{if($act!='shop'):}-->class="sel"<!--{endif;}-->>本地模板<i></i></a>
+		<a href="http://www.phpshe.com/phpshe#moban" target="_blank">模板商店<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -30,7 +30,7 @@
 			<td class="num">{$k+1}</td>
 			<td style="padding:10px 7px"><img src="{pe_thumb('template/'.$v.'/index/preview.jpg')}" style="width:120px;height:90px" class="imgbg" /></td>	
 			<td>{$moban_config['moban_name']}</td>
-			<td class="aleft">./template/{$v}/</td>
+			<td class="aleft">/template/{$v}/</td>
 			<td>
 				<!--{if($v == $moban_now):}-->
 				<span class="cred">使用中</span>

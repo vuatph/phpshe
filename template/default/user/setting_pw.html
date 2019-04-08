@@ -2,21 +2,24 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tt">
+			<a href="user.php?mod=setting&act=pw" <!--{if($act=='pw'):}-->class="sel"<!--{endif;}-->>登录密码<i></i></a>
+			<a href="user.php?mod=setting&act=paypw" <!--{if($act=='paypw'):}-->class="sel"<!--{endif;}-->>支付密码<i></i></a>			
+		</div>
 		<div class="hy_table">
 		<form method="post" id="form">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td style="text-align:right;" width="150"><span class="cred1">*</span> 原&nbsp;&nbsp;密 码：</td>
-			<td><input type="password" name="user_oldpw" class="inputall input200" autocomplete="off" /> <span id="user_oldpw_show"></span></td>
+			<td style="text-align:right;" width="150"><span class="cred1">*</span> 当前密码：</td>
+			<td><input type="password" name="user_oldpw" class="inputall input200" autocomplete="off" /></td>
 		</tr>
 		<tr>
-			<td style="text-align:right;"><span class="cred1">*</span> 新&nbsp;&nbsp;密 码：</td>
-			<td><input type="password" name="user_pw" class="inputall input200" autocomplete="off" /> <span id="user_pw_show"></span></td>
+			<td style="text-align:right;"><span class="cred1">*</span> 新登录密码：</td>
+			<td><input type="password" name="user_pw" class="inputall input200" autocomplete="off" /></td>
 		</tr>
 		<tr>
 			<td style="text-align:right;"><span class="cred1">*</span> 确认新密码：</td>
-			<td><input type="password" name="user_pw1" class="inputall input200" autocomplete="off" /> <span id="user_pw1_show"></span></td>
+			<td><input type="password" name="user_pw1" class="inputall input200" autocomplete="off" /></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -32,14 +35,29 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
-var form_info = [
-	{"name":"user_oldpw", "mod":"str", "act":"blur", "arg":"", "show_id":"user_oldpw_show","show_error":"必填"},
-	{"name":"user_pw", "mod":"str", "act":"blur", "arg":"6|20", "show_id":"user_pw_show","show_error":"新密码为6-20位字符"},
-	{"name":"user_pw1", "mod":"str", "act":"blur", "arg":"", "show_id":"user_pw1_show","show_error":"必填"},
-	{"name":"user_pw1", "mod":"equal", "act":"blur", "arg":$(":input[name='user_pw']"), "show_id":"user_pw1_show","show_error":"两次密码不一致"}
-]
-$(":button").pe_submit(form_info, 'form');
+$(function(){
+	$(":button").click(function(){
+		/*if ($(":input[name='user_oldpw']").val().length == 0) {
+			pe_tip('请输入当前密码');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val().length < 6 || $(":input[name='user_pw']").val().length > 20) {
+			pe_tip('新密码为6-20位字符');
+			return false;
+		}
+		if ($(":input[name='user_pw1']").val().length < 6 || $(":input[name='user_pw1']").val().length > 20) {
+			pe_tip('确认密码为6-20位字符');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val() != $(":input[name='user_pw1']").val()) {
+			pe_tip('新密码与确认密码不一致');
+			return false;
+		}*/
+		pe_submit('{pe_nowurl()}', function(json){
+			if (json.result) pe_open('reload', 1000);
+		});
+	})
+})
 </script>
 <!--{include(pe_tpl('footer.html'));}-->

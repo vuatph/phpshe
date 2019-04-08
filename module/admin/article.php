@@ -7,7 +7,7 @@ $menumark = 'article';
 $cache_class = cache::get('class');
 $cache_class_arr = cache::get('class_arr');
 switch ($act) {
-	//#####################@ 文章添加 @#####################//
+	//####################// 文章添加 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -22,7 +22,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加文章', '', '', 'admin');
 		include(pe_tpl('article_add.html'));
 	break;
-	//#####################@ 文章修改 @#####################//
+	//####################// 文章修改 //####################//
 	case 'edit':
 		$article_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -39,7 +39,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改文章', '', '', 'admin');
 		include(pe_tpl('article_add.html'));
 	break;
-	//#####################@ 文章删除 @#####################//
+	//####################// 文章删除 //####################//
 	case 'del':
 		pe_token_match();
 		if ($db->pe_delete('article', array('article_id'=>is_array($_p_article_id) ? $_p_article_id : $_g_id))) {
@@ -49,7 +49,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 文章列表 @#####################//
+	//####################// 文章列表 //####################//
 	default :
 		$sqlwhere = $_g_type ? "b.`class_type` = 'help'" : "b.`class_type` = 'news'";
 		$_g_name && $sqlwhere .= " and a.`article_name` like '%{$_g_name}%'";

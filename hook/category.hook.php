@@ -1,4 +1,5 @@
 <?php
+//分类树形列表
 function category_treelist()
 {
 	global $db;
@@ -6,6 +7,7 @@ function category_treelist()
 	$category = new category();
 	return $category->gettree($db->pe_selectall('category', array('order by'=> 'category_order asc, category_id asc')));
 }
+//分类层级路径
 function category_path($id, $other = null)
 {
 	global $pe;
@@ -22,6 +24,7 @@ function category_path($id, $other = null)
 	return $path;
 }
 
+//分类下子分类id
 function category_cidarr($id) {
 	$category_list = cache::get('category');
 	pe_lead('include/class/categorytree.class.php');
@@ -34,5 +37,13 @@ function category_cidarr($id) {
 	else {
 		return $id;
 	}
+}
+
+//分类下品牌列表
+function category_brand($id) {
+	global $db;
+	$category_cidarr = category_cidarr($id);
+	$sql = "select a.brand_id, a.brand_name from `".dbpre."brand` a, (select * from `".dbpre."product` where ".pe_sqlin('category_id', $category_cidarr).") b where a.`brand_id` = b.`brand_id` order by a.`brand_order` asc, a.`brand_id` asc";
+	return $db->index('brand_id')->sql_selectall($sql);
 }
 ?>

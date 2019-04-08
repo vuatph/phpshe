@@ -2,12 +2,12 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}<i></i></a></div>
 		<div class="hy_table" style="text-align:center">
 			<form method="post" id="form">
 			<div class="upload_html" style="width:200px;margin:20px auto 40px;">
 				<input type="hidden" name="user_logo" value="{$info['user_logo']}" class="upload_value" />
-				<a href="javascript:;" class="upload_btn"><img src="{pe_thumb($info['user_logo'], _200, _200, 'avatar')}?time={time()}" class="upload_logo" style="width:200px; height:200px;" /></a>
+				<a href="javascript:;" class="upload_btn"><img src="{pe_thumb($info['user_logo'], '_200', '_200', 'avatar')}?time={time()}" class="upload_logo" style="width:200px; height:200px;" /></a>
 				<div class="upload_jindu"></div>
 				<div class="upload_bg"></div>
 				<div class="upload_do">

@@ -1,15 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>{$seo['title']}</title>
-<meta name="keywords" content="{$seo['keywords']}" />
-<meta name="description" content="{$seo['description']}" />
-<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
-<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
-<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
-</head>
-<body style="background:#fff;padding:5px">
+<!--{include(pe_tpl('header_dialog.html'));}-->
 <form method="post" id="form" autocomplete="off">
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak mab10">
 <!--{$rule_num=1}-->
@@ -49,7 +38,7 @@ $(function(){
 		$("input[name='ruledata_id[]']:checked").each(function(){
 			ruledata_id.push($(this).val());
 		})
-		window.parent.rule_list(ruledata_id);
+		window.parent.rule_list(ruledata_id, 'datalist_new');
 		window.parent.layer.closeAll();;
 		
 		/*$.getJSON("{$pe['host_root']}admin.php", {"mod":"product", "act":"rule_html", "ruledata_id":ruledata_id.join(',')}, function(json){
@@ -64,5 +53,4 @@ $(function(){
 <style>
 .rule_id{min-width:80px; _width:80px; padding:2px 10px; margin:6px 10px 6px 0}
 </style>
-</body>
-</html>
+<!--{include(pe_tpl('footer_dialog.html'));}-->

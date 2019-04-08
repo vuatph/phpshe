@@ -4,78 +4,155 @@
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
 class db { 
-	var $pconnect = FALSE;
-	var $dbconn;
-	var $page;
-	var $table_index;
-	var $sql;
-	public function __construct($db_host, $db_user, $db_pw, $db_name, $db_coding)
+	public $link;
+	public $link_type;
+	public $page;
+	public $table_index;
+	public $sql;
+	public function __construct($db_host, $db_user, $db_pw, $db_name, $db_coding, $init = true)
 	{
-		$this->connect($db_host, $db_user, $db_pw, $db_name, $db_coding);
+
+		$this->link_type = function_exists("mysqli_connect") ? 'mysqli' : 'mysql';
+		if ($init) {
+			$result = $this->connect($db_host, $db_user, $db_pw);
+			if ($result != 'success') pe_bug($result, __LINE__);
+			$result = $this->select_db($db_name, $db_coding);		
+			if ($result != 'success') pe_bug($result, __LINE__);
+		}
 	}
-	public function connect($db_host, $db_user, $db_pw, $db_name, $db_coding)
+	//连接数据库
+	public function connect($db_host, $db_user, $db_pw)
 	{
-		if ($this->pconnect) {
-			$this->dbconn = @mysql_pconnect($db_host, $db_user, $db_pw);
+		if ($this->link_type == 'mysqli') {
+			$this->link = mysqli_connect($db_host, $db_user, $db_pw);
 		}
 		else {
-			$this->dbconn = @mysql_connect($db_host, $db_user, $db_pw);
+			$this->link = mysql_connect($db_host, $db_user, $db_pw);
 		}
-		if (!$this->dbconn) pe_bug('数据库连接失败...数据库ip，用户名，密码对吗？', __LINE__); 
-		if (!mysql_select_db($db_name, $this->dbconn)) pe_bug('数据库选择失败...数据库名对吗？', __LINE__);
-		$this->query("SET NAMES {$db_coding}");
-		$this->query("SET sql_mode = ''");
+		if ($this->link) {
+			return 'success';
+		}
+		else {
+			return '数据库连接失败，数据库IP/用户名/密码错误';
+		}
 	}
+	//选择数据库
+	public function select_db($db_name, $db_coding)
+	{
+		if ($this->link_type == 'mysqli') {
+			$result = mysqli_select_db($this->link, $db_name);
+		}
+		else {
+			$result = mysql_select_db($db_name, $this->link);
+		}
+		if ($result) {
+			$this->query("SET NAMES {$db_coding}");
+			$this->query("SET sql_mode = ''");
+			return 'success';
+		}
+		else {
+			return "数据库连接成功，但数据库 {$db_name} 不存在";	
+		}
+	}
+	//执行sql语句
   	public function query($sql)
   	{
   		$this->sql[] = $sql;
-		$result = mysql_query($sql, $this->dbconn);
-		if ($sqlerror = mysql_error($this->dbconn)) $this->sql[] = $sqlerror;
+		if ($this->link_type == 'mysqli') {
+			$result = mysqli_query($this->link, $sql);
+			if ($sqlerror = mysqli_error($this->link)) $this->sql[] = $sqlerror;
+		}
+		else {
+			$result = mysql_query($sql, $this->link);
+			if ($sqlerror = mysql_error($this->link)) $this->sql[] = $sqlerror;
+		}
 		return $result;
   	}
+  	//获取关联数组集
 	public function fetch_assoc($result = null)
 	{
-  		return mysql_fetch_assoc($result);
+		if ($this->link_type == 'mysqli') {
+  			return mysqli_fetch_assoc($result);
+		}
+		else {
+  			return mysql_fetch_assoc($result);
+		}
   	}
+  	//获取索引数组集
   	public function fetch_row($result = null)
   	{
-  		return mysql_fetch_row($result);
+		if ($this->link_type == 'mysqli') {
+  			return mysqli_fetch_row($result);
+		}
+		else {
+  			return mysql_fetch_row($result);
+		}
   	}
+  	//获取select结果集条数
 	public function num_rows($result = null)
   	{
-  		return mysql_num_rows($result);
+		if ($this->link_type == 'mysqli') {
+  			return mysqli_num_rows($result);
+		}
+		else {
+  			return mysql_num_rows($result);
+		}
   	}
+  	//获取insert/update/delete结果集条数
+	public function affected_rows()
+	{
+		if ($this->link_type == 'mysqli') {
+			$result = mysqli_affected_rows($this->link);
+		}
+		else {
+			$result = mysql_affected_rows();
+		}
+		return $result > 0 ? $result : 0;		
+	}  	
+	//获取自增id
 	public function insert_id()
 	{
-		return mysql_insert_id();
+		if ($this->link_type == 'mysqli') {
+			return mysqli_insert_id($this->link);
+		}
+		else {
+			return mysql_insert_id();
+		}
 	}
+	//按自定义索引生成数据
 	public function index($table_index)
 	{
 		$this->table_index = $table_index;
 		return $this;
 	}
+	public function version() {
+		if ($this->link_type == 'mysqli') {
+			return 'MySQLi '.mysqli_get_server_info($this->link);
+		}
+		else {
+			return 'MySQL '.mysql_get_server_info();
+		}
+	}
 	/* ====================== 原始mysql处理函数 ====================== */
 	public function sql_insert($sql)
 	{
 		$this->query($sql);
-		if ($insert_id = mysql_insert_id()) {
+		if ($insert_id = $this->insert_id()) {
 			return $insert_id;
 		}
 		else {
-			$result = mysql_affected_rows();
-			return $result > 0 ? $result : 0;
+			return $this->affected_rows();
 		}
 	}
 	public function sql_delete($sql)
 	{
 		$this->query($sql);
-		$result = mysql_affected_rows();
-		return $result > 0 ? $result : 0;
+		return $this->affected_rows();
 	}
 	public function sql_update($sql)
 	{
 		if ($this->query($sql) == true) {
-			$result = mysql_affected_rows();
+			$result = $this->affected_rows();
 			return $result == 0 ? true : $result;
 		}
 		return 0;		
@@ -166,7 +243,7 @@ class db {
 		$sqlwhere = $this->_dowhere($where);
 		return $this->sql_num("select count(1) from `".dbpre."{$table}` {$sqlwhere}");
 	}
-	public function sql()
+	public function sql($type=0)
 	{
 		$i = 1;
 		foreach ((array)$this->sql as $k => $v) {
@@ -174,7 +251,12 @@ class db {
 				continue;
 			}
 			else {
-				echo  "<p>[".($i++)."] => {$v}</p>";
+				if ($type) {
+					echo  "[".($i++)."] => {$v}\r\n";				
+				}
+				else {
+					echo  "<p>[".($i++)."] => {$v}</p>";				
+				}
 			}
 		}
 	}
@@ -189,7 +271,7 @@ class db {
 					$where_arr[] = "`{$k}` in('".implode("','", $v)."')";			
 				}
 				else {
-					in_array($k, array('order by', 'group by')) ? ($sqlby = " {$k} {$v}") : ($where_arr[] = "`{$k}` = '{$v}'");
+					in_array($k, array('order by', 'group by')) ? ($sqlby .= " {$k} {$v}") : ($where_arr[] = "`{$k}` = '{$v}'");
 				}
 			}
 			$sqlwhere = is_array($where_arr) ? 'where '.implode($where_arr, ' and ').$sqlby : $sqlby;
@@ -215,7 +297,7 @@ class db {
 			$key_str = "(" . implode($key_arr, ', ') . ")";
 			$sqlset = "{$key_str}  values ".implode($val_str, ', ');
 		}
-		elseif (is_array($set) && count($array, 1) == count($array)) {	
+		elseif (is_array($set) && count($set, 1) == count($set)) {	
 			foreach ($set as $k => $v) {
 				$k = str_ireplace('`', '', $k);
 				$set_arr[] = "`{$k}` = '{$v}'";

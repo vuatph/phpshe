@@ -1,28 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>{$seo['title']}</title>
-<meta name="keywords" content="{$seo['keywords']}" />
-<meta name="description" content="{$seo['description']}" />
-<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
-<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
-<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
-</head>
-<body style="background:#fff;padding:5px">
+<!--{include(pe_tpl('header_dialog.html'));}-->
 <form method="post" id="form" autocomplete="off">
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <tr>
-	<td class="bgtt aright c888" width="100">账户积分</td>
-	<td class="num strong">{$info['user_point']} 点</td>
+	<td class="bgtt aright c888" width="100">用&nbsp;&nbsp;户 名</td>
+	<td>{$info['user_name']}</td>
+</tr>
+<tr>
+	<td class="bgtt aright c888">积分余额</td>
+	<td><span class="corg num strong">{$info['user_point']} 个</span></td>
 </tr>
 <tr>
 	<td class="bgtt aright c888">{$act=='addpoint'?'充值':'扣除'}积分</td>
-	<td><input type="text" name="point" class="inputall input100" /> 点 <span id="point_show"></span></td>
+	<td><input type="text" name="point" class="inputall input150" /> 个 <span id="point_show"></span></td>
 </tr>
 <tr>
 	<td class="bgtt aright c888">操作说明</td>
-	<td><input type="text" name="text" class="inputall input250" /> <span id="text_show"></span></td>
+	<td><input type="text" name="text" class="inputall input300" /> <span id="text_show"></span></td>
 </tr>
 </table>
 <div class="acenter mat20">
@@ -31,15 +24,13 @@
 	<input type="button" value="提 交" class="tjbtn" />
 </div>
 </form>
-</body>
-</html>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
-var form_info = [
-	{"name":"point", "mod":"str", "act":"blur", "arg":"", "show_id":"point_show","show_error":"必填", "must":true},
-	{"name":"text", "mod":"str", "act":"blur", "arg":"", "show_id":"text_show","show_error":"必填", "must":true}
-]
-$(":button").pe_submit(form_info, 'form');
+$(function(){
+	$(":button").click(function(){
+		pe_submit("{pe_nowurl()}", function(json){
+			if (json.result) pe_open('dialog', 1000);
+		})
+	})
+})
 </script>
-</body>
-</html>
+<!--{include(pe_tpl('footer_dialog.html'));}-->

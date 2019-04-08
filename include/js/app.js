@@ -5,6 +5,7 @@
 
 /* ====================== wap全局操作函数 ====================== */
 var getmore_state = 0;
+$.toast.prototype.defaults.duration = 1300;
 function pem_cfone(_this, show) {
 	var result = false;
 	layer.open({
@@ -31,6 +32,9 @@ function app_open(url, time) {
 		}
 		else if (url == 'reload') {
 			window.location.reload();
+		}
+		else if (url == 'dialog') {
+			top.location.reload();
 		}
 		else {
 			window.location.href = url;		
@@ -127,36 +131,51 @@ function app_delinfo(_this, show) {
 }
 //弹出提醒框
 function app_alert(show, func) {
-	layer.open({
-	    content: show,
-	    btn: ['确认'],
-	    yes: function(){
-	    	layer.closeAll();
-	    	if (func && typeof(func) == "function") {
-				func();
-			}
-	    }
+	$.alert(show, '', function() {
+    	if (func && typeof(func) == "function") {
+			func();
+		}
 	});
 };
 
 //tip提示信息
-function app_tip(show) {
-	layer.open({
-	    content: show,
-	    skin: 'msg',
-	    //style: 'min-width:150px; background-color:#000; filter:alpha(opacity=60); background-color:rgba(0,0,0,0.6); color:#fff; border:none;',
-	    time: 2
-	});
+function app_tip(show, type) {
+	if (typeof(type) != 'undefined') {
+		switch (type) {
+			case 'success':
+				$.toast(show);
+			break;
+			case 'error':
+				$.toast(show, 'cancel');
+			break;			
+		}
+	}
+	else {
+		$.toast(show, "text");
+	}
 };
+
+//开启loading加载层
+function app_loading(text, time) {
+	app_loading_close();
+	$.showLoading(text);
+	if (typeof(time) == 'undefined') time = 10000;
+	setTimeout(function(){
+		app_loading_close();		
+	}, time)
+}
+//关闭loading加载层
+function app_loading_close() {
+	$.hideLoading();
+}
 
 //确认提醒
 function app_confirm(show, func_url) {
-	layer.open({
-	    content: '您确认'+show+'吗?',
-	    btn: ['确认', '取消'],
-	    shadeClose: false,
-	    yes: function(){
-	    	layer.closeAll();
+	$.confirm({
+		title: '温馨提示',
+		text: '您确认'+show+'吗?',
+		onOK: function () {
+	    //	layer.closeAll();
 	    	if (func_url && typeof(func_url) == "function") {
 				func_url();
 			}
@@ -167,18 +186,24 @@ function app_confirm(show, func_url) {
 					}
 				})
 			}
-	    }, no: function(index){
-	    	layer.closeAll();
-	    }
+		}
 	});
-	//return false;
 }
 
 //ajax表单post提交
 function app_submit(url, func, id) {
+	app_loading('数据提交中');
 	var form_id = typeof(id) == 'undefined' ? 'form' : id;
 	$.post(url, $("#"+form_id).serialize(), function(json){
-    	if (json.show != '') app_tip(json.show);
+		app_loading_close();
+		if (typeof(json.show) != 'undefined' && json.show != '') {
+			if (json.result == true) {
+				app_tip(json.show, 'success');
+			}
+			else {
+				app_tip(json.show);
+			}
+		}
     	if (func && typeof(func) == "function") {
     		func(json);
     	}
@@ -304,11 +329,16 @@ function app_confirm_login(url) {
 
 //加载侧栏iframe层
 function app_iframe(url) {
-	$("body").css({"overflow-y":"hidden"});
-	var width = $(window).width() + 'px';
-	var html = '<div id="app_iframe" style="position:fixed;top:0;left:0;width:0;height:100%;margin-left:'+width+';z-index:999999;overflow:hidden"><iframe src="'+url+'" style="width:100%;height:100%;border:0"></iframe></div>';
-	$("body").append(html)
-	$("#app_iframe").animate({"margin-left":"0px", "width":width}, 300)
+	//$("body").css({"overflow-y":"hidden"});
+	var width = window.innerWidth + 'px';
+	var height = window.innerHeight + 'px';
+	//var html = '<div id="app_iframe" style="position:fixed;top:0;left:0;width:0;height:100%;margin-left:'+width+';z-index:999999;overflow:hidden"><iframe src="'+url+'" style="width:100%;height:100%;border:0"></iframe></div>';
+	var html = '<div id="app_iframe" style="height:'+height+';width:'+width+';display:none"><iframe src="'+url+'" style="width:100%;height:100%;border:0"></iframe></div>';
+	if (!$("#app_iframe_hide").is("div")) $("body").wrapInner('<div id="app_iframe_hide"></div>');
+	$("body").append(html);
+	$("#app_iframe_hide").hide();
+	$("#app_iframe").fadeIn();
+	//$("#app_iframe").animate({"margin-left":"0px", "width":width}, 100)
 }
 
 //关闭侧栏iframe层
@@ -319,7 +349,8 @@ function app_iframe_close(reload, time) {
 			window.parent.location.reload();
 		}
 		else {
-			$(window.parent.document).find("body").css({"overflow-y":"auto"});
+			//$(window.parent.document).find("body").css({"overflow-y":"auto"});
+			$(window.parent.document).find("#app_iframe_hide").children().unwrap();
 			$(window.parent.document).find("#app_iframe").remove();
 		} 
 	}, time);
@@ -329,9 +360,12 @@ function app_iframe_close(reload, time) {
 function app_page(id, func) {
 	$("body").css("overflow-y", "hidden");
 	$("#"+id).wrap('<div class="app_page" style="position:relative; z-index:99;"></div>');
-	var _height = $("#"+id).height() > $(window).height() ? $(window).height() : 'auto';
+	var _height = $("#"+id).height() > window.innerHeight ? window.innerHeight : $("#"+id).height();
 	$("#"+id).css({"position":"fixed", "width":"100%", "height":_height, "z-index":100, "bottom": 0, "left":0, "background-color":"#fff", "overflow-y":"auto"}).fadeIn(400).addClass("app_pagemain");
 	$("#"+id).before('<div class="app_pagehide" style="position:fixed; background-color:rgba(0, 0, 0, 0.7); width:100%; height:100%; z-index:99;top:0;left:0" onclick="app_page_close()"></div>');
+	if (func && typeof(func) == "function") {
+		func();
+	}
 	return;
 	var html = $("#"+id).html();
 	$("#"+id).remove();
@@ -341,14 +375,11 @@ function app_page(id, func) {
 		,anim: 'up'
 		,style: 'position:fixed; bottom:0; left:0; width: 100%; padding:0; border:none; background:#f8f8f8'
 	});
-	if (func && typeof(func) == "function") {
-		func;
-	}
 }
 //关闭底部弹出页
 function app_page_close(time) {
 	$("body").css("overflow-y", "auto");
-	$(".app_pagemain").unwrap(".app_page").slideUp();
+	$(".app_pagemain").unwrap(".app_page").slideUp().removeClass("app_pagemain");
 	$(".app_pagehide").remove();		
 	return;
 	layer.closeAll();

@@ -3,16 +3,16 @@
 </div>
 <script type="text/javascript">
 $(function(){
-	if ($(".right_bottom").height() == 0) {
-		$(".right_bottom").remove();
-	}
-	if ($(".list tr").length > 1) {
-		$(".right_main").css("padding-bottom", 0);	
-	}
 	win_init();
 	$(window).resize(function() {
 		win_init();
 	});
+	if ($(".right_bottom").height() == 0) {
+		$(".right_bottom").remove();
+	}
+	if ($(".list tr:visible").length > 1) {
+		$(".right_main").css("padding-bottom", 0);	
+	}
 	if ($(".left .sel").length) {
 		$(".left").scrollTop(localStorage.getItem('left_scrolltop'));
 	}
@@ -35,10 +35,8 @@ $(function(){
 })
 function win_init() {
 	$(".left").add(".right").css("height", $(window).height() - $(".pagetop").height());
-	$(".now").css("width", $(".right_main").outerWidth());
-	//$(".right_main").css("height", $(window).height() -  $(".pagetop").height() - $(".now:eq(0)").outerHeight() - $(".right_bottom").outerHeight() + 38);
 }
-pe_loadscript("<?php echo $pe['host_root'] ?>index.php?mod=notice");
+pe_loadscript("<?php echo $pe['host_root'] ?>api.php?mod=cron");
 </script>
 </body>
 </html>

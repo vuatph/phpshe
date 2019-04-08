@@ -4,15 +4,17 @@
 	<div class="mat20 font16 c666">你的购物车里还没有商品</div>
 	<div class="g_btn"><a href="{$pe['host_root']}">去逛逛</a></div>
 </div>
-<div class="content" style="display:none">
+<div class="content">
+<form method="post" id="form">
 <div class="dd_box">
+	<!--{if(!$info['order_virtual']):}-->
 	<div class="liucheng">收货地址</div>
-	<div class="order_addbox" style="padding:0">
+	<div class="order_addbox" style="padding:0 0 0 45px">
 		<div class="dddz_l" id="useraddr_html">
-			<script type="text/html" id="useraddr_tpl">
+			<script type="text/html" id="useraddr_html_tpl">
 			{{each list as v k}}
 			<div class="addr_list js_radio" val="{{v.address_id}}" onclick="useraddr_select('{{v.address_id}}')">
-				<i></i>{{v.address_province}} {{v.address_city}} {{v.address_area}} {{v.address_text}} （{{v.user_tname}} 收） <span class="c999">{{v.user_phone}}</span>
+				<i></i><span class="cred">寄送至　</span>{{v.address_province}} {{v.address_city}} {{v.address_area}} {{v.address_text}} （{{v.user_tname}} 收） <span class="c999">{{v.user_phone}}</span>
 			</div>
 			{{/each}}
 			</script>
@@ -21,18 +23,22 @@
 		<div class="clear"></div>
 	</div>
 	<div class="xuxian mat20"></div>
+	<!--{endif;}-->
 	<div class="liucheng">支付方式</div>
 	<div class="fkfs">
-		<ul  id="payway_html">
-			<!--{foreach($payway_list as $k=>$v):}-->
-			<li class="js_radio" val="{$k}">
-				<img src="{$pe['host_root']}include/plugin/payway/{$k}/logo.png" class="fl" />
+		<ul>
+		<!--{foreach($payment_list as $k=>$v):}-->
+		<li class="js_radio">
+			<label for="order_payment_{$k}">
+				<input type="radio" name="order_payment" value="{$k}" id="order_payment_{$k}" style="display:none" />
+				<img src="{$pe['host_root']}include/plugin/payment/{$k}/logo.png" class="fl" />
 				<!--{if($k == 'balance'):}-->
-				<span class="fr corg mat5">（余额：{$user['user_money']}元）</span>
+				<span class="fr mat5 mal10">余额：<span class="corg">{$user['user_money']}元</span></span>
 				<!--{endif;}-->
 				<div class="clear"></div><i></i>
-			</li>
-			<!--{endforeach;}-->
+			</label>
+		</li>
+		<!--{endforeach;}-->
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -43,116 +49,97 @@
 	</div>-->
 	<div class="xuxian mat20"></div>
 	<div class="liucheng">商品清单</div>
-	<div style="margin:20px 0 0 45px;">
-		<form method="post" id="form">
+	<div style="margin:20px 45px 0 45px;">
 		<div class="gouwuche">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="gwc_tb">
 			<tr>
-				<th width="80" style="padding-left:20px">商品图片</th>
+				<th width="100">商品图片</th>
 				<th>商品信息</th>
-				<th width="180"></th>
-				<th width="160">单价(元)</th>
+				<th width="150"></th>
+				<th width="80">单价</th>
 				<th width="120">数量</th>
-				<!--<th width="120">操作</th>-->
+				<th width="80">小计</th>
 			</tr>
 			<!--{foreach($info_list as $k=>$v):}-->
 			<tr class="js_cart" id="{$k}">
-				<td class="hotimg1" style="padding-left:20px;padding-right:0"><img src="{pe_thumb($v['product_logo'], 100, 100)}" /></td>
-				<td valign="top" style="text-align:left">
-					<div style="width:350px;"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="c888 font14">{$v['product_name']}</a></div>
+				<td class="hotimg1"><img src="{pe_thumb($v['product_logo'], 100, 100)}" /></td>
+				<td style="text-align:left;padding-left:0">
+					<a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a>
 				</td>
-				<td style="text-align:left;">
-					<!--{if($v['prorule_name']):}-->
-					<div class="c888"><!--{foreach(unserialize($v['prorule_name']) as $vv):}-->[{$vv['name']}：{$vv['value']}]&nbsp;&nbsp;<br /><!--{endforeach;}--></div>
+				<td style="text-align:left;"><div class="c888">{order_skushow($v['product_rule'])}</div></td>
+				<td class="num">¥ {$v['product_money']}</td>
+				<td>{$v['product_num']}</td>
+				<td>
+					<!--{if($v['error']):}-->
+					<span class="cred">{$v['error']['show']}</span>
+					<!--{else:}-->
+					<span class="num corg">¥ {$v['product_allmoney']}</span>
 					<!--{endif;}-->
 				</td>
-				<td class="num font14">{product_money($v['product_money'])}</td>
-				<td>{$v['product_num']}</td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>
 		</div>
 		<div class="fukuan">
-			<div class="fl" style="padding:5px 10px; font-family:宋体; width:600px;">
-				<!--{if($money['order_point_get']):}-->
-				可获得积分：<span class="cred num" id="order_point_get">{$money['order_point_get']}</span> 点
-				<!--{endif;}-->
-				<label for="quan_btn" class="fl">
-					<input type="checkbox" id="quan_btn" class="fl mat2 mar5" />
-					<span class="fl">使用优惠券</span>
-					<div class="clear"></div>
-				</label>
-				<div id="quan_html" style="display:none">
-					<div id="quan_list" class="fl">
-						<script type="text/html" id="quan_tpl">
-						<select name="order_quan_id" class="mal10 yhq_select">
-						<option value="0" quan_money="0.0">--请选择--</option>
-						{{each list as v k}}
-						<option value="{{v.quanlog_id}}" quan_money="{{v.quan_money}}">【省{{v.quan_money}}元】{{v.quan_name}}</option>	
-						{{/each}}	
+			<div class="fl" style="padding:5px 10px; width:600px;">
+				<div class="mat10">
+					订单留言：<input type="text" name="order_text" placeholder="请填写您的其他要求" class="ds_input" style="width:320px" />
+				</div>
+				<div class="mat20">
+					<span class="fl">店铺优惠：</span>
+					<div class="fl">
+						<select name="order_quan_id" class="yhq_select">
+						<option value="0" quan_money="0.0">不使用优惠券</option>
+						<!--{foreach($quan_list  as $k=>$v):}-->
+						<option value="{$v['quanlog_id']}}" quan_money="{$v['quan_money']}">【省{$v['quan_money']}元】{$v['quan_name']}</option>
+						<!--{endforeach;}-->		
 						</select>
-						</script>
 					</div>
-					<a href="javascript:quan_duihuan_open();" class="mal10 cblue">[兑换]</a>
-					<!--<div class="fl mal10">
-						<form method="post" id="quan_form">
-						<input type="text" name="quan_key" value="" placeholder="请输入优惠券码" class="jf_input input150" />
-						<input type="hidden" name="pesubmit" />
-						<input type="button" value="兑换" onclick="quan_duihuan()" />
-						</form>
-					</div>-->
+					<!--<a href="javascript:quan_duihuan_open();" class="mal10 cblue" style="text-decoration:underline">我要兑换</a>-->
+					<div class="clear"></div>
 				</div>
-				<div class="clear"></div>
-				<div class="mat15">
-					<label for="point_btn">
-						<input type="checkbox" id="point_btn" class="fl mat2 mar5" />
-						<span class="fl">使用积分 <span class="c888">（账户积分： {$user['user_point']}点，可抵现 {$user_point_money} 元）</span></span>
-						<div class="clear"></div>
-					</label>
-				</div>
-				<div class="ddbz" style="display:none" id="point_html">
-					本次使用 <input type="text" name="order_point_use" style="width:80px"> 点
-				</div>
-				<div class="ddbz">
-					订单备注 <input type="text" name="order_text" placeholder="请填写您的其他要求" />
-				</div>
+				<!--<div class="mat15">账户积分：<span class="c888">{$user['user_point']}积分，可抵：{$user_point_money}元，本次使用：<input type="text" name="order_point_use" class="ds_input"> 积分</span></div>-->
+				<!--{if($cache_setting['point_state']):}-->
+				<div class="mat15">本次使用：<input type="text" name="order_point_use" class="ds_input"> 积分</span><span class="c999 mal10">（积分余额：{$user['user_point']}个，可抵：{$user_point_money}元）</span></div>
+				<!--{endif;}-->
 			</div>
 			<div class="fk_tb">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td>商品金额：</td>
-				<td width="60" class="num font14 cfen">¥ <span id="order_product_money">{$money['order_product_money']}</span></td>
-			</tr>
-			<tr>
-				<td>运费：</td>
-				<td class="num font14">¥ <span id="order_wl_money">{$money['order_wl_money']}</span></td>
-			</tr>
-			<tr>
-				<td>使用优惠券：</td>
-				<td class="num font14">- ¥ <span id="order_quan_money">0.0</span></td>
-			</tr>
-			<tr>
-				<td>使用积分：</td>
-				<td class="num font14">- ¥ <span id="order_point_money">0.0</span></td>
-			</tr>
-			<tr>
-				<td>应付金额：</td>
-				<td class="num font18 cfen strong">¥ <span id="order_money">{$money['order_money']}</span></td>
-			</tr>
-			</table>
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>商品金额：</td>
+					<td width="80" class="num font14 cfen">¥ <span id="order_product_money">{$info['order_product_money']}</span></td>
+				</tr>
+				<tr>
+					<td>运费：</td>
+					<td class="num font14">¥ <span id="order_wl_money">{$info['order_wl_money']}</span></td>
+				</tr>
+				<tr>
+					<td>店铺优惠：</td>
+					<td class="num font14">- ¥ <span id="order_quan_money">0.0</span></td>
+				</tr>
+				<!--{if($cache_setting['point_state']):}-->
+				<tr>
+					<td>积分抵扣：</td>
+					<td class="num font14">- ¥ <span id="order_point_money">0.0</span></td>
+				</tr>
+				<!--{endif;}-->
+				<tr>
+					<td>应付金额：</td>
+					<td class="num font18 cfen strong">¥ <span id="order_money">{$info['order_money']}</span></td>
+				</tr>
+				</table>
 			</div>
-			<div class="clear"></div>			
+			<div class="clear"></div>
 		</div>
 		<div class="ddtj_btn_box" style="background:none;">
 			<input type="hidden" name="address_id" />
-			<input type="hidden" name="order_payway" value="" />
 			<input type="hidden" name="pesubmit" />
 			<input type="button" class="ddtj_btn ddtj_btn1" id="order_btn" value="提交订单" />
 			<a href="{pe_url('cart')}" class="fhgw fr">< 返回购物车</a>
 		</div>
-		</form>
 	</div>
 </div>
+</form>
 <script type="text/html" id="quan_duihuan_html">
 <form method="post" id="quan_form" style="text-align:center;margin-top:50px">
 <input type="text" name="quan_key" value="" placeholder="请输入10位优惠券码" class="inputall input200" />
@@ -165,62 +152,30 @@
 $(function(){
 	cart_check();
 	useraddr_list(0);
-	quan_list();
-	pe_select_radio('order_payway', null, 'payway_html');
-	//积分勾选
-	$("#point_btn").click(function(){
-		if ($(this).is(":checked")) {
-			$("#point_html").show();
-		}
-		else {
-			$("#point_html").hide();
-			$(":input[name='order_point_use']").val('');
-			$("#order_point_money").html('0.0');	
-		}
-		order_money();
-	})
-	//积分输入
-	$(":input[name='order_point_use']").keyup(function(){
-		var point = parseInt($(this).val()), point_money = 0;
-		if (point > {$user['user_point']}) {
-			point = {$user['user_point']};
-		}
-		else if (point < 0 || isNaN(point)) {
-			point = 0;
-		}
-		$(this).val(point);
-		if ({round($cache_setting['point_money'])} > 0) {
-			point_money = point/{$cache_setting['point_money']};
-		}
-		$("#order_point_money").html(point_money.toFixed(1));
-		order_money();
-	})
-	//优惠券勾选
-	$("#quan_btn").click(function(){
-		if ($(this).is(":checked")) {
-			$("#quan_html").show();
-		}
-		else {
-			$("#quan_html").hide();
-			$(":input[name='order_quan_id']").val(0.0);
-			$("#order_quan_money").html('0.0');
-		}
-		order_money();
-	})
-	//使用优惠券
+	//支付方式
+	pe_select_radio('order_payment', $(":input[name='order_payment']:eq(0)").val());
+	//选择优惠券
 	$(":input[name='order_quan_id']").live("change", function(){	
 		$("#order_quan_money").html($(this).find("option:selected").attr("quan_money"));
 		order_money();
 	})
+	//使用积分
+	$(":input[name='order_point_use']").keyup(function(){
+		var point = pe_num($(this).val(), 'floor');
+		var point_money = '0.0';
+		if (point > {$user['user_point']}) {
+			point = {$user['user_point']};
+		}
+		$(this).val(point);
+		if ({round($cache_setting['point_money'])} > 0) {
+			point_money = pe_num(point/{$cache_setting['point_money']}, 'floor', 1, true);
+		}
+		$("#order_point_money").html(point_money);
+		order_money();
+	})
 	$("#order_btn").click(function(){
-	
-	console.log($("#form").serialize());
-	
-	
-		pe_submit("{$pe['host_root']}index.php?mod=order&act=add&id={$cart_id}", function(json){
-			if (json.result) {
-				pe_open("{$pe['host_root']}index.php?mod=order&act=pay&id="+json.order_id, 1000);
-			}
+		pe_submit("{pe_nowurl()}", function(json){
+			if (json.result) pe_open(json.url, 1000);
 		})
 	})
 })
@@ -239,8 +194,8 @@ function cart_check() {
 function useraddr_list(id) {
 	pe_getinfo("{$pe['host_root']}index.php?mod=useraddr&id="+id, function(json){
 		if (json.result) {
-			$(":input[name='address_id']").val(json.info.address_id);
-			$("#useraddr_html").html(template('useraddr_tpl', json));
+			$(":input[name='address_id']").val(json.info.address_id);			
+			pe_jshtml('useraddr_html', json);
 			$("#useraddr_html .js_radio[val='"+json.info.address_id+"']").addClass("sel");
 		}
 	});
@@ -255,43 +210,15 @@ function useraddr_select(id) {
 		}
 	});
 }
-//获取优惠券
-function quan_list() {
-	pe_getinfo("{$pe['host_root']}index.php?mod=quan&act=select&cart_id={$_g_id}", function(json){
-		if (json.result) {
-			$("#quan_list").html(template('quan_tpl', json));		
-		}
-	});	
-}
-//打开兑换优惠券
-function quan_duihuan_open() {
-	layer.open({
-		type: 1,
-		title: '兑换优惠券',
-		area: ['400px', '220px'], //宽高
-		content: $("#quan_duihuan_html").html()
-	});
-}
-//兑换优惠券
-function quan_duihuan() {
-	pe_submit("{$pe['host_root']}index.php?mod=quan&act=duihuan", function(json){
-		if (json.result) {
-			quan_list();
-			setTimeout(function(){
-				layer.closeAll();
-			}, 1500)		
-		}
-	}, 'quan_form');
-}
 //订单金额
 function order_money() {
-	var product_money = parseFloat($("#order_product_money").html());
-	var wl_money = parseFloat($("#order_wl_money").html());
-	var quan_money = parseFloat($("#order_quan_money").html());
-	var point_money = parseFloat($("#order_point_money").html());
+	var product_money = pe_num($("#order_product_money").html(), 'round', 1);
+	var wl_money = pe_num($("#order_wl_money").html(), 'round', 1);
+	var quan_money = pe_num($("#order_quan_money").html(), 'round', 1);
+	var point_money = pe_num($("#order_point_money").html(), 'round', 1);
 	var order_money = product_money + wl_money - quan_money - point_money;
 	order_money = order_money >= 0 ? order_money : 0;
-	$("#order_money").html(order_money.toFixed(1));
+	$("#order_money").html(pe_num(order_money, 'round', 1, true));
 }
 </script>
 <!--{include(pe_tpl('footer.html'));}-->

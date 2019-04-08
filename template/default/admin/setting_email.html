@@ -3,7 +3,7 @@
 	<!--{include(pe_tpl('setting_menu.html'));}-->
 	<div class="right_main">
 		<form method="post" id="form">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20">
 		<tr>
 			<td align="right" width="150">SMTP地址：</td>
 			<td><input type="text" name="info[email_smtp]" value="{$info['email_smtp']['setting_value']}" class="inputall input200" /> <span class="c888">（例：smtp.qq.com）</span></td>
@@ -52,12 +52,51 @@
 		</table>
 		</form>
 	</div>
+	<div class="now">
+		<a href="javascript:;" class="sel">邮件通知<i></i></a>
+	</div>
+	<!--{foreach(array('user'=>'会员', 'admin'=>'管理员') as $user_type=>$user_name):}-->
+	<div class="right_main">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+		<tr>
+			<th class="bgtt" width="50">序号</th>
+			<th class="bgtt" width="">通知类型</th>
+			<th class="bgtt" width="250">通知用户</th>
+			<th class="bgtt" width="250">通知模板</th>
+			<th class="bgtt" width="250">启用状态</th>
+		</tr>
+		<!--{$num=1}-->
+		<!--{foreach($notice_list[$user_type] as $k=>$v):}-->
+		<tr>
+			<td>{$num++}</td>
+			<td>{$v['notice_name']}</td>
+			<td>{$user_name}</td>
+			<td>
+				<a href="admin.php?mod=notice&act=edit&type=email&id={$v['notice_id']}" class="admin_edit" onclick="return pe_dialog(this, '修改邮件模板', 850, 500, 'notice')">编辑</a>
+			</td>
+			<td class="layui-form">
+				<input type="checkbox" <!--{if($v['notice_email_state']):}-->checked<!--{endif;}--> lay-skin="switch" lay-text="开启|关闭" url="admin.php?mod=notice&act=email_state&id={$v['notice_id']}&token={$pe_token}" />
+			</td>
+		</tr>
+		<!--{endforeach;}-->
+		</table>
+	</div>
+	<!--{endforeach;}-->
 </div>
+<link rel="stylesheet" href="{$pe['host_root']}include/plugin/layui/css/layui.css">
+<script src="{$pe['host_root']}include/plugin/layui/layui.js"></script>
 <script type="text/javascript">
 $(function(){
 	$("#email_test").click(function(){
 		$(this).attr("href", "admin.php?mod=setting&act=email_test&user="+$(":input[name='info[email_admin]']").val()+"&token={$pe_token}")
 	})
 })
+layui.use(['form'], function(){
+	form = layui.form;
+	form.on('switch', function(data){
+		var url = $(this).attr("url") + "&value=" + (this.checked ? 1 : 0)
+		pe_getinfo(url);
+	});
+});
 </script>
 <!--{include(pe_tpl('footer.html'));}-->

@@ -4,7 +4,7 @@
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 switch ($act) {
-	//#####################@ 文章列表 @#####################//
+	//####################// 文章列表 //####################//
 	case 'list':
 	case 'news':
 	case 'help':
@@ -22,7 +22,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle);
 		include(pe_tpl('article_list.html'));
 	break;
-	//#####################@ 文章内容 @#####################//
+	//####################// 文章内容 //####################//
 	default:
 		$article_id = intval($act);
 		$db->pe_update('article', array('article_id'=>$article_id), '`article_clicknum`=`article_clicknum`+'.rand(2,5));

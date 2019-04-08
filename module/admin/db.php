@@ -6,7 +6,7 @@
 $menumark = 'db';
 set_time_limit(0);
 switch ($act) {
-	//#####################@ 数据导入 @#####################//
+	//####################// 数据导入 //####################//
 	case 'import':
 		//pe_error('演示站已关闭导入数据功能');
 		pe_token_match();
@@ -20,7 +20,7 @@ switch ($act) {
 			pe_error("请选择需要导入的数据库目录...");
 		}
 	break;
-	//#####################@ 数据导入(执行) @#####################//
+	//####################// 数据导入(执行) //####################//
 	case 'import_one':
 		if (is_file($sqlname = "{$pe['path_root']}data/dbbackup/{$_g_path}/{$_g_mark}#v{$_g_num}.sql")) {
 			$num = $_g_num + 1;
@@ -30,7 +30,7 @@ switch ($act) {
 			pe_success('数据导入完成！', 'admin.php?mod=db');
 		}
 	break;
-	//#####################@ 数据备份 @#####################//
+	//####################// 数据备份 //####################//
 	case 'backup':
 		$back_path = "{$pe['path_root']}data/dbbackup/".date('Ymd@His')."/";
 		$table_list = $db->sql_selectall("show table status from `{$pe['db_name']}`");
@@ -81,14 +81,14 @@ switch ($act) {
 			}
 		}
 	break;
-	//#####################@ 数据删除 @#####################//
+	//####################// 数据删除 //####################//
 	case 'del':
 		//pe_error('演示站未开启删除权限');
 		pe_token_match();
 		pe_dirdel("{$pe['path_root']}data/dbbackup/{$_g_dbname}");
 		pe_success('删除完成！');
 	break;
-	//#####################@ 数据备份恢复 @#####################//
+	//####################// 数据备份恢复 //####################//
 	default:
 		$backup_list = (array)pe_dirlist("{$pe['path_root']}data/dbbackup/*");
 		rsort($backup_list);
@@ -110,7 +110,7 @@ function dosql($table)
 		foreach ($data_list as $vv) {
 			$sql .= "(";
 			foreach ($vv as $vvv) {
-				$sql .= "'".mysql_real_escape_string($vvv)."',";
+				$sql .= "'".addslashes($vvv)."',";
 			}
 			$sql = trim($sql, ',')."),\n";
 		}

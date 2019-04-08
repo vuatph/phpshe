@@ -2,7 +2,7 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}<i></i></a></div>
 		<div class="hy_table">
 			<form method="post" id="form">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -12,7 +12,7 @@
 			</tr>
 			<tr>
 				<td style="text-align:right;">会员等级：</td>
-				<td><span class="corg">{$cache_userlevel[$info['userlevel_id']]['userlevel_name']}</span></td>
+				<td><span class="dj_btn">{$cache_userlevel[$info['userlevel_id']]['userlevel_name']}</span></td>
 			</tr>
 			<tr>
 				<td style="text-align:right;">真实姓名：</td>
@@ -20,11 +20,11 @@
 			</tr>
 			<tr>
 				<td style="text-align:right;">手机号码：</td>
-				<td><input type="text" name="user_phone" value="{$info['user_phone']}" class="inputall input200" /> <span id="user_phone_show"></span></td>
+				<td><input type="text" name="user_phone" value="{$info['user_phone']}" class="inputall input200" /></td>
 			</tr>
 			<tr>
 				<td style="text-align:right;">电子邮箱：</td>
-				<td><input type="text" name="user_email" value="{$info['user_email']}" class="inputall input200" /> <span id="user_email_show"></span></td>
+				<td><input type="text" name="user_email" value="{$info['user_email']}" class="inputall input200" /></td>
 			</tr>
 			<tr>
 				<td style="text-align:right;">注册日期：</td>
@@ -44,12 +44,11 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
-var form_info = [
-	{"name":"user_phone", "mod":"match", "act":"blur", "arg":"phone", "show_id":"user_phone_show","show_error":"格式错误", "must":false},
-	{"name":"user_email", "mod":"match", "act":"blur", "arg":"email", "show_id":"user_email_show","show_error":"格式错误", "must":false}
-]
-$(":button").pe_submit(form_info, 'form');
+$(function(){
+	$(":button").click(function(){
+		pe_submit("user.php?mod=setting&act=base");
+	})
+})
 </script>
 <!--{include(pe_tpl('footer.html'));}-->

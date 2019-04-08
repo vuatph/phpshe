@@ -1,22 +1,23 @@
 <!--{include(pe_tpl('do_header.html'));}-->
 <div class="login_bg">
-	<div style="width:1000px; margin:0 auto">
-	<div class="login_r" style="width:300px;">
+	<div style="width:1000px; margin:0 auto; position:relative">
+	<div class="login_r" style="width:300px; height:400px; top:-50px;  position:absolute; right:0;">
 		<div class="zctt">{$menutitle}</div>
 		<form method="post" id="form">
-		<div class="zc_input1">
-			用&nbsp;&nbsp;户 名：<input type="text" name="user_name" class="login_input1" placeholder="请填写您的用户名" />
+		<div class="zc_input1 mat10">
+			登录帐号：<input type="text" name="user_name" class="login_input1" placeholder="手机号码 / 邮箱" />
+		</div>
+		<div class="zc_input1 mat10" style="position:relative">
+			验&nbsp;&nbsp;证 码：<input type="text" name="yzm" class="login_input1" placeholder="手机 / 邮箱验证码" style="width:100px;" />
+			<div class="user_yzm" href="{$pe['host_root']}index.php?mod=check&act=send_yzm&type=getpw" onclick="pe_sendyzm(this, 'user_name')">获取验证码</div>
 		</div>
 		<div class="zc_input1 mat10">
-			注册邮箱：<input type="text" name="user_email" class="login_input1" placeholder="请填写您的注册邮箱" />
+			设置新密码：<input type="text" name="user_pw" class="login_input1" placeholder="设置6-20位新密码" onfocus="this.type='password'" style="width:190px;" />
 		</div>
 		<div class="zc_input1 mat10">
-			<span class="fl">验&nbsp;&nbsp;证 码：</span>
-			<input type="text" name="authcode" class="login_input1 fl" style="width:90px" placeholder="请填写验证码"  />
-			<img src="{$pe['host_root']}include/class/authcode.class.php?w=100&h=40" onclick="pe_yzm(this)" class="fr mal5" style="cursor:pointer; border:0; height:40px;" />
-			<div class="clear"></div>
+			确认新密码：<input type="text" name="user_pw1" class="login_input1" placeholder="再次输入新密码" onfocus="this.type='password'" style="width:190px;" />
 		</div>
-		<div class="mat10">
+		<div class="mat20">
 			<input type="hidden" name="pesubmit" />
 			<input type="button" class="loginbtn1" value="提 交" />
 		</div>
@@ -32,16 +33,33 @@
 $(function(){
 	$(":button").click(function(){
 		if ($(":input[name='user_name']").val() == '') {
-			pe_tip('请填写用户名');
+			pe_tip('请填写登录帐号');
 			return false;
 		}
-		if ($(":input[name='authcode']").val() == '') {
-			pe_tip('请填写验证码...');
+		if ($(":input[name='yzm']").val() == '') {
+			pe_tip('请填写验证码');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val() == '') {
+			pe_tip('请填写新密码');
+			return false;
+		}
+		if ($(":input[name='user_pw1']").val() == '') {
+			pe_tip('请填写确认密码');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val() != $(":input[name='user_pw1']").val()) {
+			pe_tip('新密码与确认密码不一致');
 			return false;
 		}
 		$(this).val('提交中...');
 		pe_submit('user.php?mod=do&act=getpw', function(json){
-			$(":button").val('提交');
+			if (json.result) {
+				pe_open('user.php', 1000);
+			}
+			else {
+	    		$(":button").val('提交');			
+			}
 		})
 	})
 })

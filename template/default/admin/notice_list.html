@@ -1,73 +1,51 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<!--{include(pe_tpl('setting_menu.html'));}-->
+	<!--{foreach(array('user'=>'会员', 'admin'=>'管理员') as $user_type=>$user_name):}-->
 	<div class="right_main">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
 		<tr>
-			<th class="bgtt" width="150">通知对象</th>
+			<th class="bgtt" width="50">序号</th>
 			<th class="bgtt" width="">通知类型</th>
-			<!--<th class="bgtt aleft" style="padding-left:100px">通知信息</th>-->
-			<th class="bgtt" width="100">邮件通知</th>
-			<th class="bgtt" width="100">短信通知</th>
-			<th class="bgtt" width="100">操作</th>
+			<th class="bgtt" width="250">通知用户</th>
+			<th class="bgtt" width="250">邮件通知</th>
+			<th class="bgtt" width="250">短信通知</th>
 		</tr>
-		<!--{foreach($info_list['user'] as $k=>$v):}-->
+		<!--{$num=1}-->
+		<!--{foreach($info_list[$user_type] as $k=>$v):}-->
 		<tr>
-			<!--{if($k=='order_add'):}--><td rowspan="{count($info_list['user'])}" nosel="1">用户</td><!--{endif;}-->
+			<td>{$num++}</td>
 			<td>{$v['notice_name']}</td>
-			<!--<td class="aleft">{$v['notice_email_name']}</td>-->
+			<td>{$user_name}</td>
+			<!--{foreach(array('email'=>'邮件', 'sms'=>'短信') as $kk=>$vv):}-->
 			<td>
-				<!--{if($v['notice_email_state']==1):}-->
-				<a href="admin.php?mod=notice&act=email_state&state=0&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/dui.png" /></a>
-				<!--{else:}-->
-				<a href="admin.php?mod=notice&act=email_state&state=1&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/cuo.png" /></a>
-				<!--{endif;}-->
+				<div class="layui-form fl mar10" style="margin-left:98px">
+					<input type="checkbox" <!--{if($v['notice_'.$kk.'_state']):}-->checked<!--{endif;}--> lay-skin="switch" lay-text="开启|关闭" url="admin.php?mod=notice&act={$kk}_state&id={$v['notice_id']}&token={$pe_token}" />
+				</div>
+				<a href="admin.php?mod=notice&act=edit&type={$kk}&id={$v['notice_id']}" class="admin_btn fl" onclick="return pe_dialog(this, '修改{$vv}模板', 850, 500, 'notice')">模板</a>
+				<div class="clear"></div>
 			</td>
-			<td>
-				<!--{if($v['notice_sms_state']==1):}-->
-				<a href="admin.php?mod=notice&act=sms_state&state=0&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/dui.png" /></a>
-				<!--{else:}-->
-				<a href="admin.php?mod=notice&act=sms_state&state=1&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/cuo.png" /></a>
-				<!--{endif;}-->
-			</td>
-			<td><a href="admin.php?mod=notice&act=edit&id={$v['notice_id']}" class="admin_btn" onclick="return pe_dialog(this, '修改通知内容', 800, 520, 'notice')">修改</a></td>
+			<!--{endforeach;}-->
 		</tr>
 		<!--{endforeach;}-->
 		</table>
 	</div>
-	<div class="right_main2">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-		<tr>
-			<th class="bgtt" width="150">通知对象</th>
-			<th class="bgtt" width="">通知类型</th>
-			<!--<th class="bgtt aleft" style="padding-left:100px">通知信息</th>-->
-			<th class="bgtt" width="100">邮件通知</th>
-			<th class="bgtt" width="100">短信通知</th>
-			<th class="bgtt" width="100">操作</th>
-		</tr>
-		<!--{foreach($info_list['admin'] as $k=>$v):}-->
-		<tr>
-			<!--{if($k=='order_add'):}--><td rowspan="{count($info_list['admin'])}" nosel="1">管理员</td><!--{endif;}-->
-			<td>{$v['notice_name']}</td>
-			<!--<td class="aleft">{$v['notice_email_name']}</td>-->
-			<td>
-				<!--{if($v['notice_email_state']==1):}-->
-				<a href="admin.php?mod=notice&act=email_state&state=0&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/dui.png" /></a>
-				<!--{else:}-->
-				<a href="admin.php?mod=notice&act=email_state&state=1&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/cuo.png" /></a>
-				<!--{endif;}-->
-			</td>
-			<td>
-				<!--{if($v['notice_sms_state']==1):}-->
-				<a href="admin.php?mod=notice&act=sms_state&state=0&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/dui.png" /></a>
-				<!--{else:}-->
-				<a href="admin.php?mod=notice&act=sms_state&state=1&id={$v['notice_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/cuo.png" /></a>
-				<!--{endif;}-->
-			</td>
-			<td><a href="admin.php?mod=notice&act=edit&id={$v['notice_id']}" class="admin_btn" onclick="return pe_dialog(this, '修改通知内容', 800, 520, 'notice')">修改</a></td>
-		</tr>
-		<!--{endforeach;}-->
-		</table>
-	</div>
+	<!--{endforeach;}-->
 </div>
+<link rel="stylesheet" href="{$pe['host_root']}include/plugin/layui/css/layui.css">
+<script src="{$pe['host_root']}include/plugin/layui/layui.js"></script>
+<script type="text/javascript">
+$(function(){
+	$(":input").live("change", function(){
+	alert($(this).val());
+	})
+})
+layui.use(['form'], function(){
+	form = layui.form;
+	form.on('switch', function(data){
+		var url = $(this).attr("url") + "&value=" + (this.checked ? 1 : 0)
+		pe_getinfo(url);
+	});
+});
+</script>
 <!--{include(pe_tpl('footer.html'));}-->

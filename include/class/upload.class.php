@@ -14,7 +14,7 @@ class upload {
 	//上传的文件名
 	public $filename = '';
 	//允许上传的文件类型
-	public $filetype = array('jpg','jpeg','gif','png','psd','wps','doc','xls','ppt','pdf','zip','rar','tar','txt','text');
+	public $filetype = array('jpg','jpeg','gif','png','psd','wps','doc','xls','csv','ppt','pdf','zip','rar','tar','txt','text');
 	//文件上传大小控制(默认是10000kb)
 	public $filesize = 10000000;
 	//文件验证结果
@@ -64,8 +64,11 @@ class upload {
 			return $filename . '.' . $this->_filetail();
 		}
 		else {
-			$nametmp = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','d','u','v','w','x','y','z');
-			return date("YmdHis") . $nametmp[array_rand($nametmp, 1)] . '.' . $this->_filetail();
+			usleep(500000);
+			list(,$name_tmp1) = explode(" ", microtime());
+			$name_tmp1 = substr($name_tmp1, 0, 3).rand(0,9).rand(0,9);
+			$name_tmp2 = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','d','u','v','w','x','y','z');
+			return date("YmdHis") . $name_tmp1 .$name_tmp2[array_rand($name_tmp2, 1)] . '.' . $this->_filetail();
 		}
 	}
 	//获取文件扩展名

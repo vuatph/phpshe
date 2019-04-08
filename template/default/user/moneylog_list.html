@@ -3,7 +3,7 @@
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
 		<div class="hy_tt">
-			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span></a>
+			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span><i></i></a>
 		</div>
 		<div class="hy_tablelist">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -15,10 +15,10 @@
 			</tr>
 			<!--{foreach($info_list as $v):}-->
 			<tr>
-				<td><span <!--{if(pe_date($v['moneylog_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['moneylog_atime'])}</span></td>
+				<td>{pe_date_color(pe_date($v['moneylog_atime']))}</td>
 				<td>
 					<!--{if($v['moneylog_in']>0):}-->
-					<span class="corg">+{$v['moneylog_in']}</span>
+					<span class="cgreen">+{$v['moneylog_in']}</span>
 					<!--{else:}-->
 					<span class="c999">-{$v['moneylog_out']}</span>
 					<!--{endif;}-->

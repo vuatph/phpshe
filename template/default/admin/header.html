@@ -32,10 +32,12 @@
 <div class="content">
 	<div class="left">
 		<!--{foreach($adminmenu as $k=>$v):}-->
+		<!--{if(!$v['show'])continue;}-->
 		<div class="fenlei">
 			<h3 class="fl_tb{$k}"><s></s>{$v['headnav']}</h3>
 			<ul>
 				<!--{foreach($v['subnav'] as $kk=>$vv):}-->
+				<!--{if(!$vv['show'])continue;}-->
 				<li class="<!--{if($vv['menumark']==$menumark):}-->sel<!--{endif;}-->"><a href="{$vv['url']}"><span>├</span>{$vv['name']}</a></li>
 				<!--{endforeach;}-->
 			</ul>

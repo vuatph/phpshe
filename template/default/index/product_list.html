@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
 	<div class="now">{$nowpath}</div>
-	<div class="xiangqing">		
+	<div class="">		
 		<div class="list_sx">
 			<div class="pinpai_fl mal10">
 				<span class="list_sx_l">分类：</span>
@@ -53,13 +53,18 @@
 			</div>
 		</div>
 		<div class="prolist_html">
-			<!--{foreach($info_list as $kk=>$vv):}-->
-			<div class="prolist" <!--{if(($kk+1)%4==0):}-->style="margin-right:0"<!--{endif;}-->>
-				<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank">
-				<p class="prolist_img"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($vv['product_logo'], 400, 400)}" title="{$vv['product_name']}" width="250" height="250" class="js_imgload" /></p>
-				<!--{if($vv['product_hd_tag']):}--><div class="{huodong_tag($vv['product_hd_tag'])}">{$vv['product_hd_tag']}</div><!--{endif;}-->
-				<p class="prolist_name">{$vv['product_name']}</p>
-				<p class="mat20"><span class="money1 fl"><span class="num font18 mar3">¥</span>{product_money($vv['product_money'])}</span> <span class="c999 fr font12">已售{$vv['product_sellnum']}件</span></p>
+			<!--{foreach($info_list as $k=>$v):}-->
+			<div class="prolist" <!--{if(($k+1)%4==0):}-->style="margin-right:0"<!--{endif;}-->>
+				<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">
+				<div class="pro_bq">
+					<img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($v['product_logo'], 400, 400)}" title="{$v['product_name']}" width="250" height="250" class="js_imgload" />
+					<!--{if($v['huodong_tag']):}--><div class="bq_name">{$v['huodong_tag']}</div><!--{endif;}-->
+				</div>
+				<p class="prolist_name">{$v['product_name']}</p>
+				<p class="mat8">
+					<span class="money1 fl"><span class="num font18 mar3">¥</span>{product_money($v['product_money'])}</span>
+					<span class="font12 fr c999">已售{$v['product_sellnum']}件</span>
+				</p>
 				<div class="clear"></div>
 				</a>
 			</div>

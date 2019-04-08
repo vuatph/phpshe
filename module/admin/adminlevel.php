@@ -4,20 +4,54 @@
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'adminlevel';
-$modact_list['商品中心'] = array('product-index'=>'商品列表', 'product-add|product-edit|product-ask|product-comment|product-sell|product-tuijian|product-state|product-move'=>'商品添加/修改', 'product-del'=>'商品删除',
-	'category-index'=>'分类列表', 'category-add|category-edit|category-order'=>'分类添加/修改', 'category-del'=>'分类删除',
-	'brand-index'=>'品牌列表', 'brand-add|brand-edit|brand-order'=>'品牌添加/修改', 'brand-del'=>'品牌删除', 
-	'rule-index'=>'规格列表', 'rule-add|rule-edit'=>'规格添加/修改', 'rule-del'=>'规格删除', 'comment'=>'评价管理', 'quan'=>'优 惠 券', 'huodong'=>'限时促销');
-$modact_list['交易中心'] = array('order-index'=>'订单列表', 'order-edit'=>'订单详情', 'order-pay'=>'订单付款', 'order-send'=>'订单发货', 'order-success'=>'订单确认收货', 'order-close'=>'订单取消', 'order-del'=>'订单删除', 'order-money'=>'订单修改价格', 'order-address'=>'订单修改地址', 'moneylog'=>'资金明细', 'pointlog'=>'积分明细', 'order_pay'=>'充值记录', 'cashout'=>'提现管理');
-$modact_list['用户中心'] = array('user-index'=>'会员列表', 'user-edit'=>'会员修改', 'user-del'=>'会员删除', 'user-addmoney|user-delmoney'=>'会员资金管理', 'user-delpoint|user-delpoint'=>'会员积分管理', 'userbank'=>'收款账户管理', 'useraddr'=>'收货地址管理', 'userlevel-index'=>'等级列表', 'userlevel-add|userlevel-edit'=>'等级添加/修改', 'userlevel-del'=>'等级删除', 'admin-index'=>'管理员列表', 'admin-add|admin-edit'=>'管理员添加/修改', 'admin-del'=>'管理员删除', 'admin-index'=>'管理员列表', 'admin-add|admin-edit'=>'管理员添加/修改', 'admin-del'=>'管理员删除', 'admin-index'=>'管理员列表', 'admin-add|admin-edit'=>'管理员添加/修改', 'admin-del'=>'管理员删除', 'adminlevel-index'=>'权限列表', 'adminlevel-add|adminlevel-edit'=>'权限添加/修改', 'adminlevel-del'=>'权限删除');
-$modact_list['文章中心'] = array('class-index'=>'分类列表', 'class-add|class-edit|class-order'=>'分类添加/修改', 'class-del'=>'分类删除', 'article-index'=>'文章列表', 'article-add|article-edit'=>'文章添加/修改', 'article-del'=>'文章删除');
-$modact_list['控制面板'] = array('setting|notice|express'=>'网站设置', 'wechat'=>'微信设置', 'payway'=>'支付设置', 'menu'=>'导航管理', 'ad'=>'广告管理', 'link'=>'友情链接', 'moban'=>'模板管理', 'tongji'=>'数据统计', 'db'=>'数据备份', 'cache'=>'缓存管理');
+$modact_list['商品中心'][] = array('name'=>'商品管理', 'modact'=>'product|prokey', 'menumark'=>'product');
+$modact_list['商品中心'][] = array('name'=>'商品分类', 'modact'=>'category', 'menumark'=>'category');	
+$modact_list['商品中心'][] = array('name'=>'品牌管理', 'modact'=>'brand', 'menumark'=>'brand');	
+$modact_list['商品中心'][] = array('name'=>'规格管理', 'modact'=>'rule', 'menumark'=>'rule');	
+$modact_list['商品中心'][] = array('name'=>'评价管理', 'modact'=>'comment', 'menumark'=>'comment');
+$modact_list['交易中心'][] = array('name'=>'订单管理', 'modact'=>'order', 'menumark'=>'order');
+$modact_list['交易中心'][] = array('name'=>'退款/退货', 'modact'=>'refund|refund_addr', 'menumark'=>'refund');
+$modact_list['交易中心'][] = array('name'=>'资金明细', 'modact'=>'moneylog', 'menumark'=>'moneylog');		
+$modact_list['交易中心'][] = array('name'=>'积分明细', 'modact'=>'pointlog', 'menumark'=>'pointlog');
+$modact_list['交易中心'][] = array('name'=>'充值记录', 'modact'=>'order_pay', 'menumark'=>'order_pay');
+$modact_list['交易中心'][] = array('name'=>'提现管理', 'modact'=>'cashout', 'menumark'=>'cashout');
+$modact_list['营销中心'][] = array('name'=>'优惠券/码', 'modact'=>'quan', 'menumark'=>'quan');
+$modact_list['营销中心'][] = array('name'=>'限时折扣', 'modact'=>'zhekou', 'menumark'=>'zhekou');
+$modact_list['营销中心'][] = array('name'=>'拼团活动', 'modact'=>'pintuan', 'menumark'=>'pintuan');
+$modact_list['营销中心'][] = array('name'=>'签到活动', 'modact'=>'sign', 'menumark'=>'sign');
+$modact_list['用户中心'][] = array('name'=>'会员管理', 'modact'=>'user', 'menumark'=>'user');
+$modact_list['用户中心'][] = array('name'=>'会员等级', 'modact'=>'userlevel', 'menumark'=>'userlevel');
+$modact_list['用户中心'][] = array('name'=>'管理账号', 'modact'=>'admin', 'menumark'=>'admin');	
+$modact_list['用户中心'][] = array('name'=>'管理权限', 'modact'=>'adminlevel', 'menumark'=>'adminlevel');	
+$modact_list['文章中心'][] = array('name'=>'分类管理', 'modact'=>'class', 'menumark'=>'class');	
+$modact_list['文章中心'][] = array('name'=>'文章管理', 'modact'=>'article', 'menumark'=>'article');
+$modact_list['控制面板'][] = array('name'=>'网站设置', 'modact'=>'setting|notice|express', 'menumark'=>'setting');	
+$modact_list['控制面板'][] = array('name'=>'微信设置', 'modact'=>'wechat|wechat_notice', 'menumark'=>'wechat');
+$modact_list['控制面板'][] = array('name'=>'支付设置', 'modact'=>'payment', 'menumark'=>'payment');
+$modact_list['控制面板'][] = array('name'=>'导航管理', 'modact'=>'menu', 'menumark'=>'menu');
+$modact_list['控制面板'][] = array('name'=>'广告管理', 'modact'=>'ad', 'menumark'=>'ad');	
+$modact_list['控制面板'][] = array('name'=>'友情链接', 'modact'=>'link', 'menumark'=>'link');
+$modact_list['控制面板'][] = array('name'=>'模板管理', 'modact'=>'moban', 'menumark'=>'moban');	
+$modact_list['控制面板'][] = array('name'=>'数据统计', 'modact'=>'tongji', 'menumark'=>'tongji');
+$modact_list['控制面板'][] = array('name'=>'数据备份', 'modact'=>'db', 'menumark'=>'db');	
+$modact_list['控制面板'][] = array('name'=>'缓存管理', 'modact'=>'cache', 'menumark'=>'cache');
 switch ($act) {
-	//#####################@ 管理添加 @#####################//
+	//####################// 管理添加 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			$_p_info['adminlevel_modact'] = serialize($_p_modact);
+			if (is_array($_p_modact)) {
+				foreach ($modact_list as $v) {
+					foreach ($v as $vv) {
+						if (in_array($vv['modact'], $_p_modact)) {
+							$modact_arr[] = $vv['modact'];
+							$menumark_arr[] = $vv['menumark'];
+						} 
+					}
+				}
+			}
+			$_p_info['adminlevel_modact'] = is_array($modact_arr) ? serialize($modact_arr) : '';			
+			$_p_info['adminlevel_menumark'] = is_array($menumark_arr) ? serialize($menumark_arr) : '';			
 			if ($db->pe_insert('adminlevel', $_p_info)) {
 				cache::write('adminlevel');
 				pe_success('添加成功!', 'admin.php?mod=adminlevel');
@@ -30,13 +64,24 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加权限', '', '', 'admin');
 		include(pe_tpl('adminlevel_add.html'));
 	break;
-	//#####################@ 管理修改 @#####################//
+	//####################// 管理修改 //####################//
 	case 'edit':
 		$adminlevel_id = intval($_g_id);
 		$_g_id == 1 && pe_error('总管理员不能修改...');
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			$_p_info['adminlevel_modact'] = serialize($_p_modact);
+			if (is_array($_p_modact)) {
+				foreach ($modact_list as $v) {
+					foreach ($v as $vv) {
+						if (in_array($vv['modact'], $_p_modact)) {
+							$modact_arr[] = $vv['modact'];
+							$menumark_arr[] = $vv['menumark'];
+						} 
+					}
+				}
+			}
+			$_p_info['adminlevel_modact'] = is_array($modact_arr) ? serialize($modact_arr) : '';			
+			$_p_info['adminlevel_menumark'] = is_array($menumark_arr) ? serialize($menumark_arr) : '';
 			if ($db->pe_update('adminlevel', array('adminlevel_id'=>$adminlevel_id), $_p_info)) {
 				cache::write('adminlevel');
 				pe_success('修改成功!', 'admin.php?mod=adminlevel');
@@ -46,14 +91,14 @@ switch ($act) {
 			}
 		}
 		$info = $db->pe_select('adminlevel', array('adminlevel_id'=>$adminlevel_id));
-		$info['adminlevel_modact'] = unserialize($info['adminlevel_modact']);		
+		$info['adminlevel_modact'] = $info['adminlevel_modact'] ? unserialize($info['adminlevel_modact']) : array();		
 		$seo = pe_seo($menutitle='修改权限', '', '', 'admin');
 		include(pe_tpl('adminlevel_add.html'));
 	break;
-	//#####################@ 管理删除 @#####################//
+	//####################// 管理删除 //####################//
 	case 'del':
 		pe_token_match();
-		$_g_id == 1 && pe_error('总管理员不可删除...');
+		$_g_id == 1 && pe_error('总管理员权限不能删除');
 		if ($db->pe_delete('adminlevel', array('adminlevel_id'=>$_g_id))) {
 			cache::write('adminlevel');
 			pe_success('删除成功!');
@@ -62,9 +107,9 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 管理列表 @#####################//
+	//####################// 管理列表 //####################//
 	default:
-		$info_list = $db->pe_selectall('adminlevel', '', '*', array(20, $_g_page));
+		$info_list = $db->pe_selectall('adminlevel', '', '*', array(50, $_g_page));
 		$tongji['all'] = $db->pe_num('adminlevel');
 		$seo = pe_seo($menutitle='管理权限', '', '', 'admin');
 		include(pe_tpl('adminlevel_list.html'));

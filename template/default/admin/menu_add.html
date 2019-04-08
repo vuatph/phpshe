@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">{$menutitle}</a>
+		<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -9,7 +9,7 @@
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20">
 		<tr>
 			<td align="right" width="150">导航名称：</td>
-			<td><input type="text" name="info[menu_name]" value="{$info[menu_name]}" class="inputall input200" /> <span class="c888">（如：简好网络）</span></td>
+			<td><input type="text" name="info[menu_name]" value="{$info['menu_name']}" class="inputall input200" /> <span class="c888">（如：简好网络）</span></td>
 		</tr>
 		<tr>
 			<td align="right">链接地址：</td>
@@ -31,13 +31,13 @@
 			<td align="right" width="150">打开方式：</td>
 			<td>
 				<!--{foreach(array(1=>'新标签', 0=>'当前页') as $k=>$v):}-->
-				<label><input type="radio" name="info[menu_target]" value="{$k}" <!--{if($k==$info['menu_target']):}-->checked="checked"<!--{endif;}--> /> {$v}&nbsp;&nbsp;&nbsp;&nbsp;</label>
+				<label class="mar20"><input type="radio" name="info[menu_target]" value="{$k}" class="inputfix" <!--{if($k==$info['menu_target']):}-->checked="checked"<!--{endif;}--> /> {$v}&nbsp;&nbsp;&nbsp;&nbsp;</label>
 				<!--{endforeach;}-->
 			</td>
 		</tr>
 		<tr>
 			<td align="right">显示顺序：</td>
-			<td><input type="text" name="info[menu_order]" value="{$info['menu_order']}" class="inputall input60" /></td>
+			<td><input type="text" name="info[menu_order]" value="{$info['menu_order']}" class="inputall input100" /></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>

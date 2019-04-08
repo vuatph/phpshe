@@ -3,7 +3,7 @@
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
 		<div class="hy_tt">
-			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span></a>
+			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span><i></i></a>
 		</div>
 		<div class="hy_tablelist">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -19,7 +19,7 @@
 				<td class="aleft" style="padding-left:0"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></td>
 				<td>¥{$v['product_money']}</td>
 				<td>{pe_date($v['collect_atime'], 'Y-m-d')}</td>
-				<td><a class="tag_gray" href="user.php?mod=collect&act=del&id={$v['collect_id']}&token={$pe_token}" onclick="return pe_cfone(this, '删除此收藏')">删除</a></td>
+				<td><a href="javascript:pe_confirm('删除此收藏', 'user.php?mod=collect&act=del&id={$v['collect_id']}&token={$pe_token}');" class="tag_gray">删除</a></td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>

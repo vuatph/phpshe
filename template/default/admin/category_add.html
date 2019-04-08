@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">{$menutitle}</a>
+		<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -14,8 +14,8 @@
 		<tr>
 			<td align="right" class="c666">上级分类：</td>
 			<td>
-				<select name="info[category_pid]" class="inputselect" style="width:262px">
-				<option value="0">=============== 无 ==============</option>
+				<select name="info[category_pid]" class="inputselect" style="width:268px">
+				<option value="0">============ 无 ============</option>
 				<!--{foreach($category_treelist as $v):}-->
 				<option value="{$v['category_id']}" <!--{if($v['category_id']==$info['category_pid']):}-->selected="selected"<!--{endif;}--> <!--{if(in_array($v['category_id'], (array)$category_noid)):}-->disabled="disabled"<!--{endif;}-->>{$v['category_showname']}</option>
 				<!--{endforeach;}-->

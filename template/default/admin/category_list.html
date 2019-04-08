@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=category" class="sel">分类列表（{$tongji['all']}）</a>
+		<a href="admin.php?mod=category" class="sel">分类列表（{$tongji['all']}）<i></i></a>
 		<a href="admin.php?mod=category&act=add" id="fabu">添加分类</a>
 		<div class="clear"></div>
 	</div>
@@ -24,7 +24,7 @@
 			<td>
 				<a href="admin.php?mod=category&act=edit&id={$v['category_id']}" class="admin_edit mar3">修改</a>
 				<a href="admin.php?mod=category&act=del&id={$v['category_id']}&token={$pe_token}" class="admin_del mar3" onclick="return pe_cfone(this, '删除')">删除</a>
-				<a href="admin.php?mod=product&act=move&category_id={$v['category_id']}" class="admin_btn" onclick="return pe_dialog(this, '批量转移商品', 400, 220)">转移商品</a>
+				<a href="admin.php?mod=product&act=move&category_id={$v['category_id']}" class="admin_btn" onclick="return pe_dialog(this, '批量转移商品', 400, 230)">转移商品</a>
 			</td>
 		</tr>
 		<!--{endforeach;}-->

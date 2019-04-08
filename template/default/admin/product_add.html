@@ -1,15 +1,19 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">{$menutitle}</a>
+		<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<form method="post" enctype="multipart/form-data">
 	<div class="right_main">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20">
 		<tr>
+			<td align="right">商品类型：</td>
+			<td>{$ini['product_type'][$info['product_type']]}<input type="hidden" name="info[product_type]" value="{$info['product_type']}" /></td>
+		</tr>
+		<tr>
 			<td align="right">商品名称：</td>
-			<td colspan="3"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input700" /></td>
+			<td><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input600" /></td>
 		</tr>
 		<tr>
 			<td align="right" width="150">商品分类：</td>
@@ -33,8 +37,51 @@
 				</select>
 			</td>
 		</tr>
+		<!--{if($info['product_type'] == 'normal'):}-->
+		<tr>
+			<td align="right">商品规格：</td>
+			<td>
+				<a href="javascript:;" class="admin_btn mar10" onclick="rule_open()">选择规格</a>
+				<a href="javascript:;" class="admin_btn" onclick="rule_close()">关闭规格</a>
+			</td>
+		</tr>
+		<tr id="rule_html" style="display:none">
+			<td align="right">规格信息：<input type="hidden" id="ruledata_id" value="{$ruledata_id}" /></td>
+			<td id="rule_list">
+				<script type="text/html" id="rule_list_tpl">
+				<table width="100%" class="list" style="width:620px;">
+				<tr>
+					{{each rule_list as v}}
+					<th class="bgtt">{{v.name}}
+						<input type='hidden' name='rule_id[]' value='{{v.id}}' />
+						<input type='hidden' name='rule_name[]' value='{{v.name}}' />
+					</th>
+					{{/each}}
+					<th class="table_td bgtt" width="100">价格(元)<a href="javascript:rule_bat('product_smoney');" class="cblue mal5">[批]</a></th>
+					<!--<th class="table_td bgtt" width="70">市场价<a href="javascript:rule_bat('product_mmoney');" class="cblue mal5">[批]</a></th>-->
+					<th class="table_td bgtt" width="100">库存(件)<a href="javascript:rule_bat('product_num');" class="cblue mal5">[批]</a></th>
+				</tr>
+				{{each prodata_list as v k}}
+				<tr>
+					{{each v.name_arr as vv kk}}
+					{{if rowspan_list[k][kk] > 0}}<td rowspan="{{rowspan_list[k][kk]}}">{{vv}}</td>{{/if}}
+					{{/each}}
+					<td class="table_td"><input type="text" name="product_smoney[]" value="{{v.smoney}}" class="inputtext input50" /></td>
+					<!--<td class="table_td"><input type="text" name="product_mmoney[]" value="{{v.mmoney}}" class="inputtext input50" /></td>-->
+					<td class="table_td">
+						<input type="text" name="product_num[]" value="{{v.num}}" class="inputtext input40" />
+						<input type="hidden" name="product_ruleid[]" value="{{v.id}}" />
+						<input type="hidden" name="product_rulename[]" value="{{v.name}}" />
+					</td>
+				</tr>
+				{{/each}}
+				</table>
+				</script>
+			</td>		
+		</tr>
+		<!--{endif;}-->
 		<tr id="base_html">
-			<td align="right">价　　格：</td>
+			<td align="right">商品价格：</td>
 			<td>
 				<input type="text" name="info[product_smoney]" value="{floatval($info['product_smoney'])}" class="inputall input100" /> <span class="c888">元</span></span>，	
 				库存：<input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputall input100" /> <span class="c888">件</span>
@@ -61,17 +108,19 @@
 			<td align="right">商品货号：</td>
 			<td><input type="text" name="info[product_mark]" value="{$info['product_mark']}" class="inputall input100" /></td>
 		</tr>-->
+		<!--{if($info['product_type'] == 'normal'):}-->
 		<tr>
 			<td align="right">运　　费：</td>
 			<td><input type="text" name="info[product_wlmoney]" value="{floatval($info['product_wlmoney'])}" class="inputall input100" /> <span class="c888">元</span></td>
 		</tr>
+		<!--{endif;}-->
 		<tr>
 			<td align="right">赠送积分：</td>
-			<td><input type="text" name="info[product_point]" value="{floatval($info['product_point'])}" class="inputall input100" /> <span class="c888">点</span></td>
+			<td><input type="text" name="info[product_point]" value="{floatval($info['product_point'])}" class="inputall input100" /> <span class="c888">个</span></td>
 		</tr>
 		</table>
 	</div>
-	<div class="right_main2">
+	<div class="right_main">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
 		<tr>
 			<td align="right" width="150">商品图片：</td>
@@ -94,7 +143,7 @@
 		</tr>
 		</table>
 	</div>
-	<div class="right_main2">
+	<div class="right_main">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
 		<tr>
 			<td align="right" width="150">商品详情：</td>
@@ -115,7 +164,7 @@
 			<td><textarea name="info[product_desc]" style="width:500px;height:100px;">{$info['product_desc']}</textarea> <span class="c888">（SEO选项）</span></td>
 		</tr>
 		</table>
-	</div>-->
+	</div>
 	<div class="right_main"  style="display:none">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
 		<tr>
@@ -127,7 +176,7 @@
 			<td><textarea name="info[product_desc]" style="width:500px;height:100px;">{$info['product_desc']}</textarea> <span class="c888">（SEO选项）</span></td>
 		</tr>
 		</table>
-	</div>
+	</div>-->
 	<div class="center mat20 mab20">
 		<input type="hidden" name="pesubmit" />
 		<input type="hidden" name="pe_token" value="{$pe_token}" />
@@ -152,7 +201,7 @@ KindEditor.ready(function(K) {
 	});
 });
 $(function(){
-	rule_list("{$info['product_id']}", 'init');
+	rule_list("{$info['product_id']}", 'datalist');
 	$("body").pe_upload('pc', 5);
 	$(".now a").click(function(){
 		var _index = $(this).index();
@@ -169,7 +218,7 @@ $(function(){
 	})
 	$(":button").click(function(){
 		var kong_num = rule_num = 0;
-		if ($(":input[name='prorule_key[]']").length > 0) {
+		if ($(":input[name='product_ruleid[]']").length > 0) {
 			$("#rule_html").find(":input").each(function(){
 				if ($(this).attr("disabled") == "disabled" || $(this).is(":hidden")) return true;
 				if ($(this).val() == '') kong_num++;
@@ -185,13 +234,13 @@ $(function(){
 //打开规格框
 function rule_open() {
 	url = "admin.php?mod=product&act=rule";
-	if ($(":input[name='prorule_key[]']").length > 0) {
-		var prorule_key = new Array();
-		$(":input[name='prorule_key[]']").each(function(){
-			prorule_key.push($(this).val());
+	if ($(":input[name='product_ruleid[]']").length > 0) {
+		var product_ruleid = new Array();
+		$(":input[name='product_ruleid[]']").each(function(){
+			product_ruleid.push($(this).val());
 		})
-		prorule_key = prorule_key.join(',');
-		url += "&id="+ prorule_key;
+		product_ruleid = product_ruleid.join(',');
+		url += "&id="+ product_ruleid;
 	}
 	pe_dialog(url, '选择规格', 1000, 550);
 }
@@ -202,8 +251,8 @@ function rule_close() {
 	$("#base_html").show();
 }
 //显示规格列表
-function rule_list(id, type) {
-	$.getJSON("admin.php?mod=product&act=rule_list&type="+type+"&id="+id, function(json){
+function rule_list(id, act) {
+	$.getJSON("admin.php?mod=product&act="+act+"&id="+id, function(json){
 		if (json.result) {
 			$("#rule_html").show();
 			$("#base_html").hide();
@@ -222,7 +271,7 @@ function rule_del(id) {
 }
 //批量设置价格
 function rule_bat(name) {
-	if (name == 'product_smoney') text = '本店价';
+	if (name == 'product_smoney') text = '价格';
 	if (name == 'product_mmoney') text = '市场价';
 	if (name == 'product_num') text = '库存数';
 	var num = window.prompt("批量设置" + text, "");
@@ -234,8 +283,7 @@ function rule_bat(name) {
 	$(":input[name='" + name + "[]']").val(num);
 }
 </script>
-<style>
-#base_html table th, #rule_html table th{padding:3px 5px; border:1px #e5e5e5 solid; border-right:0; border-left:0; font-weight:normal;}
-#base_html table td, #rule_html table td{padding:5px}
+<style type="text/css">
+#rule_html table th, #rule_html table td{border:1px #f1f1f1 solid;}
 </style>
 <!--{include(pe_tpl('footer.html'));}-->

@@ -1,7 +1,39 @@
 <?php
+function user_login_callback($type, $user) {
+	global $db, $pe, $cache_setting;
+	if (!is_array($user)) $user = $db->pe_select('user', array('user_id'=>$user));
+	$db->pe_update('user', array('user_id'=>$user['user_id']), array('user_ltime'=>time()));
+	$_SESSION['user_idtoken'] = md5($user['user_id'].$pe['host_root']);
+	$_SESSION['user_id'] = $user['user_id'];
+	$_SESSION['user_name'] = $user['user_name'];
+	$_SESSION['user_ltime'] = $user['user_ltime'];
+	$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
+	if ($type == 'reg') {
+		//记录推荐人
+		if ($cache_setting['tg_state'] && $_COOKIE['tguser_id']) {
+			$tguser = $db->pe_select('user', array('user_id'=>intval($_COOKIE['tguser_id'])), 'user_id, user_name');
+			if ($tguser['user_id']) {
+				$sql_set['tguser_id'] = $tguser['user_id'];
+				$sql_set['tguser_name'] = $tguser['user_name'];	
+				$db->pe_update('user', array('user_id'=>$user['user_id']), pe_dbhold($sql_set));
+				add_tguser($user['user_id']);		
+			}
+		}
+		add_pointlog($user['user_id'], 'give', $cache_setting['point_reg'], '新用户注册奖励');
+		userlevel_callback($user['user_id']);	
+	}
+	else {
+		if (!$db->pe_num('pointlog', " and `user_id` = '{$user['user_id']}' and `pointlog_type` = 'give' and `pointlog_text` = '每日登录' and `pointlog_atime` >= '".strtotime(date('Y-m-d'))."'")) {
+			add_pointlog($user['user_id'], 'give', $cache_setting['point_login'], '每日登录奖励');				
+		}
+	}
+}
+
 //记录交易明细
 function add_moneylog($user_id, $type, $money, $text=null, $time='') {
 	global $db;
+	$money = pe_num($money, 'floor', 1);
+	if ($money <= 0) return false;	
 	if (in_array($type, array('recharge', 'add', 'back', 'tg'))) {
 		$sql_user = "`user_money` = `user_money` + '{$money}'";
 		$sql_set['moneylog_in'] = $money;
@@ -101,9 +133,9 @@ function get_userlevel($user, $key = null, $real = 0){
 	$cache_userlevel = cache::get('userlevel');
 	$real && $user['userlevel_id'] = 0;
 	$userlevel_id = $user['userlevel_id'];
-	if (!is_array($cache_userlevel[$userlevel_id]) or $cache_userlevel[$userlevel_id]['userlevel_up']) {
+	if (!is_array($cache_userlevel[$userlevel_id]) or $cache_userlevel[$userlevel_id]['userlevel_up'] == 'auto') {
 		foreach ($cache_userlevel as $v) {
-			if (!$v['userlevel_up']) continue;
+			if ($v['userlevel_up'] == 'hand') continue;
 			if ($user['user_money_cost'] >= $v['userlevel_value']) {
 				$userlevel_id = $v['userlevel_id'];
 			}
@@ -121,8 +153,8 @@ function userlevel_callback($user_id = 0) {
 	$cache_userlevel_arr = cache::get('userlevel_arr');
 	if ($user_id) {
 		$user = $db->pe_select('user', array('user_id'=>$user_id), 'userlevel_id, user_money_cost');
-		if ($user['userlevel_id'] && !$cache_userlevel[$user['userlevel_id']]['userlevel_up']) return true;
-		foreach ($cache_userlevel_arr[1] as $v) {
+		if ($user['userlevel_id'] && $cache_userlevel[$user['userlevel_id']]['userlevel_up'] == 'hand') return true;
+		foreach ($cache_userlevel_arr['auto'] as $v) {
 			if ($user['user_money_cost'] >= $v['userlevel_value']) {
 				$userlevel_id = $v['userlevel_id'];
 			}
@@ -135,14 +167,13 @@ function userlevel_callback($user_id = 0) {
 		}
 	}
 	else {
-		$ts_id = implode("','", array_keys($cache_userlevel_arr[0]));
-		foreach ($cache_userlevel_arr[1] as $v) {
-			if (!$v['userlevel_up']) continue;
-			$db->pe_update('user', "and `user_money_cost` >= '{$v['userlevel_value']}' and `userlevel_id` not in('{$ts_id}')", array('userlevel_id'=>$v['userlevel_id']));
+		$hand_id = implode("','", array_keys($cache_userlevel_arr['hand']));
+		foreach ($cache_userlevel_arr['auto'] as $v) {
+			//if ($v['userlevel_up'] == 'hand') continue;
+			$db->pe_update('user', "and `user_money_cost` >= '{$v['userlevel_value']}' and `userlevel_id` not in('{$hand_id}')", array('userlevel_id'=>$v['userlevel_id']));
 		}
 	}
 }
-
 
 //检测优惠券是否过期
 function user_quancheck() {
@@ -150,25 +181,25 @@ function user_quancheck() {
 	$db->pe_update('quanlog', " and `quanlog_state` = 0 and `quan_edate` < '".date('Y-m-d')."'", array('quanlog_state'=>2));
 	$db->pe_update('quanlog', " and `quanlog_state` = 2 and `quan_edate` >= '".date('Y-m-d')."'", array('quanlog_state'=>0));
 }
+
 //获取可用优惠券
-function user_quanlist($cart_id = '') {
+function user_quanlist($cart) {
 	global $db;
 	if (!pe_login('user')) return array();
 	$info_list = $db->index('quanlog_id')->pe_selectall('quanlog', array('user_id'=>$_SESSION['user_id'], 'quanlog_state'=>0, 'order by'=>'quan_money desc, quanlog_atime desc'));
 	$quan_list = array();
-	$cart_list = cart_list('all', $cart_id);
 	foreach ($info_list as $k=>$v) {
 		if ($v['product_id']) {
-			$quan_limit = 0;
-			foreach ($cart_list['list'] as $vv) {
+			$product_money = 0;
+			foreach ($cart['all_list'] as $vv) {
 				if (in_array($vv['product_id'], explode(',', $v['product_id']))) {
-					$quan_limit += $vv['product_money'] * $vv['product_num'];
+					$product_money += $vv['product_money'] * $vv['product_num'];
 				}
 			}
-			if ($quan_limit >= $v['quan_limit']) $quan_list[$k] = $v;
+			if ($product_money >= $v['quan_limit']) $quan_list[$k] = $v;
 		}
 		else {
-			if ($cart_list['money']['order_product_money'] >= $v['quan_limit']) $quan_list[$k] = $v;
+			if ($cart['info']['order_product_money'] >= $v['quan_limit']) $quan_list[$k] = $v;
 		}
 	}	
 	return $quan_list;
@@ -192,8 +223,8 @@ function user_quanupdate($quanlog_id, $state) {
 //获取购物车商品数
 function user_cartnum() {
 	global $db, $_c_cart_list;
-	$user_id = pe_login('user') ? $_SESSION['user_id'] : pe_user_id();
-	$info_list = $db->pe_selectall('cart', array('cart_type'=>'cart', 'user_id'=>$user_id));
+	$user_id = $_SESSION['user_id'] ? $_SESSION['user_id'] : pe_user_id();
+	$info_list = $db->pe_selectall('cart', array('cart_act'=>'cart', 'user_id'=>$user_id));
 	foreach ($info_list as $v) {
 		$cartnum += $v['product_num'];
 	}
@@ -204,11 +235,11 @@ function user_cartnum() {
 function user_qrcode($url) {
 	global $pe, $db;
 	$info = $db->pe_select('user', array('user_id'=>$_SESSION['user_id']), 'user_logo');
-	$user_logo = $info['user_logo'] ? str_ireplace($pe['host_root'], $pe['host_path'], pe_thumb($info['user_logo'], _90, _90, 'avatar')) : '';
-	$user_qrcode = "{$pe['path_root']}data/cache/thumb/".date('Y-m-d')."/".md5($url).".png";
+	$user_logo = $info['user_logo'] ? str_ireplace($pe['host_root'], $pe['host_path'], pe_thumb($info['user_logo'], '_120', '_120', 'avatar')) : '';
+	$user_qrcode = "{$pe['path_root']}data/cache/thumb/".date('Y-m')."/".md5($url).".png";
 	if (!is_file($user_qrcode)) {
-		if (!is_dir("{$pe['path_root']}data/cache/thumb/".date('Y-m-d'))) {
-			mkdir("{$pe['path_root']}data/cache/thumb/".date('Y-m-d'), 0777, true);		
+		if (!is_dir("{$pe['path_root']}data/cache/thumb/".date('Y-m'))) {
+			mkdir("{$pe['path_root']}data/cache/thumb/".date('Y-m'), 0777, true);		
 		}
 		pe_lead('include/class/phpqrcode.class.php');
 		QRcode::png($url, $user_qrcode);
@@ -229,7 +260,7 @@ function user_qrcode($url) {
 		//输出图片
 		imagepng($qrcode, $user_qrcode);
 	}
-	return "{$pe['host_root']}data/cache/thumb/".date('Y-m-d')."/".md5($url).".png";	
+	return "{$pe['host_root']}data/cache/thumb/".date('Y-m')."/".md5($url).".png";	
 }
 
 //显示收款账号
@@ -249,12 +280,8 @@ function userbank_num($val) {
 //检测游客购买
 function user_checkguest() {
 	global $cache_setting;
-	if ($cache_setting['web_guestbuy'] == 0 && !pe_login('user')) {
-		return false;
-	}
-	else {
-		return true;
-	}
+	if ($_SESSION['user_id'] or $cache_setting['web_guestbuy']) return true;
+	return false;
 }
 
 //添加推荐用户
@@ -275,74 +302,6 @@ function add_tguser($user_id) {
 		$sql_set['user_atime'] = $info['user_atime'];
 		$db->pe_insert('tguser', pe_dbhold($sql_set));
 	}
-}
-
-//发送邮件/短信通知
-function add_noticelog($id, $type) {
-	global $db, $ini;
-	$setting = cache::get('setting');
-	$cache_notice = cache::get('notice');
-	$notice = $cache_notice[$type];
-	if ($type == 'reg') {
-		$user = $db->pe_select('user', array('user_id'=>$id));
-	}
-	else {
-		$info = $db->pe_select('order', array('order_id'=>pe_dbhold($id)));
-		$user = $db->pe_select('user', array('user_id'=>$info['user_id']));
-	}
-	foreach ($ini['notice_tpl'] as $k=>$v) {
-		if ($type == 'reg') $info[$k] = $user['user_name'];
-		//$notice['user']['notice_emailname'] = str_ireplace("{order_id}", $info[$k], $notice['user']['notice_emailname']);
-		$notice['user']['notice_sms_text'] = str_ireplace("{{$k}}", $info[$k], $notice['user']['notice_sms_text']);
-		$notice['user']['notice_email_name'] = str_ireplace("{{$k}}", $info[$k], $notice['user']['notice_email_name']);
-		$notice['user']['notice_email_text'] = str_ireplace("{{$k}}", $info[$k], $notice['user']['notice_email_text']);
-		$notice['admin']['notice_sms_text'] = str_ireplace("{{$k}}", $info[$k], $notice['admin']['notice_sms_text']);
-		$notice['admin']['notice_email_name'] = str_ireplace("{{$k}}", $info[$k], $notice['admin']['notice_email_name']);
-		$notice['admin']['notice_email_text'] = str_ireplace("{{$k}}", $info[$k], $notice['admin']['notice_email_text']);
-	}
-	/*if ($cache_notice[$type]['user']['notice_state']) {
-		$_SESSION['notice'][] = array('type'=>'sms', 'user'=>$info['user_phone'], 'text'=>$notice['smstpl_user']);		
-	}
-	if ($cache_notice[$type]['admin']['notice_state']) {
-		$_SESSION['notice'][] = array('type'=>'sms', 'user'=>$setting['sms_admin'], 'text'=>$notice['smstpl_admin']);		
-	}*/
-	if ($notice['user']['notice_email_state'] && $user['user_email']) {
-		$info_list['noticelog_type'] = 'email';
-		$info_list['noticelog_user'] = pe_dbhold($user['user_email']);
-		$info_list['noticelog_name'] = pe_dbhold($notice['user']['notice_email_name']);
-		$info_list['noticelog_text'] = $notice['user']['notice_email_text'];
-		$info_list['noticelog_atime'] = time();
-		$sql_set[] = $info_list;
-	}
-	if ($notice['admin']['notice_email_state'] && $setting['email_admin']) {
-		foreach (explode(',', $setting['email_admin']) as $v) {
-			$info_list['noticelog_type'] = 'email';
-			$info_list['noticelog_user'] = pe_dbhold($v);
-			$info_list['noticelog_name'] = pe_dbhold($notice['admin']['notice_email_name']);
-			$info_list['noticelog_text'] = $notice['admin']['notice_email_text'];
-			$info_list['noticelog_atime'] = time();
-			$sql_set[] = $info_list;	
-		}		
-	}
-	if ($notice['user']['notice_sms_state'] && $info['user_phone']) {
-		$info_list['noticelog_type'] = 'sms';
-		$info_list['noticelog_user'] = pe_dbhold($info['user_phone']);
-		$info_list['noticelog_name'] = '';
-		$info_list['noticelog_text'] = "【{$setting['sms_sign']}】{$notice['user']['notice_sms_text']}";
-		$info_list['noticelog_atime'] = time();
-		$sql_set[] = $info_list;
-	}
-	if ($notice['admin']['notice_sms_state'] && $setting['sms_admin']) {
-		foreach (explode(',', $setting['sms_admin']) as $v) {
-			$info_list['noticelog_type'] = 'sms';
-			$info_list['noticelog_user'] = pe_dbhold($v);
-			$info_list['noticelog_name'] = '';
-			$info_list['noticelog_text'] = "【{$setting['sms_sign']}】{$notice['admin']['notice_sms_text']}";
-			$info_list['noticelog_atime'] = time();
-			$sql_set[] = $info_list;	
-		}		
-	}
-	$db->pe_insert('noticelog', $sql_set);
 }
 
 //添加下单收货地址
@@ -368,7 +327,7 @@ function useraddr_add($info) {
 		$result = true;
 	}
 	if ($result) {
-		pe_jsonshow(array('result'=>true, 'show'=>'添加成功！', 'id'=>$address_id));
+		pe_jsonshow(array('result'=>true, 'show'=>'添加成功', 'id'=>$address_id));
 	}
 	else {
 		pe_jsonshow(array('result'=>false, 'show'=>'添加失败'));
@@ -388,7 +347,7 @@ function useraddr_list($address_id) {
 			if ($v['address_default']) {
 				unset($useraddr_list[$k]);
 				$address_new = array($k=>$v);
-			} 
+			}
 		}
 		$info_list = is_array($address_new) ? array_merge($address_new, $useraddr_list) : $useraddr_list;
 	}

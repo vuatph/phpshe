@@ -1,14 +1,14 @@
 <?php
 $cache_brand = cache::get('brand');
 switch ($act) {
-	//#####################@ 品牌列表 @#####################//
+	//####################// 品牌列表 //####################//
 	case 'list':	
 		$word_arr = range('A', 'Z');
 		$info_list = $db->pe_selectall('brand', array('order by'=>'brand_order asc, brand_id desc'));
 		$seo = pe_seo($menutitle='品牌专区');
 		include(pe_tpl('brand_list.html'));
 	break;
-	//#####################@ 品牌详情 @#####################//
+	//####################// 品牌详情 //####################//
 	default:
 		$brand_id = intval($act);
 		$category_pid = 0;

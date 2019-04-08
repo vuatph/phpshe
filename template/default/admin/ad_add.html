@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">{$menutitle}</a>
+		<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -10,9 +10,11 @@
 		<tr>
 			<td align="right" width="150">广告位置：</td>
 			<td>
-				<select name="info[ad_position]" class="inputselect">
-				<!--{foreach($ini['ad_position'] as $k=>$v):}-->
-				<option value="{$k}" <!--{if($k==$info['ad_position']):}-->selected="selected"<!--{endif;}-->>{$v['name']}{$v['size']}</option>
+				<select name="ad_position" class="inputselect">
+				<!--{foreach($ini['ad_type'] as $k=>$v):}-->
+				<!--{foreach($v['list'] as $kk=>$vv):}-->
+				<option value="{$k}|{$kk}" <!--{if($k==$info['ad_type'] && $kk==$info['ad_position']):}-->selected="selected"<!--{endif;}-->>{$v['name']} - {$vv['name']}{$vv['size']}</option>
+				<!--{endforeach;}-->
 				<!--{endforeach;}-->
 				</select>		
 			</td>

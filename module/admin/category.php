@@ -9,7 +9,7 @@ pe_lead('hook/category.hook.php');
 $category_treelist = category_treelist();
 $cache_brand = cache::get('brand');
 switch ($act) {
-	//#####################@ 添加分类 @#####################//
+	//####################// 添加分类 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -24,7 +24,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加分类', '', '', 'admin');
 		include(pe_tpl('category_add.html'));
 	break;
-	//#####################@ 修改分类 @#####################//
+	//####################// 修改分类 //####################//
 	case 'edit':
 		$category_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -47,7 +47,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改分类', '', '', 'admin');
 		include(pe_tpl('category_add.html'));
 	break;
-	//#####################@ 分类排序 @#####################//
+	//####################// 分类排序 //####################//
 	case 'order':
 		pe_token_match();
 		foreach ($_p_category_order as $k=>$v) {
@@ -61,7 +61,7 @@ switch ($act) {
 			pe_error('排序失败...');
 		}
 	break;
-	//#####################@ 分类删除 @#####################//
+	//####################// 分类删除 //####################//
 	case 'del':
 		pe_token_match();
 		$category_id = is_array($_p_category_id) ? $_p_category_id : intval($_g_id);
@@ -73,7 +73,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 分类列表 @#####################//
+	//####################// 分类列表 //####################//
 	default :
 		$info_list = $category_treelist;
 		$tongji['all'] = $db->pe_num('category');

@@ -3,7 +3,7 @@
  * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
-//#####################@ 无限级分类父子类-20120314-koyshe @#####################//
+//####################// 无限级分类父子类-20120314-koyshe //####################//
 class category {
 	private $field;//分类字段名
 	private $tree = array();//生成的树形分类数组

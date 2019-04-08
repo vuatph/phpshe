@@ -14,10 +14,10 @@ var rule_zh = /^[\u4e00-\u9fa5]+$/;
 function pe_checkall(_this, inputname) {
 	var checkname = $(_this).attr("name");
 	if ($(_this).is(":checked")) {
-		$("input[name='"+inputname+"[]']").add("input[name='"+checkname+"']").attr("checked","checked");
+		$("input[name='"+inputname+"[]']").add("input[name='"+checkname+"']").attr("checked","checked").change();
 	}
 	else {
-		$("input[name='"+inputname+"[]']").add("input[name='"+checkname+"']").removeAttr("checked");
+		$("input[name='"+inputname+"[]']").add("input[name='"+checkname+"']").removeAttr("checked").change();
 	}
 } 
 //带提醒批量操作(修正版) by koyshe 2012-03-09
@@ -180,6 +180,50 @@ function pe_countdown(id, etime) {
 	}, 100);
 }
 
+function pe_jstime(obj, nowtime, type) {
+	//var nowtime = parseInt(nowtime);
+	var nowtime_arr = new Array();
+	$(obj).each(function(index){
+		nowtime_arr[index] = parseInt(nowtime);
+		var _this = $(this);
+		var endtime = parseInt(_this.attr("endtime"));	
+		var waittime = 0.5;
+		setInterval(function(){
+			//console.log(nowtime_arr[index])
+			nowtime_arr[index] += waittime;
+			var all_s = parseInt(endtime - nowtime_arr[index]);
+		    //var js_d = Math.floor(all_s/(60 * 60 * 24));
+		    //var js_h = Math.floor(all_s/(60 * 60)) % 24;
+		    var js_h = Math.floor(all_s/(60 * 60));
+		    var js_m = Math.floor(all_s/60) % 60;
+		    var js_s = Math.floor(all_s) % 60;
+		    if (js_h < 10) js_h = '0' + js_h;
+		    if (js_m < 10) js_m = '0' + js_m;
+		    if (js_s < 10) js_s = '0' + js_s;
+			if (typeof(type) != 'undefined' && type == 'html') {
+			    if (all_s >= 0) {
+					_this.html(js_h+'小时'+js_m+'分'+js_s+'秒');	
+			    }
+			    else{
+					_this.html('0小时0分0秒');
+				}
+			}
+			else {
+			    if (all_s >= 0) {
+					_this.find(".jstime_h").html(js_h);
+					_this.find(".jstime_m").html(js_m);
+					_this.find(".jstime_s").html(js_s);
+			    }
+			    else{
+					_this.find(".jstime_h").html('00');
+					_this.find(".jstime_m").html('00');
+					_this.find(".jstime_s").html('00');
+				}
+			}
+		}, waittime * 1000);	
+	});
+}
+
 function pe_loadscript (url){
 	$.get(url);
     /*var script = document.createElement("script");
@@ -202,6 +246,9 @@ function pe_open(url, time) {
 		}
 		else if (url == 'reload') {
 			window.location.reload();
+		}
+		else if (url == 'dialog') {
+			top.location.reload();
 		}
 		else {
 			window.location.href = url;		
@@ -266,7 +313,17 @@ function pe_getlist(url, event, func) {
 //ajax获取信息
 function pe_getinfo(url, func) {
 	$.getJSON(url, {}, function(json){
-		pe_tip(json.show);
+		if (typeof(json.show) != 'undefined' && json.show != '') {
+			if (json.result == true) {
+				pe_tip(json.show, 'success');
+			}
+			else if (json.result == false) {
+				pe_tip(json.show, 'error');		
+			}
+			else {
+				pe_tip(json.show);
+			}
+		} 
     	if (func && typeof(func) == "function") {
     		func(json);
     	}
@@ -311,14 +368,25 @@ function pe_alert(show, func) {
 };
 
 //tip提示信息
-function pe_tip(text) {
-	if (typeof(text) != 'undefined' && text != '') {
+function pe_tip(text, type) {
+	if (typeof(type) != 'undefined') {
+		switch (type) {
+			case 'success':
+				layer.msg(text, {icon: 1});
+			break;
+			case 'error':
+			layer.msg(text, {icon: 2});
+			break;			
+		}
+	}
+	else {
 		layer.msg(text);
 	}
 };
 //tips解释信息
 function pe_tips(_this, text) {
 	layer.tips(text, _this, {
+		tips : [2, '#3595CC'],
 		time : 0
 	});
 	$(_this).mouseout(function(){
@@ -326,27 +394,54 @@ function pe_tips(_this, text) {
 	})
 }
 
+//loading加载层
+function pe_loading(text) {
+	if (typeof(text) == 'undefined' || text == '') {
+		text = '数据请求中';	
+	}
+	return layer.msg(text, {icon: 16, time:60000});
+}
+
 //确认提醒
-function pe_confirm(show, func) {
+function pe_confirm(show, func_url) {
 	layer.open({
 	    content: '您确认'+show+'吗?',
 	    btn: ['确认', '取消'],
 	    shadeClose: false,
 	    yes: function(){
-	    	layer.closeAll();
-	    	func();
+	    	if (func_url && typeof(func_url) == "function") {
+				func_url();
+			}
+			else if (func_url) {
+				pe_getinfo(func_url, function(json){
+					if (json.result) {
+						pe_open('reload', 1000);
+					}
+				})
+			}
 	    }, no: function(index){
 	    	layer.closeAll();
 	    }
 	});
-	return false;
+	//return false;
 }
 
 //ajax表单post提交
 function pe_submit(url, func, id) {
 	var form_id = typeof(id) == 'undefined' ? 'form' : id;
 	$.post(url, $("#"+form_id).serialize(), function(json){
-    	if (json.show != '') pe_tip(json.show);
+    	//if (json.show != '') pe_tip(json.show);
+		if (typeof(json.show) != 'undefined' && json.show != '') {
+			if (json.result == true) {
+				pe_tip(json.show, 'success');
+			}
+			/*else if (json.result == false) {
+				pe_tip(json.show, 'error');		
+			}*/
+			else {
+				pe_tip(json.show);
+			}
+		}
     	if (func && typeof(func) == "function") {
     		func(json);
     	}
@@ -359,19 +454,81 @@ function pe_jshtml(id, json){
 };
 
 //单选/多选美化版
-function pe_select_radio(name, value, pid) {
-	var _this = (typeof(pid) == 'undefined') ? $("body") : $("#"+pid);
-	_this.find(".js_radio").live("click", function(){
-		select_radio(name, $(this).attr("val"), pid);
+function pe_select_radio(name, value, func) {
+	$(":input[name='"+name+"']").live("change", function(){
+		$(":input[name='"+name+"']").each(function(){
+			if ($(this).is(":checked")) {
+				$(this).parents("label").addClass("sel");
+				if (func && typeof(func) == "function") {
+    				func();
+    			}		
+			}
+			else {
+				$(this).parents("label").removeClass("sel");		
+			}
+		})		
 	})
-	select_radio(name, value, pid);
-	function select_radio(name, value, pid) {
-		var _this = (typeof(pid) == 'undefined') ? $("body") : $("#"+pid); 
-		if (typeof(value) == 'undefined' || value == null) {
-			var value = _this.find(".js_radio:eq(0)").attr("val");
-		}
-		_this.find(".js_radio").removeClass("sel");
-		_this.find(".js_radio[val='"+value+"']").addClass("sel");
-		$(":input[name='"+name+"']").val(value);
-	} 
+	if (typeof(value) != 'undefined') {
+		$(":input[name='"+name+"'][value='"+value+"']").attr("checked", "checked").change();
+	}
+}
+//单选/多选美化版
+function pe_form_select(name, value, func) {
+	$(":input[name='"+name+"']").live("change", function(){
+		$(":input[name='"+name+"']").each(function(){
+			if ($(this).is(":checked")) {
+				$(this).parents("label").addClass("sel");
+				if (func && typeof(func) == "function") {
+    				func();
+    			}		
+			}
+			else {
+				$(this).parents("label").removeClass("sel");		
+			}
+		})		
+	})
+	if (typeof(value) != 'undefined') {
+		$(":input[name='"+name+"'][value='"+value+"']").attr("checked", "checked").change();
+	}
+}
+//发送短信验证码
+var waittime = 0;
+function pe_sendyzm(_this, name, func) {
+	if ($(_this).attr("disabled") == "disabled") return false;	
+	if (waittime == 0) {
+		$(_this).attr("disabled", "disabled").html('发送中...');
+		$.getJSON($(_this).attr("href") + "&value="+$(":input[name='"+name+"']").val(), function(json){
+			typeof(app_tip) == 'undefined' ? pe_tip(json.show) : app_tip(json.show);
+			if (json.result) {
+				waittime = 60;
+			    var timeout = setInterval(function() {
+			    	waittime--;
+			    	if (waittime > 0) {
+			    		$(_this).attr("disabled", "disabled").html("重新发送(" + waittime + ")");
+			    	}
+				    else {
+			    		clearTimeout(timeout);	 
+			    		$(_this).removeAttr("disabled").html("获取验证码");
+			    		waittime = 0;
+				    }
+			    },1000);			
+				if (func && typeof(func) == "function") {
+					func(json);	
+				}
+			}
+			else {
+				$(_this).removeAttr("disabled").html("获取验证码");
+			}
+		})
+	}
+}
+
+//预加载loading
+function page_loading() {
+	$(document).ready(function(){
+		// WAIT FOR EVERYTHING TO LOAD
+		$(window).load(function(){
+			$('#page_loading').remove();
+		});		
+	})
 }

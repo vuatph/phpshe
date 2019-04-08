@@ -1,78 +1,43 @@
 <?php
 switch($act) {
-	//#####################@ 用户登录 @#####################//
+	//####################// 用户登录 //####################//
 	case 'login':
 		if (isset($_p_pesubmit)) {
-			$sql_set['user_name'] = $_p_user_name;
-			$sql_set['user_pw'] = md5($_p_user_pw);
-			//if (!$_p_authcode || strtolower($_s_authcode) != strtolower($_p_authcode)) pe_jsonshow(array('result'=>false, 'show'=>'验证码错误'));
-			if ($info = $db->pe_select('user', pe_dbhold($sql_set))) {
-				$db->pe_update('user', array('user_id'=>$info['user_id']), array('user_ltime'=>time()));
-				if (!$db->pe_num('pointlog', " and `user_id` = '{$info['user_id']}' and `pointlog_type` = 'give' and `pointlog_text` = '每日登录' and `pointlog_atime` >= '".strtotime(date('Y-m-d'))."'")) {
-					add_pointlog($info['user_id'], 'give', $cache_setting['point_login'], '每日登录');				
-				}
-				$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
-				$_SESSION['user_id'] = $info['user_id'];
-				$_SESSION['user_name'] = $info['user_name'];
-				$_SESSION['user_ltime'] = $info['user_ltime'];
-				$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
-				pe_jsonshow(array('result'=>true, 'show'=>'登录成功！'));
+			$user_name = pe_dbhold($_p_user_name);
+			$user_pw = md5($_p_user_pw);
+			if ($info = $db->pe_select('user', " and (user_name = '{$user_name}' or user_email = '{$user_name}' or user_phone = '{$user_name}') and user_pw = '{$user_pw}'")) {
+				user_login_callback('login', $info);
+				pe_jsonshow(array('result'=>true, 'show'=>'登录成功'));
 			}
 			else {
-				pe_jsonshow(array('result'=>false, 'show'=>'用户名或密码错误'));
+				pe_jsonshow(array('result'=>false, 'show'=>'帐号或密码错误'));
 			}
 		}
 		$seo = pe_seo($menutitle='用户登录');
  		include(pe_tpl('do_login.html'));
 	break;
-	//#####################@ 用户退出 @#####################//
+	//####################// 用户退出 //####################//
 	case 'logout':
-		unset($_SESSION['user_idtoken'], $_SESSION['user_id'], $_SESSION['user_name'], $_SESSION['user_ltime'], $_SESSION['pe_token']);
+		unset($_SESSION['user_idtoken'], $_SESSION['user_id'], $_SESSION['user_name'], $_SESSION['user_ltime']);
 		pe_success('退出成功！', $pe['host_root']);
 	break;
-	//#####################@ 找回密码 @#####################//
+	//####################// 重置密码 //####################//
 	case 'getpw':
 		if (isset($_p_pesubmit)) {
-			if (!$_p_user_name) pe_jsonshow(array('result'=>false, 'show'=>'请填写用户名'));
-			if (!$_p_user_email) pe_jsonshow(array('result'=>false, 'show'=>'请填写邮箱'));
-			$info = $db->pe_select('user', array('user_name'=>pe_dbhold($_p_user_name)));
-			if (!$info['user_id']) pe_jsonshow(array('result'=>false, 'show'=>'用户名不存在'));
-			if ($info['user_email'] != $_p_user_email) pe_jsonshow(array('result'=>false, 'show'=>'邮箱错误'));			
-			if (!$_p_authcode || strtolower($_s_authcode) != strtolower($_p_authcode)) pe_jsonshow(array('result'=>false, 'show'=>'验证码错误'));
-			//发送找回密码邮件
-			pe_lead('hook/qunfa.hook.php');
-			$token = md5($_p_authcode.time().rand(111111,999999).microtime(true));
-			$url = "{$pe['host_root']}user.php?mod=do&act=setpw&token={$token}";
-			$email['qunfa_name'] = "您好：{$info['user_name']}，您的密码找回信息！";
-			$email['qunfa_text'] = "您正在尝试找回登录密码，请点击该链接：<a href='{$url}'>{$url}</a>，进入网站重置密码，如非本人操作，请忽略此邮件！<br />（此链接30分钟内有效）";
-			$qunfa = qunfa_email($email, $info['user_email']);
-			if (!$qunfa['result']) pe_jsonshow(array('result'=>false, 'show'=>$qunfa['show']));
-			//生成找回密码记录
-			$db->pe_update('getpw', array('user_id'=>$info['user_id']), array('getpw_state'=>1));
-			$sql_set['getpw_token'] = $token;
-			$sql_set['getpw_atime'] = time();
-			$sql_set['user_id'] = $info['user_id'];
-			$sql_set['user_name'] = $info['user_name'];
-			if ($db->pe_insert('getpw', pe_dbhold($sql_set))) {
-				pe_jsonshow(array('result'=>true, 'show'=>'找回密码链接已发至您的邮箱，请查收！', 'token'=>$sql_set['getpw_token']));			
+			$user_name = pe_dbhold($_p_user_name);
+			if (!$user_name) pe_jsonshow(array('result'=>false, 'show'=>'请填写帐号'));
+			if (stripos($user_name, '@') === false) {
+				$info = $db->pe_select('user', array('user_phone'=>$user_name), 'user_id');
 			}
 			else {
-				pe_jsonshow(array('result'=>false, 'show'=>'提交失败'));		
+				$info = $db->pe_select('user', array('user_email'=>$user_name), 'user_id');
 			}
-		}
-		$seo = pe_seo($menutitle='找回密码');
- 		include(pe_tpl('do_getpw.html'));
-	break;
-	//#####################@ 重置密码 @#####################//
-	case 'setpw':
-		if (isset($_p_pesubmit)) {
-			$nowtime = time() - 1800;
-			if (!$_g_token) pe_jsonshow(array('result'=>false, 'show'=>'链接已失效'));
-			$info = $db->pe_select('getpw', " and `getpw_token` = '".pe_dbhold($_g_token)."' and `getpw_state` = 0 and `getpw_atime` >= '{$nowtime}'");
-			if (!$info['getpw_id']) pe_jsonshow(array('result'=>false, 'show'=>'链接已失效'));
+			if (!$info['user_id']) pe_jsonshow(array('result'=>false, 'show'=>'帐号不存在'));
+			pe_lead('hook/yzmlog.hook.php');
+			if (!check_yzm($user_name, $_p_yzm)) pe_jsonshow(array('result'=>false, 'show'=>'验证码错误'));
 			if (strlen($_p_user_pw) < 6 or strlen($_p_user_pw) > 20) pe_jsonshow(array('result'=>false, 'show'=>'新密码为6-20位字符'));
+			if ($_p_user_pw != $_p_user_pw1) pe_jsonshow(array('result'=>false, 'show'=>'两次密码不一致'));
 			if ($db->pe_update('user', array('user_id'=>$info['user_id']), array('user_pw'=>md5($_p_user_pw)))) {
-				$db->pe_update('getpw', array('user_id'=>$info['user_id']), array('getpw_state'=>1));
 				pe_jsonshow(array('result'=>true, 'show'=>'密码重置成功'));
 			}
 			else {
@@ -80,46 +45,45 @@ switch($act) {
 			}
 		}
 		$seo = pe_seo($menutitle='重置密码');
- 		include(pe_tpl('do_setpw.html'));
+ 		include(pe_tpl('do_getpw.html'));
 	break;
-	//#####################@ 用户注册 @#####################//
+	//####################// 用户注册 //####################//
 	case 'register':
-		if ($_g_u) $_SESSION['tguser_id'] = $_s_tguser_id = intval($_g_u);
 		if (isset($_p_pesubmit)) {
 			if (mb_strlen($_p_user_name, 'utf8') < 5 or mb_strlen($_p_user_name, 'utf8') > 15) pe_jsonshow(array('result'=>false, 'show'=>'用户名为5-15位字符'));
 			if (!pe_formcheck('uname', $_p_user_name)) pe_jsonshow(array('result'=>false, 'show'=>'用户名有特殊字符'));				
 			if ($db->pe_num('user', array('user_name'=>pe_dbhold($_p_user_name)))) pe_jsonshow(array('result'=>false, 'show'=>'用户名已存在'));
 			if (strlen($_p_user_pw) < 6 or strlen($_p_user_pw) > 20) pe_jsonshow(array('result'=>false, 'show'=>'密码为6-20位字符'));
-			if ($_p_user_pw != $_p_user_pw1) pe_jsonshow(array('result'=>false, 'show'=>'两次密码不一致'));
-			if (!pe_formcheck('email', $_p_user_email)) pe_jsonshow(array('result'=>false, 'show'=>'请填写正确的邮箱'));
-			if ($db->pe_num('user', array('user_email'=>pe_dbhold($_p_user_email)))) pe_jsonshow(array('result'=>false, 'show'=>'邮箱已存在'));
-			if (!$_p_authcode || strtolower($_s_authcode) != strtolower($_p_authcode)) pe_jsonshow(array('result'=>false, 'show'=>'验证码错误'));
+			if ($_p_user_pw1 && $_p_user_pw != $_p_user_pw1) pe_jsonshow(array('result'=>false, 'show'=>'两次密码不一致'));
+			if (!$_p_authcode || strtolower($_s_authcode) != strtolower($_p_authcode)) pe_jsonshow(array('result'=>false, 'show'=>'图片验证码错误'));
+			if ($_p_reg_type == 'phone') {
+				if (!pe_formcheck('phone', $_p_user_phone)) pe_jsonshow(array('result'=>false, 'show'=>'请填写正确的手机号'));
+				if ($db->pe_num('user', array('user_phone'=>pe_dbhold($_p_user_phone)))) pe_jsonshow(array('result'=>false, 'show'=>'手机号已存在'));			
+				pe_lead('hook/yzmlog.hook.php');
+				if ($cache_setting['web_checkphone'] && !check_yzm($_p_user_phone, $_p_phone_yzm)) pe_jsonshow(array('result'=>false, 'show'=>'短信验证码错误'));			
+			}
+			else {
+				if (!pe_formcheck('email', $_p_user_email)) pe_jsonshow(array('result'=>false, 'show'=>'请填写正确的邮箱'));
+				if ($db->pe_num('user', array('user_email'=>pe_dbhold($_p_user_email)))) pe_jsonshow(array('result'=>false, 'show'=>'邮箱已存在'));			
+				pe_lead('hook/yzmlog.hook.php');
+				if ($cache_setting['web_checkemail'] && !check_yzm($_p_user_email, $_p_email_yzm)) pe_jsonshow(array('result'=>false, 'show'=>'邮箱验证码错误'));
+			}
 			$sql_set['user_name'] = $_p_user_name;
 			$sql_set['user_pw'] = md5($_p_user_pw);
+			$sql_set['user_phone'] = $_p_user_phone;
 			$sql_set['user_email'] = $_p_user_email;
 			$sql_set['user_ip'] = pe_ip();
 			$sql_set['user_atime'] = $sql_set['user_ltime'] = time();
 			if ($_s_user_wx_openid) $sql_set['user_wx_openid'] = $_s_user_wx_openid;
-			//记录推荐人
-			if ($cache_setting['tg_state'] && $_s_tguser_id) {
-				$tguser = $db->pe_select('user', array('user_id'=>$_s_tguser_id), 'user_id, user_name');
-				if ($tguser['user_id']) {
-					$sql_set['tguser_id'] = $tguser['user_id'];
-					$sql_set['tguser_name'] = $tguser['user_name'];			
-				}
-			}
 			if ($user_id = $db->pe_insert('user', pe_dbhold($sql_set))) {
-				add_pointlog($user_id, 'give', $cache_setting['point_reg'], '新用户注册');
-				userlevel_callback($user_id);
-				$info = $db->pe_select('user', array('user_id'=>$user_id));
-				$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
-				$_SESSION['user_id'] = $info['user_id'];
-				$_SESSION['user_name'] = $info['user_name'];
-				$_SESSION['user_ltime'] = time();
-				$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
-				if ($info['tguser_id']) add_tguser($info['user_id']);
-				//add_noticelog($_s_user_id, 'reg');
-				pe_jsonshow(array('result'=>true, 'show'=>'注册成功！'));
+				user_login_callback('reg', $user_id);
+				if ($_p_reg_type == 'email') {
+					update_yzm($_p_user_email, $_p_email_yzm);
+				}
+				else {
+					update_yzm($_p_user_phone, $_p_phone_yzm);				
+				}
+				pe_jsonshow(array('result'=>true, 'show'=>'注册成功'));
 			}
 			else {
 				pe_jsonshow(array('result'=>false, 'show'=>'注册失败'));

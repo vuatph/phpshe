@@ -6,6 +6,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('PRC');
 header('Content-Type: text/html; charset=utf-8');
+ini_set("session.cookie_httponly", 1);
 
 //#################=====关闭register_globals=====#################//
 if (@ini_get('register_globals')) {
@@ -20,6 +21,7 @@ include(dirname(__FILE__).'/include/class/cache.class.php');
 include(dirname(__FILE__).'/include/class/page.class.php');
 include(dirname(__FILE__).'/include/function/global.func.php');
 include(dirname(__FILE__).'/include/function/license.func.php');
+include(dirname(__FILE__).'/hook/notice.hook.php');
 
 //#################=====检测手机模式=====#################//
 $pe['mobile'] = pe_mobile();
@@ -41,9 +43,12 @@ else {
 	!empty($_POST) && extract(pe_trim($_POST),EXTR_PREFIX_ALL,'_p');
 }
 session_start();
+//pe_setcookie(session_name(), session_id(), 86400);
 !empty($_SESSION) && extract(pe_trim($_SESSION),EXTR_PREFIX_ALL,'_s');
 !empty($_COOKIE) && extract(pe_trim(pe_stripslashes($_COOKIE)),EXTR_PREFIX_ALL,'_c');
 $pe_token = $_s_pe_token;
+//分享记录推广用户id
+if ($_g_u) pe_setcookie('tguser_id', intval($_g_u));
 
 //#################=====连接数据库开始吧=====#################//
 if (stripos($_SERVER['SCRIPT_NAME'], 'install/index.php') === false) {

@@ -4,7 +4,7 @@
  * 2010-11-19 v1.0
  * 2012-01-13 v1.1 偏移值计算修改 position → offset
  * 2012-09-25 v1.2 增加滚动容器参数, 回调参数
- * 2014-08-11 v1.3 修复设置滚动容器参数一些bug, 以及误删posb值的一些低级错误
+ * 2015-11-17 v1.3 只对显示元素进行处理
 */
 (function($) {
 	$.fn.scrollLoading = function(options) {
@@ -34,8 +34,8 @@
 		//动态显示数据
 		var loading = function() {
 			
-			var contHeight = params.container.height();
-			if (params.container.get(0) === window) {
+			var contHeight = window.innerHeight;
+			if ($(window).get(0) === window) {
 				contop = $(window).scrollTop();
 			} else {
 				contop = params.container.offset().top;
@@ -43,10 +43,11 @@
 			
 			$.each(params.cache, function(i, data) {
 				var o = data.obj, tag = data.tag, url = data.url, post, posb;
-				
+
 				if (o) {
-					post = o.offset().top - contop, posb = post + o.height();
-					if ((post >= 0 && post < contHeight) || (posb > 0 && posb <= contHeight)) {
+					//post = o.offset().top - contop, posb = post + o.height();
+					post = o.offset().top - contop, post + o.height();
+					if (o.is(':visible') && (post >= 0 && post < contHeight) || (posb > 0 && posb <= contHeight)) {
 						if (url) {
 							//在浏览器窗口内
 							if (tag === "img") {

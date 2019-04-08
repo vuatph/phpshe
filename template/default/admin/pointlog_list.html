@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=pointlog" class="sel">{$menutitle}（{$tongji['all']}）</a>
+		<a href="admin.php?mod=pointlog" class="sel">{$menutitle}（{$tongji['all']}）<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -21,23 +21,23 @@
 		<form method="post" id="form">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
 		<tr>
-			<th class="bgtt" width="140">交易日期</th>
+			<th class="bgtt" width="130">交易日期</th>
 			<th class="bgtt" width="150">用户名</th>
 			<th class="bgtt" width="100">交易类型</th>
-			<th class="bgtt" width="100">增加(点)</th>
-			<th class="bgtt" width="100">支出(点)</th>
-			<th class="bgtt" width="100">结余(点)</th>
+			<th class="bgtt" width="100">增加(个)</th>
+			<th class="bgtt" width="100">减少(个)</th>
+			<th class="bgtt" width="100">结余(个)</th>
 			<th class="bgtt">备注</th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
 		<tr>
-			<td class="num"><span <!--{if(pe_date($v['pointlog_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['pointlog_atime'])}</span></td>
+			<td class="num">{pe_date_color(pe_date($v['pointlog_atime']))}</span></td>
 			<td>{$v['user_name']}</td>
 			<td>{$ini['pointlog_type'][$v['pointlog_type']]}</td>
 			<td><span class="num strong cgreen">{$v['pointlog_in']?'+'.$v['pointlog_in']:''}</span></td>
 			<td><span class="num strong cred">{$v['pointlog_out']?'-'.$v['pointlog_out']:''}</span></td>
 			<td><span class="num">{$v['pointlog_now']}</span></td>
-			<td>{$v['pointlog_text']}</td>
+			<td class="aleft">{$v['pointlog_text']}</td>
 		</tr>
 		<!--{endforeach;}-->
 		</table>

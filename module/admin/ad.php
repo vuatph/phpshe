@@ -14,7 +14,7 @@ if (is_array($cache_category_arr[0])) {
 }
 $category_list = json_encode($category_list);
 switch ($act) {
-	//#####################@ 添加广告 @#####################//
+	//####################// 添加广告 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -23,6 +23,9 @@ switch ($act) {
 				$upload = new upload($_FILES['ad_logo']);
 				$_p_info['ad_logo'] = $upload->filehost;
 			}
+			$ad_position = explode('|', $_p_ad_position);
+			$_p_info['ad_type'] = $ad_position[0];
+			$_p_info['ad_position'] = $ad_position[1];
 			$_p_info['category_id'] = intval($_p_info['category_id']);
 			if ($db->pe_insert('ad', pe_dbhold($_p_info))) {
 				cache_write('ad');
@@ -36,7 +39,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加广告', '', '', 'admin');
 		include(pe_tpl('ad_add.html'));
 	break;
-	//#####################@ 修改广告 @#####################//
+	//####################// 修改广告 //####################//
 	case 'edit':
 		$ad_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -46,6 +49,9 @@ switch ($act) {
 				$upload = new upload($_FILES['ad_logo']);
 				$_p_info['ad_logo'] = $upload->filehost;
 			}
+			$ad_position = explode('|', $_p_ad_position);
+			$_p_info['ad_type'] = $ad_position[0];
+			$_p_info['ad_position'] = $ad_position[1];
 			$_p_info['category_id'] = intval($_p_info['category_id']);
 			if ($db->pe_update('ad', array('ad_id'=>$ad_id), pe_dbhold($_p_info))) {
 				cache_write('ad');
@@ -59,7 +65,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改广告', '', '', 'admin');
 		include(pe_tpl('ad_add.html'));
 	break;
-	//#####################@ 广告排序 @#####################//
+	//####################// 广告排序 //####################//
 	case 'order':
 		pe_token_match();
 		foreach ($_p_ad_order as $k=>$v) {
@@ -73,7 +79,7 @@ switch ($act) {
 			pe_error('排序失败...');
 		}
 	break;
-	//#####################@ 广告删除 @#####################//
+	//####################// 广告删除 //####################//
 	case 'del':
 		pe_token_match();
 		$ad_id = is_array($_p_ad_id) ? $_p_ad_id : intval($_g_id);
@@ -85,7 +91,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 广告状态 @#####################//
+	//####################// 广告状态 //####################//
 	case 'state':
 		pe_token_match();
 		$ad_id = is_array($_p_ad_id) ? $_p_ad_id : intval($_g_id);
@@ -97,13 +103,14 @@ switch ($act) {
 			pe_error("操作失败...");
 		}
 	break;
-	//#####################@ 广告列表 @#####################//
+	//####################// 广告列表 //####################//
 	default :
+		$_g_type && $sql_where .= " and `ad_type` = '{$_g_type}'";
 		$_g_position && $sql_where .= " and `ad_position` = '{$_g_position}'";
 		$sql_where .= " order by `ad_order` asc, `ad_id` desc";
 		$info_list = $db->pe_selectall('ad', $sql_where, '*', array(20, $_g_page));
-		$tongji = $db->index('ad_position')->pe_selectall('ad', array('group by'=>'ad_position'), 'count(1) as num, ad_position');
-		foreach ($ini['ad_position'] as $k=>$v){
+		$tongji = $db->index('ad_type')->pe_selectall('ad', array('group by'=>'ad_type'), 'count(1) as num, ad_type');
+		foreach ($ini['ad_type'] as $k=>$v){
 			$tongji[$k] = intval($tongji[$k]['num']);
 			$tongji['all'] += $tongji[$k]; 
 		}

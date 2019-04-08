@@ -3,8 +3,8 @@
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
 		<div class="hy_tt">
-			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span></a>
-			<a href="{$pe['host_root']}user.php?mod=userbank&act=add" class="fabu_btn">+ 新增账户</a>
+			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span><i></i></a>
+			<a href="{$pe['host_root']}user.php?mod=userbank&act=add" class="fabu_btn">新增账户</a>
 		</div>
 		<div class="hy_tablelist">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -19,7 +19,7 @@
 				<td>{$v['userbank_name']}</td>
 				<td>{$v['userbank_num']}</td>
 				<td>{$v['userbank_tname']}</td>
-				<td><a href="user.php?mod=userbank&act=del&id={$v['userbank_id']}&token={$pe_token}" onclick="return pe_cfone(this, '删除')" class="hy_btn">删除</a></td>
+				<td><a href="javascript:pe_confirm('删除该账户', 'user.php?mod=userbank&act=del&id={$v['userbank_id']}&token={$pe_token}')" class="tag_gray">删除</a></td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>

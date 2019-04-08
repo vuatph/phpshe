@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=adminlevel" class="sel">{$menutitle}（{$tongji['all']}）</a>
+		<a href="admin.php?mod=adminlevel" class="sel">{$menutitle}（{$tongji['all']}）<i></i></a>
 		<a href="admin.php?mod=adminlevel&act=add" id="fabu">添加权限</a>
 		<div class="clear"></div>
 	</div>
@@ -12,7 +12,7 @@
 			<th class="bgtt" width="50">ID号</th>
 			<th class="bgtt" width="200">权限名称</th>
 			<th class="bgtt"></th>
-			<th class="bgtt" width="110">操作</th>
+			<th class="bgtt" width="100">操作</th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
 		<tr>

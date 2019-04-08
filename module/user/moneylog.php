@@ -1,7 +1,7 @@
 <?php
 $menumark = 'moneylog';
 switch($act) {
-	//#####################@ 资金明细 @#####################//
+	//####################// 资金明细 //####################//
 	default:
 		$info_list = $db->pe_selectall('moneylog', array('user_id'=>$_s_user_id, 'order by'=>'moneylog_id desc'), '*', array(30, $_g_page));
 

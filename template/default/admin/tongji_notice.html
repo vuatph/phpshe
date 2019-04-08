@@ -6,11 +6,12 @@
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
 		<tr>
 			<th class="bgtt" width="50">ID号</th>
-			<th class="bgtt" width="20"></th>
+			<th class="bgtt" width="30"></th>
 			<th class="bgtt">通知内容</th>
-			<th class="bgtt" width="150">收件人</th>
+			<th class="bgtt" width="150">发送对象</th>
 			<th class="bgtt" width="120">发送时间</th>
 			<th class="bgtt" width="100">发送状态</th>
+			<th class="bgtt" width="60">操作</th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
 		<tr>
@@ -28,6 +29,7 @@
 			<!--{elseif($v['noticelog_state']=='fail'):}-->
 			<td><a href="javascript:;" onmouseenter="pe_tips(this, '{$v['noticelog_error']}')" class="c999" style="text-decoration:line-through">失败</a></td>
 			<!--{endif;}-->
+			<td><a href="admin.php?mod=tongji&act=notice_del&id={$v['noticelog_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a></td>
 		</tr>
 		<!--{endforeach;}-->
 		</table>

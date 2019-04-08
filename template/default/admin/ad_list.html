@@ -1,9 +1,9 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=ad" <!--{if(!$_g_position):}-->class="sel"<!--{endif;}-->>广告列表（{$tongji['all']}）</a>
-		<!--{foreach($ini['ad_position'] as $k=>$v):}-->
-		<a href="admin.php?mod=ad&position={$k}" <!--{if($_g_position==$k):}-->class="sel"<!--{endif;}-->>{$v['name']}（{$tongji[$k]}）</a>
+		<a href="admin.php?mod=ad" <!--{if(!$_g_type):}-->class="sel"<!--{endif;}-->>广告列表（{$tongji['all']}）<i></i></a>
+		<!--{foreach($ini['ad_type'] as $k=>$v):}-->
+		<a href="admin.php?mod=ad&type={$k}" <!--{if($_g_type==$k):}-->class="sel"<!--{endif;}-->>{$v['name']}（{$tongji[$k]}）<i></i></a>
 		<!--{endforeach;}-->
 		<a href="admin.php?mod=ad&act=add" id="fabu">添加广告</a>
 		<div class="clear"></div>
@@ -15,11 +15,11 @@
 			<th class="bgtt" width="20"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'ad_id')" /></th>
 			<th class="bgtt" width="50">ID号</th>
 			<th class="bgtt" width="40">排序</th>
-			<th class="bgtt" width="230">广告图片</th>
+			<th class="bgtt" width="220">广告图片</th>
 			<th class="bgtt" width="200">广告位置</th>
 			<th class="bgtt">广告链接</th>
-			<th class="bgtt" width="60">显示</th>
-			<th class="bgtt" width="110">操作</th>
+			<th class="bgtt" width="80">显示</th>
+			<th class="bgtt" width="100">操作</th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
 		<tr height="60">
@@ -27,7 +27,7 @@
 			<td>{$v['ad_id']}</td>
 			<td><input type="text" name="ad_order[{$v['ad_id']}]" value="{$v['ad_order']}" class="inputtext input30 center" /></td>
 			<td><a href="{$v['ad_url']}" target="_blank"><img src="{pe_thumb($v['ad_logo'])}" style="width:160px; height:55px; border:1px solid #F2F2F2" /></a></td>
-			<td>{$ini['ad_position'][$v['ad_position']]['name']}<p>{$cache_category[$v['category_id']]['category_name']}</p></td>
+			<td>{$ini['ad_type'][$v['ad_type']]['list'][$v['ad_position']]['name']}<p>{$cache_category[$v['category_id']]['category_name']}</p></td>
 			<td class="aleft"><a href="{$v['ad_url']}" target="_blank">{$v['ad_url']}</a></td>
 			<td>
 				<!--{if($v['ad_state']==1):}-->

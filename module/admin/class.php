@@ -6,7 +6,7 @@
 $menumark = 'class';
 pe_lead('hook/cache.hook.php');
 switch ($act) {
-	//#####################@ 分类添加 @#####################//
+	//####################// 分类添加 //####################//
 	case 'add':
 		$class_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -22,7 +22,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加分类', '', '', 'admin');
 		include(pe_tpl('class_add.html'));
 	break;
-	//#####################@ 分类修改 @#####################//
+	//####################// 分类修改 //####################//
 	case 'edit':
 		$class_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -40,7 +40,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改分类', '', '', 'admin');
 		include(pe_tpl('class_add.html'));
 	break;
-	//#####################@ 分类删除 @#####################//
+	//####################// 分类删除 //####################//
 	case 'del':
 		pe_token_match();
 		$_g_id == 1 && pe_error('网站公告不能删除...');
@@ -52,7 +52,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 分类排序 @#####################//
+	//####################// 分类排序 //####################//
 	case 'order':
 		pe_token_match();
 		foreach ($_p_class_order as $k=>$v) {
@@ -66,7 +66,7 @@ switch ($act) {
 			pe_error('排序失败...');
 		}
 	break;
-	//#####################@ 分类列表 @#####################//
+	//####################// 分类列表 //####################//
 	default :
 		$_g_type = $_g_type == 'help' ? 'help' : 'news';
 		$info_list = $db->pe_selectall('class', array('class_type'=>$_g_type, 'order by'=>'`class_order` asc, `class_id` asc'));

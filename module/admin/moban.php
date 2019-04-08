@@ -5,7 +5,7 @@
  */
 $menumark = 'moban';
 switch ($act) {
-	//#####################@ 下载解压 @#####################//
+	//####################// 下载解压 //####################//
 	case 'down':
 		$moban_id = intval($_g_id);
 		$moban_name = file_get_contents("http://www.phpshe.com/index.php?mod=api&act=moban_down&id={$moban_id}&type=mark");
@@ -36,7 +36,7 @@ switch ($act) {
 		}
 		echo json_encode(array('result'=>true));
 	break;
-	//#####################@ 设置模板 @#####################//
+	//####################// 设置模板 //####################//
 	case 'setting':
 		pe_token_match();
 		if ($db->pe_update('setting', array('setting_key'=>'web_tpl'), array('setting_value'=>pe_dbhold($_g_tpl)))) {
@@ -49,7 +49,7 @@ switch ($act) {
 			pe_error('启用失败...');
 		}
 	break;
-	//#####################@ 删除模板 @#####################//
+	//####################// 删除模板 //####################//
 	case 'del':
 		pe_token_match();
 		$tpl_name = pe_dbhold($_g_tpl);
@@ -62,7 +62,7 @@ switch ($act) {
 			pe_success('删除成功!');
 		}
 	break;
-	//#####################@ 模板管理 @#####################//
+	//####################// 模板管理 //####################//
 	default:
 		$info_list = pe_dirlist('template/*');
 		$moban_now = $cache_setting['web_tpl'];

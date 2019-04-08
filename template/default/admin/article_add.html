@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">{$menutitle}</a>
+		<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -18,7 +18,7 @@
 				<!--{foreach($cache_class_arr['news'] as $v):}-->
 				<option value="{$v['class_id']}" <!--{if($v['class_id']==$info['class_id']):}-->selected="selected"<!--{endif;}-->>[资讯中心] {$v['class_name']}</option>
 				<!--{endforeach;}-->
-				<option value="0" disabled>-------------------</option>
+				<option value="0" disabled>--------------------------</option>
 				<!--{foreach($cache_class_arr['help'] as $v):}-->
 				<option value="{$v['class_id']}" <!--{if($v['class_id']==$info['class_id']):}-->selected="selected"<!--{endif;}-->>[帮助中心] {$v['class_name']}</option>
 				<!--{endforeach;}-->

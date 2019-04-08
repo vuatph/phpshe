@@ -5,7 +5,7 @@
  */
 $menumark = 'pointlog';
 switch ($act) {
-	//#####################@ 积分明细 @#####################//
+	//####################// 积分明细 //####################//
 	default:
 		$_g_user_name && $sql_where .= " and `user_name` like '%{$_g_user_name}%'";
 		$_g_type && $sql_where .= " and `pointlog_type` = '{$_g_type}'";

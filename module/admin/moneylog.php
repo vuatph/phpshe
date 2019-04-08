@@ -5,7 +5,7 @@
  */
 $menumark = 'moneylog';
 switch ($act) {
-	//#####################@ 资金明细 @#####################//
+	//####################// 资金明细 //####################//
 	default:
 		$_g_user_name && $sql_where .= " and `user_name` like '%{$_g_user_name}%'";
 		$_g_type && $sql_where .= " and `moneylog_type` = '{$_g_type}'";

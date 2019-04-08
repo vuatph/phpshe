@@ -3,7 +3,7 @@
  * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2011-0501 koyshe <koyshe@gmail.com>
  */
-//#####################@ 系统核心函数 @#####################//
+//####################// 系统核心函数 //####################//
 //模板函数
 function pe_tpl($tplname, $tplpath = '')
 {
@@ -35,7 +35,8 @@ function pe_dbhold($str, $exc=array())
 		}
 	}
 	else {
-		$str = $exc == 'all' ? mysql_real_escape_string($str) : mysql_real_escape_string(htmlspecialchars($str));
+		//$str = $exc == 'all' ? mysql_real_escape_string($str) : mysql_real_escape_string(htmlspecialchars($str));
+		$str = $exc == 'all' ? addslashes($str) : addslashes(htmlspecialchars($str));
 	}
 	return $str;
 }
@@ -73,15 +74,48 @@ function pe_url($modact, $argstr=null)
 	return $url;
 }
 //获取当前url
-function pe_nowurl() {
+function pe_nowurl($arr = null) {
 	//global $pe;
 	//return $pe['host_root'].($_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : $_SERVER['REQUEST_URI']);
-	return "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+	$http = $_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http';
+	$url = "{$http}://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+	if (is_array($arr)) {
+		foreach ($arr as $k=>$v) {
+			if ($v) {
+				$url = preg_replace("/([\?|&])({$k}=[^&]*)/i", "$1{$k}={$v}", $url);		
+			}
+			else {
+				if (!function_exists('pe_nowurl_nn')) {
+					function pe_nowurl_nn($match) {
+						if ($match[1] == "?" && $match[3] == "&") return "?";
+						if ($match[1] == "&" && $match[3] == "&") return "&";
+						if (in_array($match[1], array("?", "&")) && $match[3] == "") return "";		
+					}
+				}
+				$url = preg_replace_callback("/([\?|&])({$k}=[^&]*)(&?)/i", "pe_nowurl_nn", $url);
+				/*if (version_compare(PHP_VERSION, '5.3', '<')) {
+					$url = preg_replace_callback("/([\?|&])({$k}=[^&]*)(&?)/i", create_function('$match', 
+						'if ($match[1] == "?" && $match[3] == "&") return "?";
+						if ($match[1] == "&" && $match[3] == "&") return "&";
+						if (in_array($match[1], array("?", "&")) && $match[3] == "") return "";'		
+					), $url);
+				}
+				else {
+					$url = preg_replace_callback("/([\?|&])({$k}=[^&]*)(&?)/i", function($match) { 
+						if ($match[1] == "?" && $match[3] == "&") return "?";
+						if ($match[1] == "&" && $match[3] == "&") return "&";
+						if (in_array($match[1], array("?", "&")) && $match[3] == "") return "";		
+					}, $url);
+				}*/	
+			}	
+		}
+	}
+	return $url;
 }
 //获取当前网址为下个地址的fromto
 function pe_fromto()
 {
-	$host = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+	$host = pe_nowurl();
 	stripos($host, 'fromto') !== false && $host = substr($host, 0, stripos($host, 'fromto')-1);
 	return 'fromto='.urlencode($host);
 	//return 'fromto='.urlencode(basename($_SERVER['SCRIPT_FILENAME'])."?{$_SERVER['QUERY_STRING']}");
@@ -97,6 +131,9 @@ function pe_thumb($img = '', $w = null, $h = null, $thumbtype = null)
 	switch ($thumbtype) {
 		case 'avatar':
 			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/noavatar.jpg";		
+		break;
+		case 'upload':
+			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/noupload.jpg";		
 		break;
 		default :
 			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/nopic.png";	
@@ -148,7 +185,7 @@ function pe_seo($title='', $keywords='', $description='', $type = 'index')
 	return $seo;
 }
 
-//#####################@ 处理结果展示 @#####################//
+//####################// 处理结果展示 //####################//
 function pe_success($msg, $url=null, $type=null)
 {
 	$_SESSION['msg_show'] = $msg;
@@ -208,7 +245,7 @@ function pe_goto($url = '', $type = 'default')
 	echo "<script type='text/javascript'>{$url}</script>";
 	die();
 }
-//#####################@ 文件相关函数 @#####################//
+//####################// 文件相关函数 //####################//
 //文件夹大小
 function pe_dirsize($dir_path)
 {
@@ -299,7 +336,7 @@ function pe_is_writeable($file)
 	return true;
 }
 
-//#####################@ 杂项函数 @#####################//
+//####################// 杂项函数 //####################//
 function pe_404($title = null, $show = null)
 {
 	global $pe;
@@ -390,7 +427,7 @@ function pe_num($num, $type, $len = 1, $fix = false) {
 		$num = ceil($num * $pow) / $pow;	
 	}
 	elseif ($type == 'floor') {
-		$num = floor(round($num * $pow)) / $pow;	
+		$num = floor($num * $pow) / $pow;	
 	}
 	if ($fix == true) {
 		$num_arr = explode('.', $num);
@@ -432,7 +469,7 @@ function pe_trim($str)
 			$str[$k] = pe_trim($v);
 		}
 	}
-	else {
+	elseif ($str) {
 		$str = trim($str);
 	}
 	return $str;	
@@ -457,7 +494,8 @@ function pe_ip()
             $realip = getenv("REMOTE_ADDR");
         }
     }
-    return $realip;
+    $ip_arr = explode(',', $realip);
+    return $ip_arr[0];
 }
 //转换日期
 function pe_date($time, $type = 'Y-m-d H:i') {
@@ -538,7 +576,17 @@ function pe_sqlrange($fieldname, $rangeval, $misc = '-')
 	}
 	return $sqlwhere;
 }
-//#####################@ 安全函数 @#####################//
+
+function pe_sqlin($fieldname, $arr) {
+	if (is_array($arr)) {
+ 		$sqlwhere = "`{$fieldname}` in('".implode("','", $arr)."')";	
+	}
+	else {
+ 		$sqlwhere = "`{$fieldname}` = '{$arr}'";		
+	}
+	return $sqlwhere;
+}
+//####################// 安全函数 //####################//
 function pe_token_set($str='') {
 	if ($_SESSION['pe_token']) {
 		return $_SESSION['pe_token'];		
@@ -620,23 +668,19 @@ function pe_dbxss($val) {
 }
 
 //判断手机还是PC
-function pe_mobile($mobile=null){
+function pe_mobile($mobile = false){
 	global $pe;
 	if ($mobile) return true;
-	$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';  
-	$useragent_mark = preg_match('|\(.*?\)|' , $useragent , $matches) >0 ? $matches[0] : '';  	  
-	function CheckSubstrs($substrs,$text){  
-		foreach($substrs as $substr) {
-			if (false !== strpos($text,$substr)) {  
-				return true;  
-			}
-		}
-		return false;
-	}
-	$mobile_os_list=array('Google Wireless Transcoder','Windows CE','WindowsCE','Symbian','Android','armv6l','armv5','Mobile','CentOS','mowser','AvantGo','Opera Mobi','J2ME/MIDP','Smartphone','Go.Web','Palm','iPAQ');
-	$mobile_token_list=array('Profile/MIDP','Configuration/CLDC-','160×160','176×220','240×240','240×320','320×240','UP.Browser','UP.Link','SymbianOS','PalmOS','PocketPC','SonyEricsson','Nokia','BlackBerry','Vodafone','BenQ','Novarra-Vision','Iris','NetFront','HTC_','Xda_','SAMSUNG-SGH','Wapaka','DoCoMo','iPhone','iPod');	  
-	$found_mobile = CheckSubstrs($mobile_os_list,$useragent_mark) || CheckSubstrs($mobile_token_list,$useragent);
-	if (($found_mobile or stripos($_SERVER['SERVER_NAME'], 'm.') === 0) && file_exists("{$pe['path_root']}module/mobile_index")) {
+ 	if (stristr($_SERVER['HTTP_VIA'], "wap")) {// 先检查是否为wap代理，准确度高
+		$mobile = true;
+    }
+    elseif (stripos($_SERVER['HTTP_ACCEPT'], "VND.WAP.WML") > 0){// 检查浏览器是否接受 WML.
+		$mobile = true;
+   	}
+   	elseif (preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $_SERVER['HTTP_USER_AGENT'])) {//检查USER_AGENT
+        $mobile = true;          
+    }
+	if (($mobile or stripos($_SERVER['SERVER_NAME'], 'm.') === 0) && file_exists("{$pe['path_root']}module/mobile_index")) {
 		return true;
 	}
 	else {
@@ -680,13 +724,36 @@ function pe_formcheck($type, $value) {
 			$result = preg_match("/^[\x{4e00}-\x{9fa5}]{2,4}$/u", $value) ?  true : false;
 		break;
 		case 'phone':
-			$result = preg_match("/^1[34578]{1}\d{9}$/", $value) ?  true : false;
+			$result = preg_match("/^1\d{10}$/", $value) ?  true : false;
 		break;
 		case 'email':
 			$result = preg_match("/^[-_A-Za-z0-9]+@([_A-Za-z0-9]+\.)+[a-z]{2,3}$/", $value) ?  true : false;
 		break;
+		case 'qq':
+			$result = preg_match("/^[1-9][0-9]{4,14}$/", $value) ?  true : false;
+		break;
 	}
 	return $result;
+}
+
+//活动状态
+function pe_hd_stateshow($stime, $etime) {
+	$nowtime = time();
+	if (stripos($stime, '-') !== false) $stime = strtotime($stime);
+	if (stripos($etime, '-') !== false) $etime = strtotime($etime);
+	if ($etime <= time()) {
+		$text = '<span class="c888">已结束</span>';
+	}
+	elseif ($stime > time()) {
+		$text = '<span class="corg">未开始</span>';
+	}	
+	if ($etime <= time()) {
+		$text = '<span class="c888">已结束</span>';
+	}
+	else {
+		$text = '<span class="cgreen">进行中</span>';	
+	}
+	return $text;
 }
 
 //判断是否ajax请求
@@ -700,10 +767,12 @@ function pe_checkajax() {
 }
 
 //设置cookie
-function pe_setcookie($name, $value='', $time=0) {
-	$value = is_array($value) ? serialize($value) : '';
-	setcookie($name, $value, $time);
+function pe_setcookie($name, $value='', $time=86400) {
+	$value = is_array($value) ? serialize($value) : $value;
+	$time = is_null($time) ? null : (time() + $time);
+	setcookie($name, $value, $time, '/');
 }
+
 //读取cookie
 function pe_getcookie($name, $type = 'string') {
 	$value = pe_trim(pe_stripslashes($_COOKIE[$name]));
@@ -716,16 +785,145 @@ function pe_getcookie($name, $type = 'string') {
 	$value = pe_trim(pe_stripslashes($value));
 	return $value;
 }
-//#####################@ 用户权限函数 @#####################//
-function pe_login($utype){
-	global $pe;
-	return (md5($_SESSION["{$utype}_id"].$pe['host_root']) == $_SESSION["{$utype}_idtoken"]) ? 1 : 0;
+
+//####################// 用户权限函数 //####################//
+function pe_login($type){
+	global $pe, $db;
+	if (md5($_SESSION["{$type}_id"].$pe['host_root']) != $_SESSION["{$type}_idtoken"]) return false;
+	$info = $db->pe_select($type, array("{$type}_id"=>$_SESSION["{$type}_id"]));
+	if (!$info["{$type}_id"]) {
+		unset($_SESSION["{$type}_id"], $_SESSION["{$type}_name"], $_SESSION["{$type}_idtoken"]);
+		return false;
+	}
+	return $info;	
 }
+
 //生成用户id(针对未登录用户)
 function pe_user_id() {
 	global $pe;
 	$user_id = md5($pe['db_name'].session_id().$pe['db_name']);
 	$_SESSION['pe_token'] = pe_token_set($user_id);
 	return $user_id;
+}
+
+//生成唯一id
+function pe_guid($table = null, $prefix = null) {
+	global $db;
+	$guid = date('ymdHis').mt_rand(0,9).mt_rand(0,9).mt_rand(0,9);
+	$guid = $prefix ? "{$prefix}_{$guid}" : $guid;
+	if (!$table) return $guid;
+	$table_arr = explode('|', $table);
+	if ($db->pe_num($table_arr[0], array($table_arr[1]=>$guid))) {
+		return pe_guid($table, $prefix);
+	}
+	else {
+		return $guid;
+	}
+}
+
+function pe_qrcode($url) {
+	global $pe;
+	$user_qrcode = "{$pe['path_root']}data/cache/thumb/".date('Y-m')."/".md5($url).".png";
+	if (!is_file($user_qrcode)) {
+		if (!is_dir("{$pe['path_root']}data/cache/thumb/".date('Y-m'))) {
+			mkdir("{$pe['path_root']}data/cache/thumb/".date('Y-m'), 0777, true);		
+		}
+		pe_lead('include/class/phpqrcode.class.php');
+		QRcode::png($url, $user_qrcode);
+	}
+	return "{$pe['host_root']}data/cache/thumb/".date('Y-m')."/".md5($url).".png";
+}
+
+//修正中文编码问题
+function pe_json_encode($value) {
+    if (version_compare(PHP_VERSION,'5.4.0','<')) {
+        $str = json_encode($value);
+        $str = preg_replace_callback("#\\\u([0-9a-f]{4})#i", create_function('$matchs','return iconv("UCS-2BE", "UTF-8", pack("H4", $matchs[1]));'), $str);
+        return $str;
+    }
+    else {
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+}
+
+function pe_curl_get($url) {
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	$result = curl_exec($ch);
+	//var_dump(curl_error($ch));
+	curl_close($ch);
+	return $result;
+}
+
+function pe_curl_post($url, $arr = '', $arr_type = 'arr', $cert = array()) {
+	if (is_array($arr)) {
+		foreach ($arr as $k=>$v) {
+			if (!is_array($v) && stripos($v, '@') === 0) {
+				$v = substr($v, 1);
+				if (class_exists('CURLFile')) {
+					$arr[$k] = new CURLFile($v);
+				}
+				else {
+					$arr[$k] = '@'.$v;
+				}
+			}
+		}
+		if ($arr_type == 'json') {
+			$data = pe_json_encode($arr);
+		}
+		else {
+			$data = $arr;
+		}
+	}
+	else {
+		$data = $arr;
+	}
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	if (isset($cert['ssl_cert']) && isset($cert['ssl_key'])) {
+		curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
+		curl_setopt($ch, CURLOPT_SSLCERT, $cert['ssl_cert']);
+		curl_setopt($ch, CURLOPT_SSLKEYTYPE, 'PEM');
+		curl_setopt($ch, CURLOPT_SSLKEY, $cert['ssl_key']);
+	}
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	$result = curl_exec($ch);
+	if (stripos($result, '<xml>') !== false) {
+		$result = json_decode(json_encode(simplexml_load_string($result, 'SimpleXMLElement', LIBXML_NOCDATA)), true); 
+	}
+//	var_dump(curl_error($ch));
+	curl_close($ch);
+	return $result;
+}
+
+//获取xml数据
+function pe_getxml() {
+	$xml = file_get_contents("php://input");
+	return $xml = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+}
+
+//在线客服链接
+function pe_kfurl($type, $num) {
+	global $pe;
+	switch ($type) {
+		case 'qq':
+			if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
+				$url = "http://wpa.qq.com/msgrd?v=3&uin={$num}&site={$pe['host_root']}&menu=yes&from=message&isappinstalled=1";
+			}
+			else {
+				$url = "mqqwpa://im/chat?chat_type=wpa&uin={$num}&version=1&src_type=web&web_src={$pe['host_root']}";
+			}
+		break;
+	}
+	return $url;
 }
 ?>

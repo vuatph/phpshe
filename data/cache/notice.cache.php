@@ -1,5 +1,5 @@
 <?php
-$cache=unserialize('a:4:{s:9:"order_add";a:2:{s:4:"user";a:9:{s:9:"notice_id";s:1:"1";s:11:"notice_name";s:12:"用户下单";s:11:"notice_mark";s:9:"order_add";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:64:"下单通知：订单{order_id}提交成功，请及时付款！";s:16:"notice_sms_state";s:1:"1";s:17:"notice_email_name";s:64:"下单通知：订单{order_id}提交成功，请及时付款！";s:17:"notice_email_text";s:188:"<p>
+return unserialize('a:4:{s:9:"order_add";a:2:{s:4:"user";a:9:{s:9:"notice_id";s:1:"1";s:11:"notice_name";s:12:"用户下单";s:11:"notice_type";s:9:"order_add";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:64:"下单通知：订单{order_id}提交成功，请及时付款！";s:16:"notice_sms_state";s:1:"0";s:17:"notice_email_name";s:64:"下单通知：订单{order_id}提交成功，请及时付款！";s:17:"notice_email_text";s:188:"<p>
 	订单金额：{order_money}元
 </p>
 <p>
@@ -13,7 +13,7 @@
 </p>
 <p>
 	<br />
-</p>";s:18:"notice_email_state";s:1:"0";}s:5:"admin";a:9:{s:9:"notice_id";s:1:"5";s:11:"notice_name";s:12:"用户下单";s:11:"notice_mark";s:9:"order_add";s:10:"notice_obj";s:5:"admin";s:15:"notice_sms_text";s:125:"新订单通知：{order_id}，金额：{order_money}元，姓名：{user_tname}，电话：{user_phone}，请注意查看！";s:16:"notice_sms_state";s:1:"1";s:17:"notice_email_name";s:125:"新订单通知：{order_id}，金额：{order_money}元，姓名：{user_tname}，电话：{user_phone}，请注意查看！";s:17:"notice_email_text";s:168:"<p>
+</p>";s:18:"notice_email_state";s:1:"0";}s:5:"admin";a:9:{s:9:"notice_id";s:1:"5";s:11:"notice_name";s:12:"用户下单";s:11:"notice_type";s:9:"order_add";s:10:"notice_obj";s:5:"admin";s:15:"notice_sms_text";s:149:"新订单通知：{order_id}，金额：{order_money}元，姓名：{user_tname}，电话：{user_phone}，备注：{order_text}，请注意查看！";s:16:"notice_sms_state";s:1:"0";s:17:"notice_email_name";s:125:"新订单通知：{order_id}，金额：{order_money}元，姓名：{user_tname}，电话：{user_phone}，请注意查看！";s:17:"notice_email_text";s:168:"<p>
 	订单金额：{order_money}元
 </p>
 <p>
@@ -24,7 +24,7 @@
 </p>
 <p>
 	收货地址：{user_address}
-</p>";s:18:"notice_email_state";s:1:"0";}}s:9:"order_pay";a:2:{s:4:"user";a:9:{s:9:"notice_id";s:1:"2";s:11:"notice_name";s:12:"订单付款";s:11:"notice_mark";s:9:"order_pay";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:67:"付款通知：订单{order_id}付款成功，祝您生活愉快！";s:16:"notice_sms_state";s:1:"1";s:17:"notice_email_name";s:67:"付款通知：订单{order_id}付款成功，祝您生活愉快！";s:17:"notice_email_text";s:188:"<p>
+</p>";s:18:"notice_email_state";s:1:"0";}}s:9:"order_pay";a:2:{s:4:"user";a:9:{s:9:"notice_id";s:1:"2";s:11:"notice_name";s:12:"订单付款";s:11:"notice_type";s:9:"order_pay";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:67:"付款通知：订单{order_id}付款成功，祝您生活愉快！";s:16:"notice_sms_state";s:1:"0";s:17:"notice_email_name";s:67:"付款通知：订单{order_id}付款成功，祝您生活愉快！";s:17:"notice_email_text";s:188:"<p>
 	订单金额：{order_money}元
 </p>
 <p>
@@ -38,7 +38,7 @@
 </p>
 <p>
 	<br />
-</p>";s:18:"notice_email_state";s:1:"0";}s:5:"admin";a:9:{s:9:"notice_id";s:1:"6";s:11:"notice_name";s:12:"订单付款";s:11:"notice_mark";s:9:"order_pay";s:10:"notice_obj";s:5:"admin";s:15:"notice_sms_text";s:70:"付款通知：订单{order_id}付款成功，请及时安排发货！";s:16:"notice_sms_state";s:1:"1";s:17:"notice_email_name";s:70:"付款通知：订单{order_id}付款成功，请及时安排发货！";s:17:"notice_email_text";s:168:"<p>
+</p>";s:18:"notice_email_state";s:1:"0";}s:5:"admin";a:9:{s:9:"notice_id";s:1:"6";s:11:"notice_name";s:12:"订单付款";s:11:"notice_type";s:9:"order_pay";s:10:"notice_obj";s:5:"admin";s:15:"notice_sms_text";s:70:"付款通知：订单{order_id}付款成功，请及时安排发货！";s:16:"notice_sms_state";s:1:"0";s:17:"notice_email_name";s:70:"付款通知：订单{order_id}付款成功，请及时安排发货！";s:17:"notice_email_text";s:168:"<p>
 	订单金额：{order_money}元
 </p>
 <p>
@@ -49,9 +49,9 @@
 </p>
 <p>
 	收货地址：{user_address}
-</p>";s:18:"notice_email_state";s:1:"0";}}s:10:"order_send";a:1:{s:4:"user";a:9:{s:9:"notice_id";s:1:"3";s:11:"notice_name";s:12:"订单发货";s:11:"notice_mark";s:10:"order_send";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:61:"发货通知：订单{order_id}已发货，请注意接收！";s:16:"notice_sms_state";s:1:"1";s:17:"notice_email_name";s:61:"发货通知：订单{order_id}已发货，请注意接收！";s:17:"notice_email_text";s:175:"<p>
+</p>";s:18:"notice_email_state";s:1:"0";}}s:10:"order_send";a:1:{s:4:"user";a:9:{s:9:"notice_id";s:1:"3";s:11:"notice_name";s:12:"订单发货";s:11:"notice_type";s:10:"order_send";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:61:"发货通知：订单{order_id}已发货，请注意接收！";s:16:"notice_sms_state";s:1:"0";s:17:"notice_email_name";s:61:"发货通知：订单{order_id}已发货，请注意接收！";s:17:"notice_email_text";s:175:"<p>
 	快递公司：{order_wl_name}，运单编号：{order_wl_id}<span class="tag_gray fl mar5 mab5" style="line-height:20px;"></span>，如有问题请及时联系！
-</p>";s:18:"notice_email_state";s:1:"0";}}s:11:"order_close";a:1:{s:4:"user";a:9:{s:9:"notice_id";s:1:"4";s:11:"notice_name";s:12:"订单关闭";s:11:"notice_mark";s:11:"order_close";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:69:"关闭通知：订单{order_id}已关闭，原因：{order_closetext}";s:16:"notice_sms_state";s:1:"1";s:17:"notice_email_name";s:69:"关闭通知：订单{order_id}已关闭，原因：{order_closetext}";s:17:"notice_email_text";s:176:"订单金额：{order_money}元
+</p>";s:18:"notice_email_state";s:1:"0";}}s:11:"order_close";a:1:{s:4:"user";a:9:{s:9:"notice_id";s:1:"4";s:11:"notice_name";s:12:"订单关闭";s:11:"notice_type";s:11:"order_close";s:10:"notice_obj";s:4:"user";s:15:"notice_sms_text";s:69:"关闭通知：订单{order_id}已关闭，原因：{order_closetext}";s:16:"notice_sms_state";s:1:"0";s:17:"notice_email_name";s:69:"关闭通知：订单{order_id}已关闭，原因：{order_closetext}";s:17:"notice_email_text";s:176:"订单金额：{order_money}元
 <p>
 	收货姓名：{user_tname}
 </p>
@@ -64,4 +64,4 @@
 <p>
 	<br />
 </p>";s:18:"notice_email_state";s:1:"0";}}}');
-?>
+?>

@@ -1,6 +1,6 @@
 <?php
 //发送邮件 
-function qunfa_email($info ,$user, $qunfa_id = 0) {
+function qunfa_email($user, $info, $qunfa_id = 0) {
 	global $db, $cache_setting;
 	pe_lead('include/class/mail/mail.class.php');
 	$mail = new PHPMailer();                                   //创建PHPMailer实例  
@@ -51,6 +51,7 @@ function qunfa_email($info ,$user, $qunfa_id = 0) {
 			}
 		}
 	}
+	if ($result['result']) $result['show'] = '发送成功';
 	return $result;
 }
 //发送短信
@@ -78,6 +79,7 @@ function qunfa_sms($phone, $text, $qunfa_id = 0) {
 		$sql_set['noticelog_atime'] = time();
 		$db->pe_insert('noticelog', pe_dbhold($sql_set));
 	}
+	if ($result['result']) $result['show'] = '发送成功';
 	return $result;
 }
 ?>

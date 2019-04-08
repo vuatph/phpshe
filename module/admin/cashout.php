@@ -1,7 +1,7 @@
 <?php
 $menumark = 'cashout';
 switch ($act) {
-	//#####################@ 提现开关 @#####################//
+	//####################// 提现开关 //####################//
 	case 'open':
 		if ($db->pe_update('setting', array('setting_key'=>'cashout_isopen'), array('setting_value'=>intval($_g_open)))) {
 			pe_lead('hook/cache.hook.php');
@@ -12,32 +12,32 @@ switch ($act) {
 			pe_error('操作失败...');
 		}
 	break;
-	//#####################@ 提现状态 @#####################//
-	case 'state':
+	//####################// 审核通过 //####################//
+	case 'success':
 		$cashout_id = is_array($_p_cashout_id) ? $_p_cashout_id : $_g_id;
 		$cashout_list = $db->pe_selectall('cashout', array('cashout_id'=>$cashout_id));
 		foreach ($cashout_list as $v) {
 			$info = $db->pe_select('cashout', array('cashout_id'=>$v['cashout_id']));
-			if ($info['cashout_state'] == 1) continue;
+			if ($info['cashout_state']) continue;
 			$db->pe_update('cashout', array('cashout_id'=>$info['cashout_id']), array('cashout_state'=>1, 'cashout_ptime'=>time()));
 		}
-		pe_success('结算成功！');
+		pe_success('审核成功！');
 	break;
-	//#####################@ 提现删除 @#####################//
-	case 'del':
+	//####################// 审核拒绝 //####################//
+	case 'refuse':
 		pe_lead('hook/user.hook.php');
 		$cashout_id = is_array($_p_cashout_id) ? $_p_cashout_id : $_g_id;
 		$cashout_list = $db->pe_selectall('cashout', array('cashout_id'=>$cashout_id));
 		foreach ($cashout_list as $v) {
 			$info = $db->pe_select('cashout', array('cashout_id'=>$v['cashout_id']));
-			if ($info['cashout_state'] == 1) continue;
+			if ($info['cashout_state']) continue;
 			$db->pe_update('cashout', array('cashout_id'=>$info['cashout_id']), array('cashout_state'=>2, 'cashout_ptime'=>time()));
 			$cashout_money = $info['cashout_money'] + $info['cashout_fee'];
-			add_moneylog($info['user_id'], 'add', $cashout_money, "提现未通过，退回{$cashout_money}元");
+			add_moneylog($info['user_id'], 'back', $cashout_money, "提现未通过，退回{$cashout_money}元");
 		}
-		pe_success('取消成功！');
+		pe_success('拒绝成功！');
 	break;
-	//#####################@ 提现列表 @#####################//
+	//####################// 提现列表 //####################//
 	default:
 		$sql_where = " and `cashout_state` = ".intval($_g_state);
 		$_g_name && $sql_where = " and `user_name` = '{$_g_name}'";

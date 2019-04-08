@@ -5,11 +5,11 @@
 		<form method="post" id="form">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
 		<tr>
-			<th class="bgtt" width="80">ID号</th>
+			<th class="bgtt" width="100">ID号</th>
 			<th class="bgtt" width="200">访客所在地</th>
 			<th class="bgtt" width="200">访客IP</th>
 			<th class="bgtt" width="200">访问日期</th>
-			<th class="bgtt" width="150">访问时间</th>
+			<th class="bgtt" width="200">访问时间</th>
 			<th class="bgtt"></th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
@@ -17,7 +17,7 @@
 			<td class="num">{$v['iplog_id']}</td>
 			<td class="ipname" ip="{$v['iplog_ip']}"><img src="{$pe['host_tpl']}images/load.gif" /></td>
 			<td class="num"><a href="http://www.ip138.com/ips.asp?ip={$v['iplog_ip']}" target="_blank">{$v['iplog_ip']}</a></td>
-			<td class="num"><!--{if($v['iplog_adate'] == date('Y-m-d')):}--><span class="cred">{pe_date($v['iplog_atime'])}</span><!--{else:}-->{pe_date($v['iplog_atime'])}<!--{endif;}--></td>
+			<td class="num">{pe_date_color(pe_date($v['iplog_atime']))}</td>
 			<td class="num">{pe_dayago($v['iplog_atime'])}</td>
 			<td></td>
 		</tr>

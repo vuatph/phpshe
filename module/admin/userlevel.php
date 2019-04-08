@@ -7,7 +7,7 @@ $menumark = 'userlevel';
 pe_lead('hook/cache.hook.php');
 pe_lead('hook/user.hook.php');
 switch ($act) {
-	//#####################@ 等级添加 @#####################//
+	//####################// 等级添加 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -25,7 +25,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加等级', '', '', 'admin');
 		include(pe_tpl('userlevel_add.html'));
 	break;
-	//#####################@ 等级修改 @#####################//
+	//####################// 等级修改 //####################//
 	case 'edit':
 		$userlevel_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -44,7 +44,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改等级', '', '', 'admin');
 		include(pe_tpl('userlevel_add.html'));
 	break;
-	//#####################@ 等级删除 @#####################//
+	//####################// 等级删除 //####################//
 	case 'del':
 		pe_token_match();
 		$userlevel_id = is_array($_p_userlevel_id) ? $_p_userlevel_id : intval($_g_id);
@@ -57,10 +57,11 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 等级列表 @#####################//
+	//####################// 等级列表 //####################//
 	default :
-		$info_list[1] = $db->pe_selectall('userlevel', array("userlevel_up"=>1, "order by"=>"`userlevel_value` asc, `userlevel_id` asc"));
-		$info_list[0] = $db->pe_selectall('userlevel', array("userlevel_up"=>0, "order by"=>"`userlevel_zhe` asc, `userlevel_id` asc"));
+		foreach ($ini['userlevel_up'] as $k=>$v) {
+			$info_list[$k] = $db->pe_selectall('userlevel', array("userlevel_up"=>$k, "order by"=>"`userlevel_value` asc, `userlevel_id` asc"));
+		}
 
 		$tongji['all'] = $db->pe_num('userlevel');		
 		$seo = pe_seo($menutitle='会员等级', '', '', 'admin');

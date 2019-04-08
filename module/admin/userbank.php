@@ -1,7 +1,7 @@
 <?php
 $menumark = 'user';
 switch($act) {
-	//#####################@ 修改地址 @#####################//
+	//####################// 修改地址 //####################//
 	case 'edit':
 		$userbank_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -25,7 +25,7 @@ switch($act) {
 		$seo = pe_seo($menutitle='修改地址');
 		include(pe_tpl('userbank_add.html'));
 	break;
-	//#####################@ 地址删除 @#####################//
+	//####################// 地址删除 //####################//
 	case 'del':
 		pe_token_match();
 		$userbank_id = is_array($_p_userbank_id) ? $_p_userbank_id : $_g_id;
@@ -36,7 +36,7 @@ switch($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 地址列表 @#####################//
+	//####################// 地址列表 //####################//
 	default:
 		$_g_name && $sqlwhere .= " and `user_name` like '%{$_g_name}%'";
 		$_g_tname && $sqlwhere .= " and `userbank_tname` like '%{$_g_tname}%'";

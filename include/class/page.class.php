@@ -62,6 +62,7 @@ class page {
 			$pagenumstart = $left;
 			$pagenumend = $right;
 		}
+		$pagelist = array();
 		for ($i = $pagenumstart; $i <= $pagenumend; $i++) {
 			$pagelist[] = $i;
 		}

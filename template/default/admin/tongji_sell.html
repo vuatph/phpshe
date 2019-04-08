@@ -23,10 +23,10 @@
 		<!--{foreach($info_list as $k=>$v):}-->
 		<tr>
 			<td class="num"><span class="<!--{if($k+1<=3):}-->rank_num1<!--{else:}-->rank_num2<!--{endif;}-->">{$k+1}</span></td>
-			<td style="padding:5px"><img src="{pe_thumb($v['product_logo'], 100, 100)}" width="40" height="40" class="imgbg" /></td>	
-			<td class="aleft" style="padding-left:0"><a class="cblue" href="{pe_url('product-'.$v['product_id'])}" target="_blank">{$v['product_name']}</a><!--{if($v['product_istuijian']):}--><span class="cred">[荐]</span><!--{endif;}--></td>
-			<td class="num strong">{$v['sellnum']}</td>
-			<td class="num strong"><span class="corg">{$v['sellmoney']}</td>
+			<td><img src="{pe_thumb($v['product_logo'], 100, 100)}" width="40" height="40" class="imgbg" /></td>	
+			<td class="aleft"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></td>
+			<td class="strong">{$v['sellnum']}</td>
+			<td class="strong"><span class="corg">{$v['sellmoney']}</td>
 		</tr>
 		<!--{endforeach;}-->
 		</table>

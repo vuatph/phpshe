@@ -32,10 +32,12 @@
 <div class="content">
 	<div class="left">
 		<?php foreach($adminmenu as $k=>$v):?>
+		<?php if(!$v['show'])continue;?>
 		<div class="fenlei">
 			<h3 class="fl_tb<?php echo $k ?>"><s></s><?php echo $v['headnav'] ?></h3>
 			<ul>
 				<?php foreach($v['subnav'] as $kk=>$vv):?>
+				<?php if(!$vv['show'])continue;?>
 				<li class="<?php if($vv['menumark']==$menumark):?>sel<?php endif;?>"><a href="<?php echo $vv['url'] ?>"><span>├</span><?php echo $vv['name'] ?></a></li>
 				<?php endforeach;?>
 			</ul>

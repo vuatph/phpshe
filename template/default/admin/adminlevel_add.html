@@ -1,7 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">{$menutitle}</a>
+		<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
@@ -14,17 +14,16 @@
 		<tr>
 			<td align="right" valign="top">权限分配：</td>
 			<td>
-				<div style="background:#fff; width:772px">
 				<!--{foreach($modact_list as $k=>$v):}-->
-				<div class="fl" style="width:{$k=='控制面板'?120:160}px">
+				<div class="fl" style="width:120px">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang" style="margin:0">
 				<tr>
-					<td class="bgtt" style="border-bottom:0;height:10px;line-height:10px"><input type="checkbox" name="modact_all" style="margin-right:8px" /><strong>{$k}</strong></td>
+					<td class="bgtt"><input type="checkbox" name="modact_all" style="margin-right:8px" /><strong>{$k}</strong></td>
 				</tr>
 				<tr>
-					<td style="border-bottom:0;background:#fff">
+					<td>
 						<!--{foreach($v as $kk=>$vv):}-->
-						<label style="width:120px;display:inline-block"><input type="checkbox" name="modact[]" value="{$kk}" <!--{if(in_array($kk, (array)$info['adminlevel_modact'])):}-->checked="checked"<!--{endif;}--> /> {$vv}</label>
+						<label style="display:inline-block"><input type="checkbox" name="modact[]" value="{$vv['modact']}" class="inputfix" <!--{if(in_array($vv['modact'], $info['adminlevel_modact'])):}-->checked="checked"<!--{endif;}--> /> {$vv['name']}</label>
 						<!--{endforeach;}-->
 					</td>
 				</tr>
@@ -32,7 +31,6 @@
 				</div>
 				<!--{endforeach;}-->
 				<div class="clear"></div>
-				</div>
 			</td>
 		</tr>
 		<tr>

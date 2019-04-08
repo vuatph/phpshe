@@ -2,7 +2,7 @@
 $menumark = 'brand';
 pe_lead('hook/cache.hook.php');
 switch ($act) {
-	//#####################@ 添加品牌 @#####################//
+	//####################// 添加品牌 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -25,7 +25,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加品牌', '', '', 'admin');
 		include(pe_tpl('brand_add.html'));
 	break;
-	//#####################@ 修改品牌 @#####################//
+	//####################// 修改品牌 //####################//
 	case 'edit':
 		$brand_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -50,7 +50,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改品牌', '', '', 'admin');
 		include(pe_tpl('brand_add.html'));
 	break;
-	//#####################@ 品牌排序 @#####################//
+	//####################// 品牌排序 //####################//
 	case 'order':
 		pe_token_match();
 		foreach ($_p_brand_order as $k=>$v) {
@@ -64,7 +64,7 @@ switch ($act) {
 			pe_error('排序失败...');
 		}
 	break;
-	//#####################@ 品牌删除 @#####################//
+	//####################// 品牌删除 //####################//
 	case 'del':
 		pe_token_match();
 		$brand_id = is_array($_p_brand_id) ? $_p_brand_id : intval($_g_id);
@@ -75,7 +75,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 品牌列表 @#####################//
+	//####################// 品牌列表 //####################//
 	default :
 		$info_list = $db->pe_selectall('brand', array('order by'=>'brand_order asc, brand_id desc'), '*', array(30, $_g_page));
 		$tongji['all'] = $db->pe_num('brand');

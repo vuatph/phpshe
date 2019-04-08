@@ -1,13 +1,13 @@
 <?php include(pe_tpl('header.html'));?>
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=cache" class="sel"><?php echo $menutitle ?></a>
+		<a href="admin.php?mod=cache" class="sel"><?php echo $menutitle ?><i></i></a>
 		<div class="clear"></div>
 	</div>
 	<form method="post" id="form">
 	<div class="right_main">
-		<div class="tixing mab10"><span class="cgreen">温馨提示：</span>当您网站上的数据或网页显示异常时请执行更新缓存操作。</div>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+		<div class="tixing corg">温馨提示：当您网站上的数据或网页显示异常时请执行更新缓存操作。</div>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat10">
 		<tr>
 			<th class="bgtt" width="150">缓存名称</th>
 			<th class="bgtt aleft">缓存说明</th>

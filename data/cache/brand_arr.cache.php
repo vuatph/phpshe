@@ -1,3 +1,3 @@
 <?php
-$cache=unserialize('a:0:{}');
-?>
+return unserialize('a:0:{}');
+?>

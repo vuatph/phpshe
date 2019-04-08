@@ -34,28 +34,29 @@ body{color:#000; padding-bottom:50px !important;}
     <span class="fl" style="width:100%">收货地址：{$v['user_address']}</span>
     <div style="clear:both"></div>  
 	<div style="border-bottom:1px dashed #000;margin:10px 0;"></div>
-    <p style="width:40%;float:left;text-align:left;">商品</p>
-    <p style="width:40%;float:left;text-align:center;">规格</p>
-    <p style="width:10%;float:left;text-align:center;">数量</p>
+    <p style="width:35%;float:left;text-align:left;">商品名称</p>
+    <p style="width:30%;float:left;text-align:center;margin-left:5%;">规格</p>
     <p style="width:10%;float:left;text-align:center;">单价</p>
+    <p style="width:10%;float:left;text-align:center;">数量</p>
+    <p style="width:10%;float:left;text-align:center;">小计</p>
 	<div style="clear:both"></div>
-	<div style="height:240px">
-	<!--{foreach($product_list as $kk=>$vv):}-->
-	<!--{$order_num += $vv['product_num']}-->
-	<p style="width:40%;float:left;text-align:left;">{$vv['product_name']}</p>
-	<p style="width:40%;float:left;text-align:left;font-size:12px;">
-		<!--{if($vv['prorule_name']):}-->
-		<!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}-->
-		<!--{endif;}-->&nbsp;
-    </p>  
-    <p style="width:10%;float:left;text-align:center;">{$vv['product_num']}</p>
-    <p style="width:10%;float:left;text-align:center;">{$vv['product_money']}元</p>
-    <div style="clear:both"></div>
-	<!--{endforeach;}-->
 	<div style="border-bottom:1px dashed #000;margin:10px 0;"></div>
-    <p style="width:50%;float:left;text-align:left;">总数：{$order_num}件</p>
-    <p style="width:50%;float:left;text-align:right;">总计：{$v['order_money']} 元&nbsp;&nbsp;&nbsp;</p>
-	<div style="clear:both"></div>
+	<div style="height:240px">
+		<div style="_height:180px;min-height:180px;">
+		<!--{foreach($product_list as $kk=>$vv):}-->
+		<!--{$order_num += $vv['product_num']}-->
+		<p style="width:35%;float:left;text-align:left;">{$vv['product_name']}</p>
+		<p style="width:30%;float:left;text-align:left;font-size:12px;margin-left:5%;">{order_skushow($vv['product_rule'])}&nbsp;</p>  
+	    <p style="width:10%;float:left;text-align:center;">{$vv['product_money']}元</p>
+	    <p style="width:10%;float:left;text-align:center;">{$vv['product_num']}</p>
+	    <p style="width:10%;float:left;text-align:center;">{$vv['product_allmoney']}元</p>
+	    <div style="clear:both"></div>
+		<!--{endforeach;}-->
+		</div>
+		<div style="border-bottom:1px dashed #000;margin:10px 0;"></div>
+	    <p style="width:50%;float:left;text-align:left;">总数：{$order_num}件</p>
+	    <p style="width:50%;float:left;text-align:right;">总计：{$v['order_money']} 元&nbsp;&nbsp;&nbsp;</p>
+		<div style="clear:both"></div>
 	</div>
 </div>
 <!--{endforeach;}-->

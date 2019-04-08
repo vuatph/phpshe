@@ -3,7 +3,7 @@
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
 		<div class="hy_tt">
-			<a href="{$pe['host_root']}user.php?mod=userbank">{$menutitle}</a>
+			<a href="{$pe['host_root']}user.php?mod=userbank" class="sel">{$menutitle}<i></i></a>
 		</div>
 		<div class="hy_table">
 		<form method="post" id="form">
@@ -44,28 +44,41 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
 $(function(){
 	js_bankselect();
 	$(":input[name='userbank_type']").change(function(){
 		js_bankselect();
 	})
+	$(":button").click(function(){
+		var userbank_type = $(":input[name='userbank_type'] option:selected").val();
+		/*if (userbank_type != 'alipay' && $(":input[name='userbank_address']").val() == '') {
+			pe_tip('请填写开户行');
+			return false;
+		}
+		if ($(":input[name='userbank_num']").val() == '') {
+			pe_tip('请填写收款帐号');
+			return false;
+		}
+		if ($(":input[name='userbank_tname']").val() == '') {
+			pe_tip('请填写收款人');
+			return false;
+		}*/
+		pe_submit('user.php?mod=userbank&act=add', function(json){
+			if (json.result) {
+				if ('{$_g_fromto}') {
+					pe_open("{$_g_fromto}", 1000);
+				}
+				else {
+					pe_open("user.php?mod=userbank", 1000);				
+				}
+			}
+		})
+	})
 })
-var checkbank = function () {
-	return	{'url':"{$pe['host_root']}index.php",
-			'data':{'mod':'check','act':'userbank','value':$(":input[name='userbank_num']").val(),'id':"{$info['userbank_id']}"}}
-}
-var form_info = [
-	{"name":"userbank_num", "mod":"str", "act":"blur", "arg":"", "show_id":"userbank_num_show","show_error":"必填", "must":true},
-	{"name":"userbank_num", "mod":"ajax", "act":"blur", "arg":checkbank, "show_id":"userbank_num_show","show_error":"帐号已存在", "must":true},
-	{"name":"userbank_tname", "mod":"str", "act":"blur", "arg":"", "show_id":"userbank_tname_show","show_error":"必填", "must":true},
-	{"name":"userbank_address", "mod":"str", "act":"blur", "arg":"", "show_id":"userbank_address_show","show_error":"必填", "must":true}
-]
-$(":button").pe_submit(form_info, 'form');
 function js_bankselect() {
 	var userbank_type = $(":input[name='userbank_type'] option:selected").val();
-	if (userbank_type == 'alipay' || userbank_type == 'tenpay') {
+	if (userbank_type == 'alipay' || userbank_type == 'wechat') {
 		$("#userbank_address").hide().find(":input").attr("disabled", "disabled");
 	}
 	else {

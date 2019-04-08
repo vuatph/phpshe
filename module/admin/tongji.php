@@ -5,9 +5,9 @@
  */
 $menumark = 'tongji';
 switch ($act) {
-	//#####################@ 订单统计 @#####################//
+	//####################// 订单统计 //####################//
 	case 'order':
-		$time1 = $_g_date1 ? strtotime($_g_date1) : strtotime(date('Y-m-d')) - 86400 * 30;
+		$time1 = $_g_date1 ? strtotime($_g_date1) : strtotime('-1 month');
 		$time2 = $_g_date2 ? strtotime("{$_g_date2} 23:59:59") : strtotime(date('Y-m-d')." 23:59:59");
 		$_g_date1 = date('Y-m-d', $time1);
 		$_g_date2 = date('Y-m-d', $time2);
@@ -34,20 +34,20 @@ switch ($act) {
 		$seo = pe_seo($menutitle='订单统计', '', '', 'admin');
 		include(pe_tpl('tongji_order.html'));
 	break;
-	//#####################@ 热销排行 @#####################//
+	//####################// 热销排行 //####################//
 	case 'sell':
-		$time1 = $_g_date1 ? strtotime($_g_date1) : strtotime(date('Y-m-d')) - 86400 * 30;
+		$time1 = $_g_date1 ? strtotime($_g_date1) : strtotime('-1 month');
 		$time2 = $_g_date2 ? strtotime("{$_g_date2} 23:59:59") : strtotime(date('Y-m-d')." 23:59:59");
 		$_g_date1 = date('Y-m-d', $time1);
 		$_g_date2 = date('Y-m-d', $time2);		
-		$sql = "select a.*, sum(a.`product_num`) as `sellnum`, sum(a.`product_money` * a.`product_num` + a.`product_money_yh`) as `sellmoney` from `".dbpre."orderdata` a left join `".dbpre."order` b on a.`order_id` = b.`order_id` where b.`order_state` = 'success' and b.`order_atime` >= '{$time1}' and b.`order_atime` <= '{$time2}' group by a.`product_id` order by sum(a.`product_num`) desc";
+		$sql = "select a.*, sum(a.`product_num`) as `sellnum`, sum(a.`product_allmoney`) as `sellmoney` from `".dbpre."orderdata` a left join `".dbpre."order` b on a.`order_id` = b.`order_id` where b.`order_state` = 'success' and b.`order_atime` >= '{$time1}' and b.`order_atime` <= '{$time2}' group by a.`product_id` order by sum(a.`product_num`) desc";
 		$info_list = $db->sql_selectall($sql);
 		$seo = pe_seo($menutitle='热销排行', '', '', 'admin');
 		include(pe_tpl('tongji_sell.html'));
 	break;
-	//#####################@ 消费排行 @#####################//
+	//####################// 消费排行 //####################//
 	case 'user':
-		$time1 = $_g_date1 ? strtotime($_g_date1) : strtotime(date('Y-m-d')) - 86400 * 30;
+		$time1 = $_g_date1 ? strtotime($_g_date1) : strtotime('-1 month');
 		$time2 = $_g_date2 ? strtotime("{$_g_date2} 23:59:59") : strtotime(date('Y-m-d')." 23:59:59");
 		$_g_date1 = date('Y-m-d', $time1);
 		$_g_date2 = date('Y-m-d', $time2);		
@@ -56,14 +56,24 @@ switch ($act) {
 		$seo = pe_seo($menutitle='消费排行', '', '', 'admin');
 		include(pe_tpl('tongji_user.html'));
 	break;
-	//#####################@ 短信/邮件记录 @#####################//
+	//####################// 短信/邮件记录 //####################//
 	case 'notice':
+	case 'notice_del':
+		if ($act == 'notice_del') {
+			pe_token_match();
+			if ($db->pe_delete('noticelog', array('noticelog_id'=>$_g_id))) {
+				pe_success('删除成功!');
+			}
+			else {
+				pe_error('删除失败...');
+			}
+		}
 		$info_list = $db->pe_selectall('noticelog', array('order by'=>'noticelog_id desc'), '*', array(50, $_g_page));
 		//$tongji['all'] = $db->pe_num('noticelog');
 		$seo = pe_seo($menutitle='短信/邮件记录', '', '', 'admin');
 		include(pe_tpl('tongji_notice.html'));
 	break;
-	//#####################@ 访客统计 @#####################//
+	//####################// 访客统计 //####################//
 	default:
 		$info_list = $db->pe_selectall('iplog', array('order by'=>'`iplog_atime` desc'), '*', array(50, $_g_page));
 		$seo = pe_seo($menutitle='访客统计', '', '', 'admin');

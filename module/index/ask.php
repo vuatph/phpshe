@@ -1,6 +1,6 @@
 <?php
 switch ($act) {
-	//#####################@ 新增咨询 @#####################//
+	//####################// 新增咨询 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			$product_id = intval($_g_id);
@@ -17,7 +17,7 @@ switch ($act) {
 			$info['user_name'] = $_s_user_name;
 			$info['user_ip'] = pe_ip();
 			if ($db->pe_insert('ask', pe_dbhold($info))) {
-				product_num($info['product_id'], 'asknum');
+				product_jsnum($info['product_id'], 'asknum');
 				pe_jsonshow(array('result'=>true, 'show'=>'提交成功！管理员会尽快答复...'));
 			}
 			else {
@@ -25,7 +25,7 @@ switch ($act) {
 			}
 		}
 	break;
-	//#####################@ 咨询列表 @#####################//
+	//####################// 咨询列表 //####################//
 	default:
 		$sql_where['product_id'] = intval($_g_id);
 		$sql_where['order by'] = "`ask_id` desc";

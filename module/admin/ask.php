@@ -6,7 +6,7 @@
 $menumark = 'ask';
 pe_lead('hook/product.hook.php');
 switch ($act) {
-	//#####################@ 咨询回复 @#####################//
+	//####################// 咨询回复 //####################//
 	case 'edit':
 		$ask_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -29,14 +29,14 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改咨询', '', '', 'admin');
 		include(pe_tpl('ask_add.html'));
 	break;
-	//#####################@ 咨询删除 @#####################//
+	//####################// 咨询删除 //####################//
 	case 'del':
 		pe_token_match();
 		$ask_id = is_array($_p_ask_id) ? $_p_ask_id : $_g_id;
 		$info_list = $db->pe_selectall('ask', array('ask_id'=>$ask_id));
 		if ($db->pe_delete('ask', array('ask_id'=>$ask_id))) {
 			foreach ($info_list as $v) {
-				product_num($v['product_id'], 'asknum');
+				product_jsnum($v['product_id'], 'asknum');
 			}
 			pe_success('删除成功!');
 		}
@@ -44,7 +44,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 咨询列表 @#####################//
+	//####################// 咨询列表 //####################//
 	default :
 		$sql_where = " and `ask_state` = '".intval($_g_state)."'";
 		$_g_name && $sql_where .= " and `product_name` like '%{$_g_name}%'";

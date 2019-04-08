@@ -2,7 +2,9 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tt">
+			<a href="javascript:;" class="sel">{$menutitle}<i></i></a>
+		</div>
 		<div class="hy_table">
 		<form method="post" id="form">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -70,15 +72,25 @@ $(function(){
 	    city:"{$info['address_city']}",
 	    area:"{$info['address_area']}"
 	});
+	$(":button").click(function(){
+		/*if ($(":input[name='user_tname']").val() == '') {
+			pe_tip('请填写收货人');
+			return false;
+		}
+		if ($(":input[name='user_phone']").val() == '') {
+			pe_tip('请填写手机号码');
+			return false;
+		}
+		if ($(":input[name='address_text']").val() == '') {
+			pe_tip('请填写详细地址');
+			return false;
+		}*/
+		pe_submit('{pe_nowurl()}', function(json){
+			if (json.result) {
+				pe_open("user.php?mod=useraddr", 1000);
+			}
+		})
+	})
 })
-var form_info = [
-	{"name":"address_province", "mod":"str", "act":"change", "arg":"", "show_id":"address_province_show","show_error":"省份必选"},
-	{"name":"address_city", "mod":"str", "act":"change", "arg":"", "show_id":"address_city_show","show_error":"城市必选"},
-	{"name":"address_area", "mod":"str", "act":"change", "arg":"", "show_id":"address_area_show","show_error":"区县必选"},
-	{"name":"address_text", "mod":"str", "act":"blur", "arg":"", "show_id":"address_text_show","show_error":"必填"},
-	{"name":"user_tname", "mod":"str", "act":"blur", "arg":"", "show_id":"user_tname_show","show_error":"必填"},
-	{"name":"user_phone", "mod":"match", "act":"blur", "arg":"phone", "show_id":"user_phone_show","show_error":"格式有误"}
-]
-$(":button").pe_submit(form_info, 'form');
 </script>
 <!--{include(pe_tpl('footer.html'));}-->

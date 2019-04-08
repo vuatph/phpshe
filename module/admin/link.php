@@ -6,7 +6,7 @@
 $menumark = 'link';
 pe_lead('hook/cache.hook.php');
 switch ($act) {
-	//#####################@ 链接添加 @#####################//
+	//####################// 链接添加 //####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
@@ -22,7 +22,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='添加链接', '', '', 'admin');
 		include(pe_tpl('link_add.html'));
 	break;
-	//#####################@ 链接修改 @#####################//
+	//####################// 链接修改 //####################//
 	case 'edit':
 		$link_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
@@ -40,7 +40,7 @@ switch ($act) {
 		$seo = pe_seo($menutitle='修改链接', '', '', 'admin');
 		include(pe_tpl('link_add.html'));
 	break;
-	//#####################@ 链接删除 @#####################//
+	//####################// 链接删除 //####################//
 	case 'del':
 		pe_token_match();
 		$link_id = is_array($_p_link_id) ? $_p_link_id : intval($_g_id);
@@ -52,7 +52,7 @@ switch ($act) {
 			pe_error('删除失败...');
 		}
 	break;
-	//#####################@ 链接排序 @#####################//
+	//####################// 链接排序 //####################//
 	case 'order':
 		pe_token_match();
 		foreach ($_p_link_order as $k => $v) {
@@ -66,10 +66,11 @@ switch ($act) {
 			pe_error('排序失败...');
 		}
 	break;
-	//#####################@ 链接列表 @#####################//
+	//####################// 链接列表 //####################//
 	default:
 		$info_list = $db->pe_selectall('link', array('order by'=>'`link_order` asc, `link_id` asc'), '*', array(10, $_g_page));
 		$tongji['all'] = $db->pe_num('link');
+		
 		$seo = pe_seo($menutitle='友情链接', '', '', 'admin');
 		include(pe_tpl('link_list.html'));
 	break;
