@@ -1,0 +1,60 @@
+<div class="clear"></div>
+<div class="foot">
+	<div class="bottom_link">
+		<div class="border_link">
+			<div class="item_1 fl">
+				<h3>用户指南</h3>
+				<ul class="mat5">
+					<li><a href="{pe_url('page-1')}" title="{$cache_page[1]['page_name']}">{$cache_page[1]['page_name']}</a></li>
+					<li><a href="{pe_url('page-2')}" title="{$cache_page[2]['page_name']}">{$cache_page[2]['page_name']}</a></li>
+					<li><a href="{pe_url('page-3')}" title="{$cache_page[3]['page_name']}">{$cache_page[3]['page_name']}</a></li>
+				</ul>
+			</div>
+			<div class="bottom_libg fl"></div>
+			<div class="item_1 fl">
+				<h3>配送方式</h3>
+				<ul class="mat5">
+					<li><a href="{pe_url('page-4')}" title="{$cache_page[4]['page_name']}">{$cache_page[4]['page_name']}</a></li>
+					<li><a href="{pe_url('page-5')}" title="{$cache_page[5]['page_name']}">{$cache_page[5]['page_name']}</a></li>
+					<li><a href="{pe_url('page-6')}" title="{$cache_page[6]['page_name']}">{$cache_page[6]['page_name']}</a></li>
+				</ul>
+			</div>
+			<div class="bottom_libg fl"></div>
+			<div class="item_1 fl">
+				<h3>售后服务</h3>
+				<ul class="mat5">
+					<li><a href="{pe_url('page-7')}" title="{$cache_page[7]['page_name']}">{$cache_page[7]['page_name']}</a></li>
+					<li><a href="{pe_url('page-8')}" title="{$cache_page[8]['page_name']}">{$cache_page[8]['page_name']}</a></li>
+					<li><a href="{pe_url('page-9')}" title="{$cache_page[9]['page_name']}">{$cache_page[9]['page_name']}</a></li>
+				</ul>
+			</div>
+			<div class="bottom_libg fl"></div>
+			<div class="item_1 fl">
+				<h3>关于我们</h3>
+				<ul class="mat5">
+					<li><a href="{pe_url('page-10')}" title="{$cache_page[10]['page_name']}">{$cache_page[10]['page_name']}</a></li>
+					<li><a href="{pe_url('page-11')}" title="{$cache_page[11]['page_name']}">{$cache_page[11]['page_name']}</a></li>
+					<li><a href="{pe_url('page-12')}" title="{$cache_page[12]['page_name']}">{$cache_page[12]['page_name']}</a></li>
+				</ul>
+			</div>
+			<div class="bottom_libg fl"></div>
+			<div class="item_1 fl">
+				<h3>售后服务电话</h3>
+				<p class="mat8"><img src="{$pe['host_tpl']}images/tel_bottom.gif" /></p>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="flink">
+		<span class="strong">友情链接：</span>
+		<!--{foreach($cache_link as $v):}-->
+		<a href="{$v['link_url']}" title="{$v['link_name']}" target="_blank">{$v['link_name']}</a>
+		<!--{endforeach;}-->
+	</div>
+	<div class="subnav">
+		<p>Copyright <span class="num">©</span> {$cache_setting['web_copyright']['setting_value']} All Rights Reserved {$cache_setting['web_icp']['setting_value']} {$cache_setting['web_tongji']['setting_value']}</p>
+		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="phpshe(PE)以良好的服务为小企业提供B2C电子商务解决方案" class="cgreen">phpshe 1.0(2012-07-07)</a></p>
+	</div>
+</div>
+</body>
+</html>

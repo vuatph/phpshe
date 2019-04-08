@@ -1,0 +1,23 @@
+<div class="now">{$nowpath}</div>
+<div class="danye_left">
+	<div class="danye_help">
+		<div class="huiyuan_img"></div>
+		<div class="danye_list">
+			<h3>交易管理</h3>
+			<ul>
+				<li <!--{if($act=='orderlist'):}-->class="sel"<!--{endif;}-->><a href="index.php?mod=user&act=orderlist">我的订单</a></li>
+			</ul>
+			<h3>信息管理</h3>
+			<ul>
+				<li <!--{if($act=='collectlist'):}-->class="sel"<!--{endif;}-->><a href="index.php?mod=user&act=collectlist">我的收藏</a></li>
+				<li <!--{if($act=='asklist'):}-->class="sel"<!--{endif;}-->><a href="index.php?mod=user&act=asklist">我的咨询</a></li>
+				<li <!--{if($act=='commentlist'):}-->class="sel"<!--{endif;}-->><a href="index.php?mod=user&act=commentlist">我的评价</a></li>
+			</ul>
+			<h3>个人信息</h3>
+			<ul>
+				<li <!--{if($act=='base'):}-->class="sel"<!--{endif;}-->><a href="index.php?mod=user&act=base">基本信息</a></li>
+				<li <!--{if($act=='pw'):}-->class="sel"<!--{endif;}-->><a href="index.php?mod=user&act=pw">修改密码</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

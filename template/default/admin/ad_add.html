@@ -1,0 +1,33 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right fr">
+	<div class="now">
+		<div class="fl now1"></div>
+		<div class="fl now2"><!--{if($_g_act=='edit'):}-->修改广告<!--{else:}-->增加广告<!--{endif;}--></div>
+		<div class="fl now3"></div>
+		<div class="clear"></div>
+	</div>
+	<form method="post" action="{$action}" enctype="multipart/form-data">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+	<tr>
+		<td width="70">广 告 ID：</td>
+		<td>{$info['ad_id']}</td>
+	</tr>
+	<tr>
+		<td>广告链接：</td>
+		<td><input type="text" name="info[ad_url]" value="{$info['ad_url']}" class="inputtext inputtext_400" /></td>
+	</tr>
+	<tr>
+		<td>广告图片：</td>
+		<td>
+			<p><img src="{pe_thumb($info['ad_logo'])}" width="400" height="300" style="border:1px solid #ddd" /></p>
+			<p><input type="file" name="ad_logo" /></p>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td colspan="2"><input type="submit" value="提 交" class="tjbtn" /></td>
+	</tr>
+	</table>
+	</form>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

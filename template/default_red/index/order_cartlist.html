@@ -1,0 +1,80 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content">
+	<div class="width960" style="background:#fff;">
+		<div class="liucheng"><img src="{$pe['host_tpl']}images/liucheng1.gif" /></div>
+		<!--<div class="mat10 mal15">提示：1、加入购物车的商品无法为您保留库存，请及时下单购买；2、商品价格以订单提交时的价格为准。</div>-->
+		<div class="gouwuche">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="63%" class="bg1">商品信息</td>
+				<td width="11%" class="bg1">单价</td>
+				<td width="9%" class="bg1">数量</td>
+				<td width="9%" class="bg1">操作</td>
+			</tr>
+			<!--{foreach($info_list as $v):}-->
+			<tr id="{$v['cart_id']}" class="cart_id">
+				<td>
+					<span class="hotimg fl mal10 mar10"><img src="{pe_thumb($v['product_logo'])}" /></span>
+					<span class="fl mat5"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a></span>
+				</td>
+				<td>￥{$v['product_smoney']}</td>
+				<td class="shuliang border1">
+					<img src="{$pe['host_tpl']}images/jian.gif" onclick="pe_numchange('product_num[{$v['product_id']}]', '-', 1);cart_num('{$v['product_id']}', 'product_num[{$v['product_id']}]')" />
+					<input type="text" name="product_num[{$v['product_id']}]" value="{$v['product_num']}" readonly />
+					<img src="{$pe['host_tpl']}images/jia.gif" onclick="pe_numchange('product_num[{$v['product_id']}]', '+', {$v['product_maxnum']});cart_num('{$v['product_id']}', 'product_num[{$v['product_id']}]')" />
+				</td>
+				<td><a href="javascript:cart_del('{$v['cart_id']}');">删除</a></td>
+			</tr>
+			<!--{endforeach;}-->
+			</table>
+			<div class="zongji">商品总金额（不含运费）：<span class="cred1 font18 num" id="cart_money">￥ {$cart_money}</span></div>
+			<div class="gouwubtn">
+				<span class="fl"><a href="javascript:cart_del('all');"><img src="{$pe['host_tpl']}images/qingkong.gif" /></a></span>
+				<span class="fr"><a href="javascript:order_add();"><img src="{$pe['host_tpl']}images/jiesuan.gif" /></a></span>
+				<span class="fr mar10"><a href="{$pe['host_root']}"><img src="{$pe['host_tpl']}images/jixu.gif" /></a></span>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function cart_num(product_id,name) {
+	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartnumsql","product_id":product_id,"product_num":$(":input[name='"+name+"']").val()}, function(json){
+		if (json.result) {
+			$("#cart_money").html('￥'+json.cart_money);
+		}
+	})
+}
+function cart_del(cart_id){
+	if (cart_id == 'all') {
+		var text = '您确认要清空购物车吗?';
+	}
+	else {
+		var text = '您确认要删除该商品吗?';	
+	}
+	if (confirm(text) == false) {
+		return;
+	}
+	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartdelsql","cart_id":cart_id}, function(json){
+		if (json.result) {
+			if (cart_id == 'all') {
+				$(".cart_id").remove();
+				$("#cart_money").html('￥ 0');
+			}
+			else {
+				$("#"+cart_id).remove();
+				$("#cart_money").html('￥'+json.cart_money);
+			}
+		}
+	})
+}
+function order_add() {
+	if ($(".cart_id").is("tr")) {
+		window.location.href="index.php?mod=order&act=add";
+	}
+	else {
+		alert('您的购物车里还没有商品哦！');
+	}
+}
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

@@ -1,0 +1,61 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content">
+	<div class="width960" style="background:#fff;">
+		<div class="now">{$nowpath}</div>
+		<div class="remai fl" style="margin-top:0">
+			<h3>商品分类</h3>
+			<div class="hotlist spfl">
+				<!--{foreach((array)$category_productarr[0] as $v):}-->
+				<div class="zhulei"><a href="{pe_url('product-list-'.$v['category_id'])}">{$v['category_name']}</a></div>
+				<div class="clear"></div>
+				<!--{if(is_array($category_productarr[$v['category_id']])):}-->
+				<div class="zilei">
+					<!--{foreach($category_productarr[$v['category_id']] as $vv):}-->
+					<a href="{pe_url('product-list-'.$vv['category_id'])}">{$vv['category_name']}</a>
+					<!--{endforeach;}-->
+					<div class="clear"></div>
+				</div>
+				<!--{endif;}-->
+				<!--{endforeach;}-->
+			</div>
+			<h3 class="mat10">热销排行</h3>
+			<ul class="hotlist">
+				<!--{foreach((array)$product_hotlist as $v):}-->
+				<li>
+					<span class="fl hotimg"><img src="{pe_thumb($v['product_logo'], 70, 70)}" title="{$v['product_name']}" /></span>
+					<span class="fl hotname">
+						<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a>
+						<span class="cred num">¥ <strong>{$v['product_smoney']}</strong></span>
+					</span>
+					<div class="clear"></div>
+				</li>
+				<!--{endforeach;}-->
+			</ul>
+		</div>
+		<div class="fr xiangqing" style="margin-top:0">
+			<div class="caidan">
+				<ul>
+					<li <!--{if(!$_g_orderby):}-->class="sel"<!--{endif;}-->><a href="{pe_url('product-list-'.$category_id)}">所有商品</a></li>
+					<li <!--{if($_g_orderby==1):}-->class="sel"<!--{endif;}-->><a href="{pe_updateurl('orderby',1)}">销 量</a></li>
+					<li <!--{if($_g_orderby==2):}-->class="sel"<!--{endif;}-->><a href="{pe_updateurl('orderby',2)}">价 格</a></li>
+					<li <!--{if($_g_orderby==3):}-->class="sel"<!--{endif;}-->><a href="{pe_updateurl('orderby',3)}">好 评</a></li>
+					<li <!--{if($_g_orderby==4):}-->class="sel"<!--{endif;}-->><a href="{pe_updateurl('orderby',4)}">上架时间</a></li>
+				</ul>
+			</div>
+			<div class="prolist">
+				<!--{foreach((array)$info_list as $v):}-->
+				<div class="prolist_1 prolist_border">
+					<p class="prolist_img prolist_img1"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank"><img src="{pe_thumb($v['product_logo'], 180, 180)}" title="{$v['product_name']}" /></a></p>
+					<p class="prolist_name"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a></p>
+					<p class="c888">市场价：<s class="num">¥ {$v['product_mmoney']}</s></p>
+					<p class="cred">商城价：<strong class="num">¥ {$v['product_smoney']}</strong></p>
+				</div>
+				<!--{endforeach;}-->
+			</div>
+			<div class="clear"></div>
+			<div class="fenye mat15">{$db->page->html}</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

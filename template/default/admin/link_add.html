@@ -1,0 +1,26 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right fr">
+	<div class="now">
+		<div class="fl now1"></div>
+		<div class="fl now2"><!--{if($_g_act == 'edit'):}-->修改链接<!--{else:}-->增加链接<!--{endif;}--></div>
+		<div class="fl now3"></div>
+		<div class="clear"></div>
+	</div>
+	<form method="post" action="{$action}">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+	<tr>
+		<td width="70">链接名称：</td>
+		<td><input type="text" name="info[link_name]" value="{$info['link_name']}" class="inputtext inputtext_200" /></td>
+	</tr>
+	<tr>
+		<td>链接地址：</td>
+		<td><input type="text" name="info[link_url]" value="{$info['link_url']}" class="inputtext inputtext_400" /></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><input type="submit" value="提 交" class="tjbtn"></td>
+	</tr>
+	</table>
+	</form>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

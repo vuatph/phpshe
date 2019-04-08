@@ -1,0 +1,55 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content">
+	<div class="width960" style="background:#fff;">
+		<!--{include(pe_tpl('user_menu.html'));}-->
+		<div class="fr huiyuan_main hy_add">
+			<div class="hymain_tt">
+				<span class="fl strong">亲，{$_s_user_name}，欢迎回来！</span>
+				<span class="fr c666">上次登录：{$_s_user_ltime}</span>
+			</div>
+			<form method="post" action="{$action}" id="form">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="80" align="right"> 帐　　号：</td>
+				<td>{$info['user_name']}</td>
+			</tr>
+			<tr>
+				<td align="right">收货地址：</td>
+				<td><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputtext input400" /></td>
+			</tr>
+			<tr>
+				<td align="right">收货姓名：</td>
+				<td><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputtext input100" /><span id="user_tname_show"></span></td>
+			</tr>
+			<tr>
+				<td align="right">手机号码：</td>
+				<td><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputtext input100" /><span id="user_phone_show"></span></td>
+			</tr>
+			<tr>
+				<td align="right">常用邮箱：</td>
+				<td><input type="text" name="info[user_email]" value="{$info['user_email']}" class="inputtext input200" /><span id="user_email_show"></span></td>
+			</tr>
+			<tr>
+				<td align="right">注册日期：</td>
+				<td>{pe_date($info['user_atime'])}</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="button" value="提交"  class="tj_btn"></td>
+			</tr>
+			</table>
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
+<script type="text/javascript">
+var form_info = [
+	{"name":"info[user_tname]", "mod":"match", "act":"blur", "arg":"zh", "show_id":"user_tname_show","show_error":"收货人姓名必须为汉字", "must":false},
+	{"name":"info[user_phone]", "mod":"match", "act":"blur", "arg":"phone", "show_id":"user_phone_show","show_error":"手机号错误", "must":false},
+	{"name":"info[user_email]", "mod":"match", "act":"blur", "arg":"email", "show_id":"user_email_show","show_error":"邮箱格式错误", "must":false}
+]
+$(":button").pe_submit(form_info, 'form');
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

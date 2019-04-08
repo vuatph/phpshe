@@ -1,0 +1,71 @@
+﻿body {background:#fff; margin:0 auto; font-size:12px; font-family:"宋体",Arial, Helvetica, sans-serif; color:#333; line-height:20px;}
+.centerbody{margin:0 auto;}
+a,a:hover{color:#333;text-decoration:none;}
+a:hover{color:#FF5A00;}
+ol,ul,li,dl,dd,dt{list-style:none;}
+h1,h2,h3{font-size:14px;}
+.clear{clear:both; height:0; overflow:hidden;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;}
+.teal{text-align:center;}
+/*img定义*/
+img{border:0;}
+.imgborder{padding:2px;border:1px solid #ccc;}
+a:hover .imgborder{border:1px solid #ff4200; background:#fff;}
+/*color定义*/
+.cred{color:#cb2529;}
+.cred1{color:#ed1e26;}
+.cfen{color:#c92a60;}
+.corg{color:#FF5A00;}
+.cgreen{color:#090;}
+.cblue{color:#015FD9;}
+.c666{color:#666}
+.c888{color:#888}
+.c333{color:#333}
+/*定位*/
+.fl{float:left;}
+.fr{float:right;}
+.mat2{margin-top:2px;}
+.mat5{margin-top:5px;}
+.mat8{margin-top:8px;}
+.mat10{margin-top:10px;}
+.mat15{margin-top:15px;}
+.mat20{margin-top:20px;}
+.mat25{margin-top:25px;}
+.mab5{margin-bottom:5px;}
+.mab10{margin-bottom:10px;}
+.mab15{margin-bottom:15px;}
+.mab20{margin-bottom:20px;}
+.mar5{margin-right:5px;}
+.mar10{margin-right:10px;}
+.mar15{margin-right:15px;}
+.mar20{margin-right:20px;}
+.mar50{margin-right:100px;}
+.mal5{margin-left:5px;}
+.mal15{margin-left:15px;}
+.mal7{margin-left:6px;}
+.mal10{margin-left:10px;}
+.padb10{padding-bottom:10px;}
+.padt10{padding-top:10px;}
+/*字体*/
+.font12{font-size:12px;}
+.font14{font-size:14px;}
+.font16{font-size:16px;}
+.font18{font-size:18px;}
+.font20{font-size:24px;}
+.lh18{line-height:18px;}
+.lh20{line-height:20px;}
+.lh24{line-height:24px;}
+.lh28{line-height:28px;}
+.lh30{line-height:30px;}
+.hei24{height:24px;} 
+.hei30{height:30px;}
+.hei60{height:60px;}
+/*文字*/
+.more{float:right; color:#999;font-size:12px;padding-right:10px;font-weight:normal;}
+.more a:hover{color:#ff4400;}
+.num{font-family:"Arial";}
+.strong{font-weight:bold;}
+.normal{font-weight:normal;}
+.xuxian{border-bottom:1px dashed #ccc;}
+.xuxian1{border-bottom:1px dotted #ccc;}

@@ -1,0 +1,9 @@
+数据库sql文件是：./phpshe.sql
+程序配置文件是：./config.php
+
+安装步骤：
+1.用FTP工具把程序上传到服务器；
+2.给./data 目录及其子目录 777 权限；
+3.导入sql文件(phpshe.sql)，修改config.php里的数据库连接信息。
+
+简好技术（http://www.phpshe.com）

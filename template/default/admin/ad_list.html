@@ -1,0 +1,40 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right fr">
+	<div class="now">
+		<div class="fl now1"></div>
+		<div class="fl now2">
+			<span class="fl">广告管理</span>
+			<span class="fr fabu mat8"><a href="admin.php?mod=ad&act=add">增加广告</a></span>
+		</div>
+		<div class="fl now3"></div>
+		<div class="clear"></div>
+	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
+	<tr>
+		<td class="bgtt" align="center" width="40">ID号</td>
+		<td class="bgtt" align="center" width="50">排序</td>
+		<td class="bgtt" align="center">广告图片</td>
+		<td class="bgtt" align="center" width="70">操作</td>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr height="60">
+		<td align="center">{$v['ad_id']}</td>
+		<td align="center"><input type="text" name="ad_order[{$v['ad_id']}]" value="{$v['ad_order']}" class="inputtext inputtext_50" /></td>
+		<td align="center"><a href="{$v['ad_url']}" target="_blank"><img src="{pe_thumb($v['ad_logo'])}" height="50" width="300" /></a></td>
+		<td align="center">
+			<a href="admin.php?mod=ad&act=edit&id={$v['ad_id']}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=ad&act=delsql&id={$v['ad_id']}" class="admin_del" onclick="return pe_cfone('删除')">删除</a>
+		</td>
+	</tr>
+	<!--{endforeach;}-->
+	<tr>
+		<td class="bgtt" colspan="4">
+			<span class="fl"><button href="admin.php?mod=ad&act=ordersql" onclick="pe_doall(this,'form')">批量排序</button></span>
+			<span class="fenye">{$db->page->html}</span>
+		</td>
+	</tr>
+	</table>
+	</form>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

@@ -1,0 +1,29 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content">
+	<div class="width960" style="background:#fff;">
+		<!--{include(pe_tpl('user_menu.html'));}-->
+		<div class="fr huiyuan_main">
+			<div class="gouwuche">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<th class="bg1">评价详情</th>
+					<th class="bg1" width="200">商品名称</th>
+					<th class="bg1" width="100">评价时间</th>
+				</tr>
+				<!--{foreach($info_list as $v):}-->
+				<tr>
+					<td style="text-align:left">{$v['comment_text']}</td>
+					<td style="text-align:left"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></td>
+					<td class="c666">{pe_date($v['comment_atime'])}</td>
+				</tr>
+				<!--{endforeach;}-->
+				</table>
+				<div class="hy_pay">
+					<div class="fenye">{$db->page->html}</div>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

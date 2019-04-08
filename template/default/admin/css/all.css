@@ -1,0 +1,39 @@
+body {margin:0 auto; font-size:12px; font-family:"宋体",Arial, Helvetica, sans-serif; color:#333; line-height:20px;}
+a,a:hover{color:#333;text-decoration:none;}
+a:hover{color:#FF5A00;}
+ol,ul,li,dl,dd,dt{list-style:none;}
+h1,h2,h3{font-size:14px;}
+.clear{clear:both; height:0; overflow:hidden;}
+.centerbody{margin:0 auto;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;}
+img{border:0;}
+/*定位*/
+.fl{float:left;}
+.fr{float:right;}
+.mat5{margin-top:5px;}
+.mat8{margin-top:8px;}
+.mat10{margin-top:10px;}
+.mal5{margin-left:5px;}
+.mar5{margin-right:5px;}
+/*字体*/
+textarea{font-size:14px;}
+.font12{font-size:12px;}
+.font14{font-size:14px;}
+.font16{font-size:16px;}
+.font18{font-size:18px;}
+.font20{font-size:24px;}
+/*文字*/
+.more{float:right; color:#999;font-size:12px;padding-right:10px;font-weight:normal;}
+.more a:hover{color:#ff4400;}
+.num{font-family:"Arial";}
+.strong{font-weight:bold;}
+.normal{font-weight:normal;}
+/*color定义*/
+.cred,.cfen{color:#BF0101;}
+.corg{color:#FF5A00;}
+.cgreen{color:#090;}
+.cblue{color:#015FD9;}
+.c666{color:#666}
+.c333{color:#333}
+.c888{color:#888}

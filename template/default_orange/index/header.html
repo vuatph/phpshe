@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$seo['title']}</title>
+<meta name="keywords" content="{$seo['keywords']}" />
+<meta name="description" content="{$seo['description']}" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/all.css"  />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
+</head>
+<body>
+<div class="pagetop">
+	<div class="width960">
+		<div class="quick_menu">
+			<p>
+			<!--{if($_s_user_id_key):}-->
+			您好，{$_s_user_name}！
+			<a href="{$pe['host_root']}index.php?mod=user&act=orderlist" title="会员中心">会员中心</a>
+			<a href="{$pe['host_root']}index.php?mod=order&act=cartlist" title="购物车">购物车 <span class="cred">{$cart_num}</span> 件</a>
+			<!--{if($cache_setting['web_weibo']['setting_value']):}-->
+			<a href="{pe_url('user-logout')}" title="退出">退出</a>
+			<a href="{$cache_setting['web_weibo']['setting_value']}" title="官方微博" target="_blank" style="border:0">官方微博</a>
+			<!--{else:}-->
+			<a href="{pe_url('user-logout')}" title="退出" style="border:0">退出</a>
+			<!--{endif;}-->
+			<!--{else:}-->
+			欢迎来到{$cache_setting['web_name']['setting_value']}！
+			<a href="{pe_url('user-login')}" title="登录">登录</a>
+			<!--{if($cache_setting['web_weibo']['setting_value']):}-->
+			<a href="{pe_url('user-register')}" title="注册">注册</a>
+			<a href="{$cache_setting['web_weibo']['setting_value']}" title="官方微博" target="_blank" style="border:0">官方微博</a>
+			<!--{else:}-->
+			<a href="{pe_url('user-register')}" title="注册" style="border:0">注册</a>
+			<!--{endif;}-->
+			<!--{endif;}-->
+			</p>
+		</div>
+		<div class="clear"></div>
+		<div class="header">
+			<div class="fl"><a href="{$pe['host_root']}" title="{$cache_setting['web_name']['setting_value']}"><img src="{$pe['host_tpl']}images/logo.jpg" /></a></div>
+			<div class="sear fr">
+				<form method="get" action="{pe_url('product-list')}">
+				<div class="inputbg fl"><input type="text" name="keyword" value="{$_g_keyword}" class="fl searinput" /></div>
+				<!--<a href="#"><img class="fl" src="{$pe['host_tpl']}images/sear.gif" /></a>-->
+				<input type="image" src="{$pe['host_tpl']}images/searbtn.gif" class="fl" onclick="this.form.submit();return false;" />
+				</form>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="nav">
+		<ul>
+			<li class="sel"><a href="{$pe['host_root']}" title="首页">首页</a></li>
+			<!--{foreach((array)$category_productarr[0] as $v):}-->
+			<li><a href="{pe_url('product-list-'.$v['category_id'])}">{$v['category_name']}</a></li>
+			<!--{endforeach;}-->
+		</ul>
+	</div>
+	<div class="clear"></div>
+</div>
