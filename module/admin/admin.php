@@ -1,51 +1,55 @@
 <?php
 /**
- * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2014 简好网络 <http://www.phpshe.com>
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'admin';
+$adminlevel_list = $db->index('adminlevel_id')->pe_selectall('adminlevel');
 switch ($act) {
-	//#####################@ 管理增加 @#####################//
+	//#####################@ 帐号添加 @#####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
+			pe_token_match();
 			$_p_admin_pw && $_p_info['admin_pw'] = md5($_p_admin_pw);
 			if ($db->pe_insert('admin', $_p_info)) {
-				pe_success('管理增加成功!', 'admin.php?mod=admin');
+				pe_success('帐号添加成功!', 'admin.php?mod=admin');
 			}
 			else {
-				pe_error('管理增加失败...');
+				pe_error('帐号添加失败...');
 			}
 		}
-		$seo = pe_seo($menutitle='增加管理', '', '', 'admin');
+		$seo = pe_seo($menutitle='添加帐号', '', '', 'admin');
 		include(pe_tpl('admin_add.html'));
 	break;
-	//#####################@ 管理修改 @#####################//
+	//#####################@ 帐号修改 @#####################//
 	case 'edit':
 		$admin_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
+			pe_token_match();
 			$_p_admin_pw && $_p_info['admin_pw'] = md5($_p_admin_pw);
 			if ($db->pe_update('admin', array('admin_id'=>$admin_id), $_p_info)) {
-				pe_success('管理信息修改成功!', 'admin.php?mod=admin');
+				pe_success('帐号修改成功!', 'admin.php?mod=admin');
 			}
 			else {
-				pe_error('管理信息修改失败...');
+				pe_error('帐号修改失败...');
 			}
 		}
 		$info = $db->pe_select('admin', array('admin_id'=>$admin_id));
-		$seo = pe_seo($menutitle='修改管理信息', '', '', 'admin');
+		$seo = pe_seo($menutitle='修改帐号', '', '', 'admin');
 		include(pe_tpl('admin_add.html'));
 	break;
-	//#####################@ 管理删除 @#####################//
+	//#####################@ 帐号删除 @#####################//
 	case 'del':
-		$_g_id == 1 && pe_error('抱歉，默认管理员不可删除...');
+		pe_token_match();
+		$_g_id == 1 && pe_error('默认帐号不可删除...');
 		if ($db->pe_delete('admin', array('admin_id'=>$_g_id))) {
-			pe_success('管理删除成功!');
+			pe_success('帐号删除成功!');
 		}
 		else {
-			pe_error('管理删除失败...');
+			pe_error('帐号删除失败...');
 		}
 	break;
-	//#####################@ 管理列表 @#####################//
+	//#####################@ 管理帐号 @#####################//
 	default:
 		$info_list = $db->pe_selectall('admin', '', '*', array(20, $_g_page));
 		$seo = pe_seo($menutitle='管理列表', '', '', 'admin');

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+</head>
+<body style="background:none">
+<form method="post">
+<table style="width:720px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="list">
+<!--{if(count($cache_rule)):}-->
+<!--{foreach($cache_rule as $k=>$v):}-->
+<tr>
+	<td class="aleft bgtt" style="padding-left:10px" width="120">{$v['rule_name']}<!--{if($v['rule_memo']):}--><span class="c888">[{$v['rule_memo']}]</span><!--{endif;}--></td>
+	<td>
+		<!--{foreach((array)$cache_rule[$v['rule_id']]['list'] as $vv):}-->
+		<label class="rule_id"><input type="checkbox" name="ruledata_id[]" value="{$vv['ruledata_id']}" class="mar5 mat3" <!--{if(in_array($vv['ruledata_id'], $prorule_key)):}-->checked="checked"<!--{endif;}--> />{$vv['ruledata_name']}</label>
+		<!--{endforeach;}-->
+	</td>
+</tr>
+<!--{endforeach;}-->
+<!--{endif;}-->
+</table>
+<div class="mat10 center"><input type="button" value="生成数据" class="tjbtn" /></div>
+</form>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
+<script type="text/javascript">
+function ruledata_select() {
+	$("label :input").each(function(){
+		if ($(this).is(":checked")) {
+			$(this).parent("label").css({"background":"#8cc20b", "color":"#fff"});
+		}
+		else {
+			$(this).parent("label").css("background","#fff")
+		}
+	})
+}
+$(function(){
+ruledata_select();
+$("label").click(function(){
+	ruledata_select();
+})
+$(":button").click(function(){
+	var ruledata_id = new Array();
+	$("input[name='ruledata_id[]']:checked").each(function(){
+		ruledata_id.push($(this).val());
+	})
+	$.getJSON("{$pe['host_root']}admin.php", {"mod":"product", "act":"rule_html", "ruledata_id":ruledata_id.join(',')}, function(json){
+		$(window.parent.document).find("#rule_html").html(json.html);
+		art.dialog.close();
+	})
+})
+})
+</script>
+</body>
+</html>

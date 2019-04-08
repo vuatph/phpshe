@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
 class db { 
@@ -76,7 +76,7 @@ class db {
 	{
 		if ($this->query($sql) == true) {
 			$result = mysql_affected_rows();
-			return $result == 0 ? 1 : $result;
+			return $result == 0 ? true : $result;
 		}
 		return 0;		
 	}
@@ -202,7 +202,20 @@ class db {
 	//处理设置语句
 	protected function _doset($set)
 	{
-		if (is_array($set)) {
+		//仅针对insert插入多条数据
+		if (is_array($set) && count($set, 1) > count($set)) {			
+			foreach ($set as $set_one) {
+				$key_arr = $val_arr = array();
+				foreach ($set_one as $k => $v) {
+					$key_arr[] = str_ireplace('`', '', $k);
+					$val_arr[] = "'{$v}'";
+				}
+				$val_str[] = "(" . implode($val_arr, ', ') . ")";
+			}
+			$key_str = "(" . implode($key_arr, ', ') . ")";
+			$sqlset = "{$key_str}  values ".implode($val_str, ', ');
+		}
+		elseif (is_array($set) && count($array, 1) == count($array)) {	
 			foreach ($set as $k => $v) {
 				$k = str_ireplace('`', '', $k);
 				$set_arr[] = "`{$k}` = '{$v}'";

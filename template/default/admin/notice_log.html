@@ -1,0 +1,35 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right">
+	<div class="now">
+		<a href="admin.php?mod=notice" <!--{if($act=='index'):}-->class="sel"<!--{endif;}-->>邮件通知</a>
+		<a href="admin.php?mod=notice&act=log" <!--{if($act=='log'):}-->class="sel"<!--{endif;}-->>邮件发送记录</a>
+		<div class="clear"></div>
+	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="50">ID号</th>
+		<th class="bgtt">邮件标题</th>
+		<th class="bgtt" width="200">收件人</th>
+		<th class="bgtt" width="150">发送时间</th>
+		<th class="bgtt" width="80">发送状态</th>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr>
+		<td>{$v['noticelog_id']}</td>
+		<td class="aleft">{$v['noticelog_name']}</td>
+		<td>{$v['noticelog_user']}</td>
+		<td class="num"><!--{if($v['noticelog_state']==1):}-->{pe_date($v['noticelog_stime'])}<!--{else:}-->-<!--{endif;}--></td>
+		<td><!--{if($v['noticelog_state']==1):}--><img src="{$pe['host_tpl']}images/dui.png" /><!--{else:}--><span class="cred">等待发送</span><!--{endif;}--></td>
+	</tr>
+	<!--{endforeach;}-->
+	<!--{if($db->page->html):}-->
+	<tr>
+		<td class="bgtt"></td>
+		<td class="bgtt" colspan="5"><span class="fenye">{$db->page->html}</span></td>
+	</tr>
+	<!--{endif;}-->
+	</table>
+	</form>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

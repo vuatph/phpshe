@@ -1,40 +1,47 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<span class="fl c888">管理中心 > {$menutitle}</span>
-		<span class="fr fabu"><a href="admin.php?mod=ad&act=add">增加链接</a></span>
+		<a href="admin.php?mod=ad" <!--{if($mod=='ad' && $act=='index'):}-->class="sel"<!--{endif;}-->>广告列表</a>
+		<a href="admin.php?mod=ad&act=add" <!--{if($mod=='ad' && $act=='add'):}-->class="sel"<!--{endif;}--> id="fabu">添加广告</a>
 		<div class="clear"></div>
 	</div>
-	<div class="right_main">
-		<form method="post" id="form">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-		<tr>
-			<td class="bgtt" width="60">ID号</td>
-			<td class="bgtt" width="50">排序</td>
-			<td class="bgtt">广告图片</td>
-			<td class="bgtt" width="300">广告位置</td>
-			<td class="bgtt" width="90">操作</td>
-		</tr>
-		<!--{foreach($info_list as $v):}-->
-		<tr height="60">
-			<td>{$v['ad_id']}</td>
-			<td><input type="text" name="ad_order[{$v['ad_id']}]" value="{$v['ad_order']}" class="inputtext input40" /></td>
-			<td><a href="{$v['ad_url']}" target="_blank"><img src="{pe_thumb($v['ad_logo'])}" height="80" width="300" /></a></td>
-			<td>{$ad_position[$v['ad_position']]}</td>
-			<td>
-				<a href="admin.php?mod=ad&act=edit&id={$v['ad_id']}&token={pe_token_set()}" class="admin_edit mar5">修改</a>
-				<a href="admin.php?mod=ad&act=del&id={$v['ad_id']}&token={pe_token_set()}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
-			</td>
-		</tr>
-		<!--{endforeach;}-->
-		<tr>
-			<td class="bgtt" colspan="5">
-				<span class="fl"><button href="admin.php?mod=ad&act=order" onclick="pe_doall(this,'form')">批量排序</button></span>
-				<span class="fenye">{$db->page->html}</span>
-			</td>
-		</tr>
-		</table>
-		</form>
-	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="50">ID号</th>
+		<th class="bgtt" width="50">排序</th>
+		<th class="bgtt" width="230">广告图片</th>
+		<th class="bgtt" width="200">广告位置</th>
+		<th class="bgtt">广告链接</th>
+		<th class="bgtt" width="60">显示</th>
+		<th class="bgtt" width="90">操作</th>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr height="60">
+		<td>{$v['ad_id']}</td>
+		<td><input type="text" name="ad_order[{$v['ad_id']}]" value="{$v['ad_order']}" class="inputtext input40" /></td>
+		<td><a href="{$v['ad_url']}" target="_blank"><img src="{pe_thumb($v['ad_logo'])}" style="width:160px; height:55px; border:1px solid #F2F2F2" /></a></td>
+		<td>{$ad_position[$v['ad_position']]}</td>
+		<td class="aleft"><a href="{$v['ad_url']}" target="_blank">{$v['ad_url']}</a></td>
+		<td>
+			<!--{if($v['ad_state']==1):}-->
+			<a href="admin.php?mod=ad&act=state&state=0&id={$v['ad_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/dui.png" /></a>
+			<!--{else:}-->
+			<a href="admin.php?mod=ad&act=state&state=1&id={$v['ad_id']}&token={$pe_token}"><img src="{$pe['host_tpl']}images/cuo.png" /></a>
+			<!--{endif;}-->
+		</td>
+		<td>
+			<a href="admin.php?mod=ad&act=edit&id={$v['ad_id']}" class="admin_edit mar5">修改</a>
+			<a href="admin.php?mod=ad&act=del&id={$v['ad_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+		</td>
+	</tr>
+	<!--{endforeach;}-->
+	<tr>
+		<td class="bgtt"></td>
+		<td class="bgtt" style="padding:0"><button href="admin.php?mod=ad&act=order&token={$pe_token}" onclick="pe_doall(this,'form')">更新排序</button></td>
+		<td class="bgtt" colspan="5"><span class="fenye">{$db->page->html}</span></td>
+	</tr>
+	</table>
+	</form>
 </div>
 <!--{include(pe_tpl('footer.html'));}-->

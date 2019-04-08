@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>修改收货信息</title>
+<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+</head>
+<body style="background:none">
+<form method="post">
+<table style="width:550px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<tr>
+	<td style="border-top:0;border-left:0" class="bgtt aright c888" width="120">订单编号</td>
+	<td style="border-top:0;border-right:0">{$info['order_id']}</td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">收货姓名</td>
+	<td style="border-right:0;"><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputall input150"></td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">联系电话</td>
+	<td style="border-right:0;"><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputall input150" /></td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">收货地址</td>
+	<td style="border-right:0;"><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputall input400" /></td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">买家留言</td>
+	<td style="border-right:0;"><textarea name="info[order_text]" style="width:400px;height:80px">{$info['order_text']}</textarea></td>
+</tr>
+</table>
+<div class="acenter mat10">
+	<input type="hidden" name="pe_token" value="{$pe_token}" />	
+	<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
+</div>
+</form>
+</body>
+</html>

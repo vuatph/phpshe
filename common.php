@@ -1,60 +1,42 @@
 <?php
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2011-0501 koyshe <koyshe@gmail.com>
  */
 error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('PRC');
 header('Content-Type: text/html; charset=utf-8');
 
-//改写不安全的register_global和防sql注入处理
+//#################=====关闭register_globals=====#################//
 if (@ini_get('register_globals')) {
-	foreach($_REQUEST as $name => $value){unset($$name);}
+	foreach ($_REQUEST as $name => $value) unset($$name);
 }
 
-//url路由配置
-$module = $mod = $act = 'index';
-$mod = $_POST['mod'] ? $_POST['mod'] : ($_GET['mod'] ? $_GET['mod'] : $mod);
-$act = $_POST['act'] ? $_POST['act'] : ($_GET['act'] ? $_GET['act'] : $act);
-$id = $_POST['id'] ? $_POST['id'] : ($_GET['id'] ? $_GET['id'] : $id);
-
-if ($_SERVER['PATH_INFO']) {
-	$module = 'index';
-	$_pathinfo = explode('/', str_ireplace('.html', '', trim($_SERVER['PATH_INFO'], '/')));
-
-	$mod = $_pathinfo[0] ? $_pathinfo[0] : $mod;
-	$act = $_pathinfo[1] ? $_pathinfo[1] : $act;
-
-	if ($_pathinfo[1]) {
-		$querystr = explode('-', $_pathinfo[1]);
-		$querystr[0] && $act = $querystr[0];
-		$querystr[1] && $id = $querystr[1];
-	}
-}
-else {
-	$module = basename($_SERVER['SCRIPT_NAME'], '.php');
-}
-
-include(dirname(__FILE__).'/config.php');
-//#################=====定义全局路径=====#################//
+//#################=====定义根路径=====#################//
 $pe['host_root'] = 'http://'.str_ireplace(rtrim(str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']), '/'), $_SERVER['HTTP_HOST'], str_replace('\\', '/', dirname(__FILE__))).'/';
 $pe['path_root'] = str_replace('\\','/',dirname(__FILE__)).'/';
 
 //#################=====包含常用类-函数文件=====#################//
-include($pe['path_root'].'/include/class/db.class.php');
-include($pe['path_root'].'/include/class/page.class.php');
-include($pe['path_root'].'/include/class/cache.class.php');
-include($pe['path_root'].'/include/function/global.func.php');
+include($pe['path_root'].'config.php');
+include($pe['path_root'].'hook/ini.hook.php');
+include($pe['path_root'].'include/class/db.class.php');
+include($pe['path_root'].'include/class/page.class.php');
+include($pe['path_root'].'include/class/cache.class.php');
+include($pe['path_root'].'include/function/global.func.php');
+include($pe['path_root'].'include/function/license.func.php');
+//#################=====URL路由配置=====#################//
+pe_urlroute();
 
+//#################=====定义模板路径=====#################//
 $cache_setting = cache::get('setting');
-$module_tpl = $cache_setting['web_tpl']['setting_value'];
-if (!is_dir("{$pe['path_root']}template/{$cache_setting['web_tpl']['setting_value']}/{$module}/")) {
+$module_tpl = $cache_setting['web_tpl'];
+if (!is_dir("{$pe['path_root']}template/{$module_tpl}/{$module}/")) {
 	$module_tpl = 'default';
 }
 $pe['host_tpl'] = "{$pe['host_root']}template/{$module_tpl}/{$module}/";
 $pe['path_tpl'] = "{$pe['path_root']}template/{$module_tpl}/{$module}/";
 
-
+//#################=====重新定义GPC=====#################//
 if (get_magic_quotes_gpc()) {
 	!empty($_GET) && extract(pe_trim(pe_stripslashes($_GET)), EXTR_PREFIX_ALL, '_g');
 	!empty($_POST) && extract(pe_trim(pe_stripslashes($_POST)), EXTR_PREFIX_ALL, '_p');
@@ -66,9 +48,8 @@ else {
 session_start();
 !empty($_SESSION) && extract(pe_trim($_SESSION),EXTR_PREFIX_ALL,'_s');
 !empty($_COOKIE) && extract(pe_trim(pe_stripslashes($_COOKIE)),EXTR_PREFIX_ALL,'_c');
+$pe_token = $_s_pe_token;
 
-//连接数据库开始吧
+//#################=====连接数据库开始吧=====#################//
 $db = new db($pe['db_host'], $pe['db_user'], $pe['db_pw'], $pe['db_name'], $pe['db_coding']);
-if($module == 'admin' && $mod == 'product' && $act == 'add' && $db->pe_num('product') >= 50) $mod = 'rule';
-if($module == 'admin' && $mod == 'order' && $db->pe_num('order') >= 50) $mod = 'rule';
 ?>

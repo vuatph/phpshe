@@ -23,16 +23,20 @@ $md5string=strtoupper(md5($v_oid.$v_pstatus.$v_amount.$v_moneytype.$key));
 /**
  * 判断返回信息，如果支付成功，并且支付结果可信，则做进一步的处理
  */
-
+if ($key == '') die('error');
 if ($v_md5str==$md5string) {
 	if($v_pstatus=="20") {
-		$info = $db->pe_select('order', array('order_id'=>$v_oid));
+		$info = $db->pe_select('order', array('order_id'=>pe_dbhold($v_oid)));
 		if ($info['order_state'] == 'notpay') {
 			$order['order_outid'] = $v_pmode;
 			$order['order_payway'] = 'ebank';
 			$order['order_state'] = 'paid';
 			$order['order_ptime'] = time();					
-			$db->pe_update('order', array('order_id'=>$v_oid), $order);
+			$db->pe_update('order', array('order_id'=>pe_dbhold($v_oid)), pe_dbhold($order));
+			if ($cache_setting['notice_orderpay']) {
+				pe_lead('hook/qunfa.hook.php');
+				order_notice('pay', $info['order_id']);
+			}
 			pe_success('订单支付成功...');
 		}
 	}

@@ -1,54 +1,52 @@
 <?php
 /**
- * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2014 简好网络 <http://www.phpshe.com>
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'index';
+switch ($act) {
+	//#####################@ phpinfo信息 @#####################//
+	case 'phpinfo':
+		phpinfo();
+	break;
+	//#####################@ 后台首页 @#####################//
+	default:
+		$time1 = strtotime(date('Y-m-d'));
+		$time2 = strtotime('-1 day');
+		$tongji['iplog_today'] = $db->pe_num('iplog', array('iplog_adate'=>date('Y-m-d')));
+		$tongji['iplog_lastday'] = $db->pe_num('iplog', array('iplog_adate'=>date('Y-m-d', time()-86400)));
+		$tongji['iplog_all'] = $db->pe_num('iplog');
 
-$tongji['product_up'] = $db->pe_num('product', array('product_state'=>1));
-$tongji['product_down'] = $db->pe_num('product', array('product_state'=>2));
-$tongji['product_empty'] = $db->pe_num('product', array('product_num'=>0));
-$tongji['product_tuijian'] = $db->pe_num('product', array('product_istuijian'=>1));
+		$tongji['user_today'] = $db->pe_num('user', " and `user_atime` >= '{$time1}'");
+		$tongji['user_lastday'] = $db->pe_num('user', " and `user_atime` >= '{$time2}' and `user_atime` < '{$time1}'");
+		$tongji['user_all'] = $db->pe_num('user'); 
 
+		$tongji['order_today'] = $db->pe_num('order', " and `order_atime` >= '{$time1}'");
+		$tongji['order_lastday'] = $db->pe_num('order', " and `order_atime` >= '{$time2}' and `order_atime` < '{$time1}'");
+		$tongji['order_all'] = $db->pe_num('order'); 
 
-$tongji['order_today'] = $db->pe_num('order', " and `order_atime` >= '".strtotime(date('Y-m-d'))."'");
-$tongji['order_lastday'] = $db->pe_num('order', " and `order_atime` < '".strtotime(date('Y-m-d'))."' and `order_atime` >= '".strtotime('-1 day')."'");
-$tongji['order_all'] = $db->pe_num('order'); 
-$tongji['order_success'] = $db->pe_num('order', array('order_state'=>'success')); 
+		$tongji['product_num'] = $db->pe_num('product');
+		$tongji['ask_num'] = $db->pe_num('ask');
+		$tongji['comment_num'] = $db->pe_num('comment');
 
+		$tongji['order_notpay'] = $db->pe_num('order', " and `order_state` = 'notpay' and `order_payway` != 'cod'");
+		$tongji['order_waitsend'] = $db->pe_num('order', " and (`order_state` = 'paid' or (`order_state` = 'notpay' and `order_payway` = 'cod'))");
+		$tongji['order_waitsure'] = $db->pe_num('order', array('order_state'=>'send'));
+		$tongji['ask_waitreply'] = $db->pe_num('ask', array('ask_state'=>0));
 
-
-$tongji['money_today'] = $db->pe_select('order', " and `order_atime` >= '".strtotime(date('Y-m-d'))."'", "sum(`order_money`) as `money`");
-$tongji['money_lastday'] = $db->pe_select('order', " and `order_atime` < '".strtotime(date('Y-m-d'))."' and `order_atime` >= '".strtotime('-1 day')."'", "sum(`order_money`) as `money`");
-$tongji['money_all'] = $db->pe_select('order', "", "sum(`order_money`) as `money`"); 
-$tongji['order_success'] = $db->pe_num('order', array('order_state'=>'success'));
-
-$tongji['money_today'] = $tongji['money_today']['money'] ? $tongji['money_today']['money'] : '0.0';
-$tongji['money_lastday'] = $tongji['money_lastday']['money'] ? $tongji['money_lastday']['money'] : '0.0';
-$tongji['money_all'] = $tongji['money_all']['money'] ? $tongji['money_all']['money'] : '0.0';
-//$tongji['money_today'] = $tongji['money_today']['money'] ? $tongji['money_today']['money'] : 0.0;
-
-$tongji['iplog_today'] = $db->pe_num('iplog', array('iplog_adate'=>date('Y-m-d')));
-$tongji['iplog_lastday'] = $db->pe_num('iplog', array('iplog_adate'=>date('Y-m-d', time()-86400)));
-$tongji['iplog_all'] = $db->pe_num('iplog');
-$tongji['iplog_user'] = $db->pe_num('user');
-
-$iplog_list = $db->pe_selectall('iplog', array('order by'=>'`iplog_atime` desc'), '*', array(20));
-
-
-$php_os = PHP_OS;
-$php_version = PHP_VERSION;
-$php_mysql = mysql_get_server_info();
-if (stripos($_SERVER["SERVER_SOFTWARE"], 'apache') === false) {
-	$iis_arr = explode('/', $_SERVER["SERVER_SOFTWARE"]);
-	$php_apache = "IIS {$iis_arr[1]}";
+		$php_os = PHP_OS;
+		$php_version = PHP_VERSION;
+		$php_mysql = 'MySQL '.mysql_get_server_info();
+		if (stripos($_SERVER["SERVER_SOFTWARE"], 'iis') !== false) {
+			$iis_arr = explode('/', $_SERVER["SERVER_SOFTWARE"]);
+			$php_apache = "IIS/{$iis_arr[1]}";
+		}
+		else {
+			$apache_arr = explode(' ', $_SERVER["SERVER_SOFTWARE"]);
+			$php_apache = $apache_arr[0];	
+		}
+		$seo = pe_seo($menutitle='后台首页', '', '', 'admin');
+		include(pe_tpl('index.html'));
+	break;
 }
-else {
-	$apache_arr = explode(' ', apache_get_version());
-	$php_apache = strtr($apache_arr[0], '/', ' ');	
-}
-
-
-$seo = pe_seo($menutitle='后台首页', '', '', 'admin');
-include(pe_tpl('index.html'));
 ?>

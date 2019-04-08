@@ -1,0 +1,17 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content" style="min-height:500px; _height:500px;">
+	<div class="now">您现在的位置：<a href="{$pe['host_root']}">首页</a> {$nowpath}</div>
+	<!--{foreach($info_list as $v):}-->
+	<div class="yhq_list">
+		<div class="yhq_l num font20"> ¥ <span class="yhq">{$v['quan_money']}</span></div>
+		<div class="yhq_btn"><a href="{pe_url('quan-'.$v['quan_key'])}" name="{$v['quan_name']}" target="_blank"></a></div>
+		<div class="clear"></div>
+		<div class="mat10">
+			<p>优惠名称：{$v['quan_name']}</p>
+			<p>使用条件：<!--{if($v['quan_limit']):}-->满{$v['quan_limit']}元<!--{else:}-->无<!--{endif;}--></p>
+			<p>有效日期：{$v['quan_sdate']} 至 {$v['quan_edate']}</p>
+		</div>
+	</div>
+	<!--{endforeach;}-->
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

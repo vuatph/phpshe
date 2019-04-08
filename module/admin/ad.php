@@ -1,15 +1,16 @@
 <?php
 /**
- * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2014 简好网络 <http://www.phpshe.com>
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'ad';
 pe_lead('hook/cache.hook.php');
-$ad_position = array('index_jdt'=>'首页焦点图广告(730*300)', 'index_header'=>'首页顶部广告(980*80)','index_footer'=>'首页底部广告(980*80)', 'header'=>'所有页面顶部广告(980*80)','footer'=>'所有页面底部广告(980*80)');
+$ad_position = array('index_jdt'=>'首页焦点图广告(700*300)', 'index_header'=>'首页顶部广告(1200*80)','index_footer'=>'首页底部广告(1200*80)', 'header'=>'整站顶部广告(1200*80)','footer'=>'整站底部广告(1200*80)');
 switch ($act) {
-	//#####################@ 增加广告 @#####################//
+	//#####################@ 添加广告 @#####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
+			pe_token_match();
 			if ($_FILES['ad_logo']['size']) {
 				pe_lead('include/class/upload.class.php');
 				$upload = new upload($_FILES['ad_logo']);
@@ -17,19 +18,21 @@ switch ($act) {
 			}
 			if ($db->pe_insert('ad', pe_dbhold($_p_info))) {
 				cache_write('ad');
-				pe_success('广告增加成功!', 'admin.php?mod=ad');
+				pe_success('广告添加成功!', 'admin.php?mod=ad');
 			}
 			else {
-				pe_error('广告增加失败...');
+				pe_error('广告添加失败...');
 			}
 		}
-		$seo = pe_seo($menutitle='增加广告', '', '', 'admin');
+		$info['ad_state'] = 1;
+		$seo = pe_seo($menutitle='添加广告', '', '', 'admin');
 		include(pe_tpl('ad_add.html'));
 	break;
 	//#####################@ 修改广告 @#####################//
 	case 'edit':
 		$ad_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
+			pe_token_match();
 			if ($_FILES['ad_logo']['size']) {
 				pe_lead('include/class/upload.class.php');
 				$upload = new upload($_FILES['ad_logo']);
@@ -49,6 +52,7 @@ switch ($act) {
 	break;
 	//#####################@ 广告排序 @#####################//
 	case 'order':
+		pe_token_match();
 		foreach ($_p_ad_order as $k=>$v) {
 			$result = $db->pe_update('ad', array('ad_id'=>$k), array('ad_order'=>$v));
 		}
@@ -62,12 +66,24 @@ switch ($act) {
 	break;
 	//#####################@ 广告删除 @#####################//
 	case 'del':
+		pe_token_match();
 		if ($db->pe_delete('ad', array('ad_id'=>is_array($_p_ad_id) ? $_p_ad_id : $_g_id))) {
 			cache_write('ad');
 			pe_success('广告删除成功!');
 		}
 		else {
 			pe_error('广告删除失败...');
+		}
+	break;
+	//#####################@ 广告状态 @#####################//
+	case 'state':
+		pe_token_match();
+		if ($db->pe_update('ad', array('ad_id'=>is_array($_p_ad_id) ? $_p_ad_id : $_g_id), array('ad_state'=>$_g_state))) {
+			cache_write('ad');
+			pe_success("操作成功!");
+		}
+		else {
+			pe_error("操作失败...");
 		}
 	break;
 	//#####################@ 广告列表 @#####################//

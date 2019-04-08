@@ -1,0 +1,11 @@
+/*简好网络*/
+.newkefu {position:fixed; text-align:center; width:140px; right:-140px; top:150px;}
+.newkefu_bar {background: url(../images/kefu.png) no-repeat ; left:-33px; top:10px; height:168px; width:33px; display:block; margin-left:1px; cursor:pointer; position:absolute}
+.newkefu_bar_sel {background: url(../images/kefu.png) no-repeat -107px 0;}
+.newkefu_header {background: url(../images/kefu.png) no-repeat 0 -187px; width:140px; height:28px; display:block;}
+.newkefu_middle {background: url(../images/kefu.png) no-repeat 0 -230px; width:140px; height:24px; display:block;}
+.newkefu_footer {background: url(../images/kefu.png) no-repeat 0 -270px; width:140px; height:10px; display:block;}
+.newkefu_shouqian {background: url(../images/kefu_bg.png) repeat-y; padding:10px 0; overflow:hidden; display:block;}
+.newkefu_shouqian li {list-style:none; margin:5px 0;}
+.newkefu_shouhou {background: url(../images/kefu_bg.png) repeat-y; padding:15px 0; text-align;center; font-size:13px; overflow:hidden; display:block;}
+.newkefu_shouhou li {list-style:none; margin:5px 0;}

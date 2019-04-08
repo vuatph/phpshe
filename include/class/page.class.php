@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
 //分页类
@@ -81,8 +81,8 @@ class page {
 			$pagelisthtml .= "<li><a href='{$url}'>末页</a></li></ul>";
 $pagelisthtml .=<<<html
 <style type="text/css">
-.fenye li{float:left; font-family:Arial, Helvetica, sans-serif; margin-left:6px; display:inline; line-height:24px;}
-.fenye a{border:1px #C2D5E3 solid; padding:0 12px; border-radius:4px; color:#0066CC; background:#fff; float:left;  height:24px;}
+.fenye li{float:left; font-family:Arial, Helvetica, sans-serif; margin-left:6px; display:inline; line-height:23px;}
+.fenye a{border:1px #C2D5E3 solid; padding:0 12px; border-radius:3px; color:#0066CC; background:#fff; float:left;  height:23px;}
 .fenye a:hover{background:#fff5f5; border:1px #76a5c8 solid;}
 .fenye .sel{background:#E5EDF2; color:#333; font-weight:bold; border:1px #C2D5E3 solid;  padding:0 12px; border-radius:4px}
 </style>

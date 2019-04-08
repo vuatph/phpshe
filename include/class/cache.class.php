@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
+ * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
+ */
 //#####################@ 万能文本缓存类-20111128-koyshe @#####################//
 class cache { 
 	/**
@@ -78,7 +82,8 @@ class cache {
 	public static function write_diy($cachename, $index_arr, $js)
 	{
 		global $pe;
-		$cache = "<?php\n\r\$cache=unserialize(stripslashes('".addslashes(serialize($index_arr))."'));\n\r?>";
+		/*$cache = "<?php\n\r\$cache=unserialize(stripslashes('".addslashes(serialize($index_arr))."'));\n\r?>";*/
+		$cache = "<?php\n\r\$cache=unserialize('".addcslashes(serialize($index_arr), "\\\'")."');\n\r?>";
 		file_put_contents("{$pe['path_root']}data/cache/{$cachename}.cache.php", $cache);	
 	}
 }

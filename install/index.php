@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright     2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright     2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate     2012-1111 koyshe <koyshe@gmail.com>
  */
 error_reporting(E_ALL ^ E_NOTICE);
@@ -82,6 +82,11 @@ switch ($_g_step) {
 	break;
 	//#####################@ 安装成功 @#####################//
 	case 'success':
+		include("{$pe['path_root']}/config.php");	
+		include("{$pe['path_root']}/include/class/db.class.php");
+		include("{$pe['path_root']}/hook/cache.hook.php");		
+		$db = new db($pe['db_host'], $pe['db_user'], $pe['db_pw'], $pe['db_name'], $pe['db_coding']);
+		cache_write();		
 		$menucss_3 = "sel";
 		$seo = pe_seo($menutitle='安装成功 -> PHPSHE商城系统安装向导');
 		file_put_contents("{$pe['path_root']}install/install.lock", 'phpshe');

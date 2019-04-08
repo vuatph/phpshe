@@ -1,0 +1,57 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right">
+	<div class="now">
+		<a href="admin.php?mod=pointlog" <!--{if($mod=='pointlog'):}-->class="sel"<!--{endif;}-->>积分明细</a>
+		<div class="clear"></div>
+	</div>
+	<div class="search">
+		<form method="get">
+			<input type="hidden" name="mod" value="{$_g_mod}" />
+			用户名：<input type="text" name="user_name" value="{$_g_user_name}" class="inputtext inputtext_100" />
+			<select name="type" class="selectmini">
+			<option value="" href="{pe_updateurl('type', '')}">= 积分类型 =</option>
+			<!--{foreach($ini['pointlog_type'] as $k=>$v):}-->
+			<option value="{$k}" href="{pe_updateurl('type', $k)}" <!--{if($_g_type==$k):}-->selected="selected"<!--{endif;}-->>{$v}</option>
+			<!--{endforeach;}-->
+			</select>
+			<input type="submit" value="搜索" class="input2" />
+		</form>
+	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="140">交易日期</th>
+		<th class="bgtt" width="150">用户名</th>
+		<th class="bgtt" width="100">积分类型</th>
+		<th class="bgtt" width="100">收入(积分)</th>
+		<th class="bgtt" width="100">支出(积分)</th>
+		<th class="bgtt" width="100">余额(积分)</th>
+		<th class="bgtt">备注</th>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr>
+		<td class="num"><span <!--{if(pe_date($v['pointlog_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['pointlog_atime'])}</span></td>
+		<td>{$v['user_name']}</td>
+		<td>{$ini['pointlog_type'][$v['pointlog_type']]}</td>
+		<td><span class="num cgreen">{$v['pointlog_in']?'+'.$v['pointlog_in']:''}</span></td>
+		<td><span class="num corg">{$v['pointlog_out']?'-'.$v['pointlog_out']:''}</span></td>
+		<td><span class="num">{$v['pointlog_now']}</span></td>
+		<td>{$v['pointlog_text']}</td>
+	</tr>
+	<!--{endforeach;}-->
+	<!--{if($db->page->html):}-->
+	<tr>
+		<th class="bgtt" colspan="7"><span class="fenye">{$db->page->html}</span></td>
+	</tr>
+	<!--{endif;}-->
+	</table>
+	</form>
+</div>
+<script type="text/javascript">
+$(function(){
+	$("select").change(function(){
+		window.location.href = 'admin.php' + $(this).find("option:selected").attr("href");
+	})
+})
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

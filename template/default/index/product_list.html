@@ -1,36 +1,7 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
 	<div class="now">{$nowpath}</div>
-	<div class="remai fl">
-		<h3>商品分类</h3>
-		<div class="hotlist spfl">
-			<!--{foreach((array)$cache_category_arr[0] as $k=>$v):}-->
-			<!--{$i++}-->
-			<div class="zhulei" <!--{if($i==1):}-->style="border-top:0"<!--{endif;}-->><a href="{pe_url('product-list-'.$k)}" <!--{if($category_id==$k):}-->class="sel"<!--{endif;}-->>{$v['category_name']}</a></div>
-			<!--{if(is_array($cache_category_arr[$v['category_id']])):}-->
-			<div class="zilei">
-				<!--{foreach($cache_category_arr[$v['category_id']] as $kk=>$vv):}-->
-				<a href="{pe_url('product-list-'.$kk)}" <!--{if($category_id==$kk):}-->class="sel"<!--{endif;}-->>{$vv['category_name']}</a>
-				<!--{endforeach;}-->
-				<div class="clear"></div>
-			</div>
-			<!--{endif;}-->
-			<!--{endforeach;}-->
-		</div>
-		<h3 class="mat10">热销排行</h3>
-		<ul class="hotlist">
-			<!--{foreach((array)$product_selllist as $v):}-->
-			<li>
-				<span class="fl hotimg"><img src="{$pe['host_root']}include/image/load.gif" data-original="{pe_thumb($v['product_logo'], 60, 60)}" title="{$v['product_name']}" /></span>
-				<span class="fl hotname">
-					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a>
-					<span class="cred num strong lh20">¥{$v['product_money']}</span>
-				</span>
-				<div class="clear"></div>
-			</li>
-			<!--{endforeach;}-->
-		</ul>
-	</div>
+	<!--{include(pe_tpl('product_left.html'));}-->
 	<div class="fr xiangqing">
 		<!--{if(count($cache_category_brand[$category_id])):}-->
 		<div class="pinpai_fl">
@@ -52,52 +23,59 @@
 		<!--{endif;}-->
 		<div class="caidan">
 			<ul class="fl">
-				<li class="prolist_px"><a href="{pe_updateurl('orderby', '')}" <!--{if(!$_g_orderby):}-->class="sel"<!--{endif;}-->>默 认</a></li>
+				<li class="prolist_px" style="padding:0 12px;">排序：</li>
 				<li class="prolist_px">
-					<!--{if($_g_orderby=='sellnum_desc'):}-->
-					<a href="{pe_updateurl('orderby', 'sellnum_desc')}" class="sel">按销量<i class="i1"></i></a>
+					<!--{if($_g_orderby=='sellnum_asc'):}-->
+					<a href="{pe_updateurl('orderby', 'sellnum_desc')}" class="sel">销量<i class="i2"></i></a>
+					<!--{elseif($_g_orderby=='sellnum_desc'):}-->
+					<a href="{pe_updateurl('orderby', 'sellnum_asc')}" class="sel">销量<i class="i1"></i></a>
 					<!--{else:}-->
-					<a href="{pe_updateurl('orderby', 'sellnum_desc')}">按销量</a>
+					<a href="{pe_updateurl('orderby', 'sellnum_desc')}">销量</a>
 					<!--{endif;}-->
 				</li>
 				<li class="prolist_px">
 					<!--{if($_g_orderby=='money_asc'):}-->
-					<a href="{pe_updateurl('orderby', 'money_desc')}" class="sel">按价格<i class="i2"></i></a>
+					<a href="{pe_updateurl('orderby', 'money_desc')}" class="sel">价格<i class="i2"></i></a>
 					<!--{elseif($_g_orderby=='money_desc'):}-->
-					<a href="{pe_updateurl('orderby', 'money_asc')}" class="sel">按价格<i class="i1"></i></a>
+					<a href="{pe_updateurl('orderby', 'money_asc')}" class="sel">价格<i class="i1"></i></a>
 					<!--{else:}-->
-					<a href="{pe_updateurl('orderby', 'money_desc')}">按价格</a>
+					<a href="{pe_updateurl('orderby', 'money_desc')}">价格</a>
 					<!--{endif;}-->
 				</li>
+				<li class="prolist_px">
+					<!--{if($_g_orderby=='clicknum_asc'):}-->
+					<a href="{pe_updateurl('orderby', 'clicknum_desc')}" class="sel">人气<i class="i2"></i></a>
+					<!--{elseif($_g_orderby=='clicknum_desc'):}-->
+					<a href="{pe_updateurl('orderby', 'clicknum_asc')}" class="sel">人气<i class="i1"></i></a>
+					<!--{else:}-->
+					<a href="{pe_updateurl('orderby', 'clicknum_desc')}">人气</a>
+					<!--{endif;}-->
+				</li>
+				<li class="prolist_px"><a href="{pe_updateurl('orderby', '')}">默 认</a></li>
 			</ul>
 			<span class="fr mat8 mar10 c888">已找到 <strong>{$db->page->listnums}</strong> 个商品</span>
 			<div class="clear"></div>
 		</div>
-		<div class="prolist">
-			<!--{foreach((array)$info_list as $k=>$v):}-->
-			<div class="prolist_1 prolist_border" <!--{if(($k+1)%4==0):}-->style="margin-right:0"<!--{endif}-->>
-				<p class="prolist_img prolist_img1"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank"><img src="{$pe['host_root']}include/image/load.gif" data-original="{pe_thumb($v['product_logo'], 180, 180)}"  title="{$v['product_name']}" style="display:block" /></a></p>
-				<div style="padding:3px">
-					<p class="prolist_name"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a></p>
-					<div class="mab10"><div class="fl" >{comment_star($v['product_commentnum']?$v['product_commentstar']/$v['product_commentnum']:5)}</div><a href="javascript:;" class="fl mal5 cblue font12" style="margin-top:-2px;">已有{$v['product_commentnum']}人评价</a><div class="clear"></div></div>
-					<p><span class="money1 fl"><span class="num mar3">¥</span>{$v['product_money']}</span> <s class="num c888 fr">¥ {$v['product_smoney']}</s></p>
+		<div class="tuijian_list">
+			<!--{foreach($info_list as $k=>$v):}-->
+			<div class="prolist_1" <!--{if(($k+1)%4==0):}-->style="margin-right:0"<!--{endif}-->>
+				<p class="prolist_img"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($v['product_logo'], 220, 220)}" title="{$v['product_name']}" width="220" height="220" class="js_imgload" /></a></p>
+				<div style="padding:10px 10px 0">
+					<p>
+						<span class="money1 fl"><span class="num mar3">¥</span>{$v['product_money']}</span>
+						<!--{if($v['product_hd_tag']):}--><div class="{huodong_tag($v['product_hd_tag'])}">{$v['product_hd_tag']}</div><!--{endif;}-->
+						<s class="num c888 fr">¥ {$v['product_mmoney']}</s>
+					</p>
 					<div class="clear"></div>
+					<p class="prolist_name"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a></p>
 				</div>
 			</div>
 			<!--{endforeach;}-->
+			<div class="clear"></div>
 		</div>
 		<div class="clear"></div>
 		<div class="fenye mat15">{$db->page->html}</div>
 	</div>
 	<div class="clear"></div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.lazyload.min.js"></script>
-<script type="text/javascript">
-$(function(){
-	$("img").lazyload({
-		effect:"fadeIn",
-		container:$("body")
-	});
-})
-</script>
 <!--{include(pe_tpl('footer.html'));}-->

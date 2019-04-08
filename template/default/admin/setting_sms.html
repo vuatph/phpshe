@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>短信接口</title>
+<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+</head>
+<body style="background:none">
+<div class="tixing">
+	<p><span class="cred">[注]</span> 短信接口需要付费给移动/联通等运营商，详情见<a href="http://www.phpshe.com/article/1" class="cblue" target="_blank">《简好网络短信接口说明》</a></p>
+	<p><span class="cred">[注]</span> 管理员手机号：用于接收短信通知，多个用“,”隔开</p>
+</div>
+<form method="post" id="form">
+<table style="width:510px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+<tr>
+	<td align="right" class="bgtt c666" width="150">短信接口key：</td>
+	<td><input type="text" name="info[sms_key]" value="{$info['sms_key']['setting_value']}" class="inputall input300" /></td>
+</tr>
+<tr>
+	<td align="right" class="bgtt c666">短信余额：</td>
+	<td><span class="num">1000</span>条</td>
+</tr>
+<tr>
+	<td align="right" class="bgtt c666">管理员手机号：</td>
+	<td><input type="text" name="info[sms_admin]" value="{$info['sms_admin']['setting_value']}" class="inputall input300" /></td>
+</tr>
+<tr>
+	<td align="right" class="bgtt c666">&nbsp;</td>
+	<td>
+		<input type="hidden" name="pesubmit" />
+		<input type="hidden" name="pe_token" value="{$pe_token}" />
+		<input type="submit" value="提 交" class="tjbtn" />
+	</td>
+</tr>
+</table>
+</form>
+</body>
+</html>

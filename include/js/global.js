@@ -1,5 +1,5 @@
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
 //$.ajaxSettings.async = false;
@@ -26,14 +26,15 @@ function pe_cfall(_this, inputname, formid, show) {
 		alert('请先勾选需要'+show+'的信息!');
 		return false;
 	}
-	else if (confirm('您确认执行'+show+'操作吗?')) {
+	else if (confirm('您确认'+show+'吗?')) {
 		$("#"+formid).attr("action", $(_this).attr("href")).submit();
 	}
 	return false;
 }
 //带提醒单个操作(修正版) by koyshe 2012-11-29
 function pe_cfone(_this, show) {
-	if (confirm('您确认执行'+show+'操作吗?')) {
+	var _text = arguments[2] ? show : '您确认'+show+'吗?';
+	if (confirm(_text)) {
 		if ($(_this).is("a")) {
 			return true;
 		}
@@ -60,9 +61,20 @@ function pe_doall(_this, formid) {
 	$("#"+formid).attr("action", $(_this).attr("href")).submit();
 }
 //dialog函数 by koyshe 2011-11-12
-function pe_dialog(_this, title, width, height, id) {
-	art.dialog.open($(_this).attr("href"), {title:title, width: width, height: height, id: id});
+function pe_dialog(_this, title, width, height, id, lock) {
+	art.dialog.open($(_this).attr("href"), {title:title, width: width, height: height, id: id, lock: lock});
 	return false;
+}
+function pe_yzm(_this) {
+	var yzm_url = $(_this).attr("src");
+	var yzm_time = new Date().getTime();
+	if (yzm_url.indexOf("time") >= 0) {
+		yzm_url = yzm_url.replace(/time=\d+/, 'time=' + yzm_time);
+	}
+	else {
+		yzm_url += (yzm_url.indexOf("?") >= 0 ? '&' : '?') + 'time=' + yzm_time;
+	}
+	$(_this).attr("src", yzm_url);
 }
 //商品购买数量
 function pe_numchange(inputname, type, limit) 
@@ -95,4 +107,31 @@ function pe_inputdefault(name, text) {
 			_this.val('');
 		}
 	})
+}
+
+function pe_countdown(id, etime) {
+	setInterval(function(){
+	    var obj = $("#" + id);
+	    var endTime = new Date(parseInt(etime) * 1000);
+	    var nowTime = new Date();
+	    var nMS=endTime.getTime() - nowTime.getTime();
+	    var myD=Math.floor(nMS/(1000 * 60 * 60 * 24));
+	    var myH=Math.floor(nMS/(1000*60*60)) % 24;
+	    var myM=Math.floor(nMS/(1000*60)) % 60;
+	    var myS=Math.floor(nMS/1000) % 60;
+	    var myMS=Math.floor(nMS/100) % 10;
+	    if(myD>= 0){
+			var str = myD+"天"+myH+"小时"+myM+"分"+myS+"."+myMS+"秒";
+	    }else{
+			var str = "0天0小时0分0秒";
+		}
+		obj.html(str);
+	}, 100);
+}
+
+function pe_loadscript (url){
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = url;
+    document.body.appendChild(script);
 }

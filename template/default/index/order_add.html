@@ -2,19 +2,20 @@
 <div class="content">
 	<div class="liucheng">我的购物车</div>
 	<div class="mat10">
+		<form method="post" id="form">
 		<div class="gouwuche">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="gwc_tb">
 			<tr>
-				<th width="100">商品图片</th>
+				<th width="60" style="padding-left:30px">商品图片</th>
 				<th>商品名称</th>
-				<th width="160">商品单价(元)</th>
+				<th width="160">单价(元)</th>
 				<th width="110">购买数量</th>
 				<th width="100">操作</th>
 			</tr>
 			<!--{foreach($info_list as $k=>$v):}-->
 			<tr id="{$k}" class="product_id">
-				<td class="hotimg"><img src="{pe_thumb($v['product_logo'], 60, 60)}" /></td>
-				<td style="text-align:left">
+				<td class="hotimg" style="padding-left:20px;padding-right:0"><img src="{pe_thumb($v['product_logo'], 40, 40)}" /></td>
+				<td style="text-align:left;padding-left:0">
 					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue font14">{$v['product_name']}</a>
 					<!--{if($v['prorule_name']):}-->
 					<p class="c666"><!--{foreach(unserialize($v['prorule_name']) as $vv):}-->[{$vv['name']}：{$vv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
@@ -31,12 +32,46 @@
 			<!--{endforeach;}-->
 			</table>
 		</div>
-		<div class="fukuan font13">
-			<strong>应付总额：</strong><span class="strong num1 font16 cred" id="order_money">{$money['order_money']}</span>(元)
-			＝ <span class="strong num1 font14 cred" id="order_productmoney">{$money['order_productmoney']}</span>(商品总额)
-			＋ <span class="strong num1 font14 cred" id="order_wlmoney">{$money['order_wlmoney']}</span>(运费)
+		<div class="fukuan">
+			<div class="fl" style="padding:5px 10px">可获得积分：<span class="cgreen num" id="order_point_get">{$money['order_point_get']}</span> 点</div>
+			<div class="fk_tb">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>商品金额：</td>
+				<td width="80" class="num font14 cred">¥ <span id="order_product_money">{$money['order_product_money']}</span></td>
+			</tr>
+			<tr>
+				<td>运费：</td>
+				<td class="num font14 cred">¥ <span id="order_wl_money">{$money['order_wl_money']}</span></td>
+			</tr>
+			<tr>
+				<td>优惠券：
+					<select name="order_quan_id">
+					<option value="0" quan_money="0.0">不使用优惠券</option>
+					<!--{foreach($quan_list as $v):}-->
+					<option value="{$v['quanlog_id']}" quan_money="{$v['quan_money']}">【{$v['quan_money']}元】{$v['quan_name']}</option>
+					<!--{endforeach;}-->
+					</select>
+				</td>
+				<td class="num font14">- ¥ <span id="order_quan_money">0.0</span></td>
+			</tr>
+			<tr>
+				<td>
+					<span class="fr">您账户有 {$info['user_point']} 积分，可抵现 {$user_point_money} 元</span>
+					<input type="checkbox" id="point_btn" class="fr mat2 mar5">
+					<div class="clear"></div>
+					<div id="point_html" style="display:none">使用 <input type="text" name="order_point_use" class="jf_input"> 积分</div>
+				</td>
+				<td class="num font14">- ¥ <span id="order_point_money">0.0</span></td>
+			</tr>
+			<tr>
+				<td>应付金额：</td>
+				<td class="num font18 cred strong">¥ <span id="order_money">{$money['order_money']}</span></td>
+			</tr>
+			</table>
+			</div>
+			<div class="clear"></div>			
 		</div>
-		<form method="post" id="form">
 		<div style="border:1px #ddd solid; padding:10px 20px; margin-top:10px;">
 			<h3 class="shxx_tt">付款方式</h3>
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="shxx mat10">
@@ -99,13 +134,49 @@ $(function(){
 	$("input[name='order_payway']").each(function(){
 		if ($(this).is(":checked")) $(this).parents("tr").addClass('sel');
 	})
+	//积分勾选
+	$("#point_btn").click(function(){
+		if ($(this).is(":checked")) {
+			$("#point_html").show();
+		}
+		else {
+			$("#point_html").hide();
+			$("#order_point_money").html('0.0');		
+		}
+		order_money();
+	})
+	//积分输入
+	$(":input[name='order_point_use']").keyup(function(){
+		var point = $(this).val(), point_money = 0;
+		if (point > {$info['user_point']}) {
+			point = {$info['user_point']};
+		}
+		else if (point < 0 || isNaN(point)) {
+			point = 0;
+		}
+		$(this).val(point);
+		if ({round($cache_setting['point_money'])} > 0) {
+			point_money = point/{$cache_setting['point_money']};
+		}
+		$("#order_point_money").html(point_money.toFixed(1));
+		order_money();
+	})
+	//使用优惠券
+	$(":input[name='order_quan_id']").live("change", function(){	
+		$("#order_quan_money").html($(this).find("option:selected").attr("quan_money"));
+		order_money();
+	})	
 })
 function cart_num(product_id,name) {
 	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartnum","product_id":product_id,"product_num":$(":input[name='"+name+"']").val()}, function(json){
 		if (json.result) {
-			$("#order_productmoney").html(json.money.order_productmoney);
-			$("#order_wlmoney").html(json.money.order_wlmoney);
-			$("#order_money").html(json.money.order_money);
+			$("#order_product_money").html(json.money.order_product_money);
+			$("#order_wl_money").html(json.money.order_wl_money);
+			$("#order_point_get").html(json.money.order_point_get);
+			$(":input[name='order_quan_id']").html(json.quan_html);
+			$("#cart_num").html(json.cart_num);
+			//$("#order_money").html(json.money.order_money);
+			order_money();
 		}
 	})
 }
@@ -116,11 +187,24 @@ function cart_del(_this, product_id) {
 	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartnum","product_id":product_id,"product_num":0}, function(json){
 		if (json.result) {
 			$(_this).parents("tr").remove();
-			$("#order_productmoney").html(json.money.order_productmoney);
-			$("#order_wlmoney").html(json.money.order_wlmoney);
-			$("#order_money").html(json.money.order_money);
+			$("#order_product_money").html(json.money.order_product_money);
+			$("#order_wl_money").html(json.money.order_wl_money);
+			$("#order_point_get").html(json.money.order_point_get);
+			$(":input[name='order_quan_id']").html(json.quan_html);
+			$("#cart_num").html(json.cart_num);
+			//$("#order_money").html(json.money.order_money);
+			order_money();
 		}
 	})
+}
+function order_money() {
+	var product_money = parseFloat($("#order_product_money").html());
+	var wl_money = parseFloat($("#order_wl_money").html());
+	var quan_money = parseFloat($("#order_quan_money").html());
+	var point_money = parseFloat($("#order_point_money").html());
+	var order_money = product_money + wl_money - quan_money - point_money;
+	order_money = order_money >= 0 ? order_money : 0;
+	$("#order_money").html(order_money.toFixed(1));
 }
 function order_add() {
 	if ({count($info_list)}) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2014 简好网络 <http://www.phpshe.com>
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'moban';
@@ -38,6 +38,7 @@ switch ($act) {
 	break;
 	//#####################@ 设置模板 @#####################//
 	case 'setting':
+		pe_token_match();
 		pe_lead('hook/cache.hook.php');
 		if ($db->pe_update('setting', array('setting_key'=>'web_tpl'), array('setting_value'=>pe_dbhold($_g_tpl)))) {
 			cache_write('setting');
@@ -50,6 +51,7 @@ switch ($act) {
 	break;
 	//#####################@ 删除模板 @#####################//
 	case 'del':
+		pe_token_match();
 		$tpl_name = pe_dbhold($_g_tpl);
 		if ($tpl_name == 'default') pe_error('默认模板不能删除...');
 		if ($db->pe_num('setting', array('setting_key'=>'web_tpl', 'setting_value'=>$tpl_name))) {
@@ -63,7 +65,7 @@ switch ($act) {
 	//#####################@ 模板管理 @#####################//
 	default:
 		$moban_list = pe_dirlist('template/*');
-		$moban_qian = $cache_setting['web_tpl']['setting_value'] == 'default' ? array('default') : array('default', $cache_setting['web_tpl']['setting_value']);
+		$moban_qian = $cache_setting['web_tpl'] == 'default' ? array('default') : array('default', $cache_setting['web_tpl']);
 		foreach ($moban_list as $k=>$v) {
 			if (in_array($v, $moban_qian)) unset($moban_list[$k]);
 		}

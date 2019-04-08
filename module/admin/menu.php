@@ -1,15 +1,16 @@
 <?php
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'menu';
 pe_lead('hook/cache.hook.php');
 switch ($act) {
-	//#####################@ 导航增加 @#####################//
+	//#####################@ 导航添加 @#####################//
 	case 'add':
 		$menu_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
+			pe_token_match();
 			if ($_p_info['menu_type'] == 'sys') {
 				$menu_name = explode('|', $_p_menu_name);
 				$_p_info['menu_name'] = $menu_name[0];
@@ -17,20 +18,21 @@ switch ($act) {
 			}
 			if ($db->pe_insert('menu', pe_dbhold($_p_info))) {
 				cache_write('menu');
-				pe_success('导航增加成功!', 'admin.php?mod=menu');
+				pe_success('导航添加成功!', 'admin.php?mod=menu');
 			}
 			else {
-				pe_error('导航增加失败...');
+				pe_error('导航添加失败...');
 			}
 		}
 		$menu_sys_arr = menu_sys_arr();
-		$seo = pe_seo($menutitle='导航增加', '', '', 'admin');
+		$seo = pe_seo($menutitle='导航添加', '', '', 'admin');
 		include(pe_tpl('menu_add.html'));
 	break;
 	//#####################@ 导航修改 @#####################//
 	case 'edit':
 		$menu_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
+			pe_token_match();
 			if ($_p_info['menu_type'] == 'sys') {
 				$menu_name = explode('|', $_p_menu_name);
 				$_p_info['menu_name'] = $menu_name[0];
@@ -51,6 +53,7 @@ switch ($act) {
 	break;
 	//#####################@ 导航删除 @#####################//
 	case 'del':
+		pe_token_match();
 		if ($db->pe_delete('menu', array('menu_id'=>$_g_id))) {
 			cache_write('menu');
 			pe_success('导航删除成功!');
@@ -61,6 +64,7 @@ switch ($act) {
 	break;
 	//#####################@ 导航排序 @#####################//
 	case 'order':
+		pe_token_match();
 		foreach ($_p_menu_order as $k=>$v) {
 			$result = $db->pe_update('menu', array('menu_id'=>$k), array('menu_order'=>$v));
 		}

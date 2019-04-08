@@ -14,6 +14,7 @@ switch ($act) {
 	//#####################@ 品牌详情 @#####################//
 	default:
 		$brand_id = intval($act);
+		$category_pid = 0;
 		$cache_brand = cache::get('brand');
 		$info = $cache_brand[$brand_id];
 		$sqlwhere .= " and `brand_id` = {$brand_id}";
@@ -29,7 +30,7 @@ switch ($act) {
 
 
 		//热卖排行
-		$product_hotlist = product_hotlist();
+		$product_selllist = product_selllist();
 		//更新点击
 		product_num('clicknum', $product_id);
 		//当前路径

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
+ * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
+ */
 class authcode {
 	private $width, $height, $codenum;
 	public $checkcode;     //产生的验证码
@@ -9,8 +13,8 @@ class authcode {
 	*/
 	function __construct($width = '100', $height = '30', $codenum = '4')
 	{
-		$this->width = $width;
-		$this->height = $height;
+		$this->width = $_GET['w'] ? $_GET['w'] : $width;
+		$this->height = $_GET['h'] ? $_GET['h'] : $height;
 		$this->codenum = $codenum;
 	}
 	function get()
@@ -44,9 +48,9 @@ class authcode {
 	private function doimage()
 	{
 		$this->checkimage = @imagecreate($this->width, $this->height);
-		$back = imagecolorallocate($this->checkimage,255,255,255);
+		$black = imagecolorallocate($this->checkimage, 250, 250, 250);
 		//$border = imagecolorallocate($this->checkimage,0,0,0);  
-		imagefilledrectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$back); // 白色底
+		imagefilledrectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$black); // 白色底
 		imagerectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$border);   // 黑色边框
 	}
 	/**
@@ -54,10 +58,15 @@ class authcode {
 	*/
 	private function dodisturb()
 	{
+
+		for ($i=0;$i<2;$i++) {
+			$color = imagecolorallocate($this->checkimage, rand(0,156), rand(0,156), rand(0,156));
+			imageline($this->checkimage, rand(0,$this->width), rand(0,$this->height), rand(0,$this->width), rand(0,$this->height), $color);
+		}
 		for ($i=0;$i<=200;$i++)
 		{
 			$this->disturbColor = imagecolorallocate($this->checkimage, rand(0,255), rand(0,255), rand(0,255));
-			imagesetpixel($this->checkimage,rand(2,128),rand(2,38),$this->disturbColor);
+			imagesetpixel($this->checkimage, rand(0,$this->width), rand(0,$this->height), $this->disturbColor);
 		}
 	}
 	/**
@@ -67,12 +76,14 @@ class authcode {
 	*/
 	private function writeCheckCodeToImage()
 	{
+		$font = dirname(__FILE__)."/t1.ttf";
 		for ($i=0;$i<=$this->codenum;$i++)
 		{
 			$bg_color = imagecolorallocate ($this->checkimage, rand(0,255), rand(0,128), rand(0,255));
-			$x = floor($this->width/$this->codenum)*$i + 10;
-			$y = rand(0,$this->height-20);
-			imagechar ($this->checkimage, rand(5,8), $x, $y, $this->checkcode[$i], $bg_color);
+			$x = floor($this->width/$this->codenum)*$i + 5;
+			$y = $this->height/1.5;
+			//imagechar ($this->checkimage, rand(5, 10), $x, $y, $this->checkcode[$i], $bg_color);
+			imagettftext($this->checkimage, 11, 0, $x, $y, $bg_color, $font, substr($this->checkcode, $i, 1));
 		}
 	}
 	function __destruct()

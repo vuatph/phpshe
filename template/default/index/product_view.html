@@ -1,17 +1,39 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
 	<div class="now">{$nowpath}</div>
-	<div class="fl proimg jqzoom"><img src="{$pe['host_root']}include/image/load.gif" data-original="{pe_thumb($info['product_logo'], 400, 400)}" jqimg="{pe_thumb($info['product_logo'])}" /></div>
-	<div class="fl proinfo">
+	<div class="fl proimg jqzoom">
+		<img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($info['product_logo'], 400, 400)}" jqimg="{pe_thumb($info['product_logo'])}" width="400" height="400" class="js_imgload" />
+		<!--{if($info['product_hd_tag']):}--><div class="{huodong_tag($info['product_hd_tag'])}">{$info['product_hd_tag']}</div><!--{endif;}-->	
+	</div>
+	<div class="fr proinfo">
 		<h3>{$info['product_name']}</h3>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr style="background:#d83228; background:url({$pe['host_tpl']}images/jg_bg.gif) repeat;">
 			<td style="color:#fff; height:50px;" valign="top" width="60"><p class="mat5">价 格</p></td>
 			<td style="color:#fff; height:50px;">
-			<span class="jg_price">¥ <span id="product_money">{$info['product_money']}</span></span>
-			<p>市场价 <s class="num">¥ <span id="product_smoney">{$info['product_smoney']}</span></s>　　运费：<!--{if($info['product_wlmoney'] == 0):}-->卖家包邮<!--{else:}--><span class="num">¥ {$info['product_wlmoney']}</span><!--{endif;}--></p>
+			<span class="jg_price fl">¥ <span id="product_money">{$info['product_money']}</span></span>
+			<!--{if($info['product_hd_tag']):}-->
+			<span class="tag_org fl mat8" style="margin-left:15px;">{$info['product_hd_tag']}</span>
+			<span class="fl djs">剩余时间： <span id="huodong_time"></span></span>
+			<!--{endif;}-->
+			<div class="clear"></div>
+			<p>
+				市场价 <s class="num">¥ <span id="product_mmoney">{$info['product_mmoney']}</span></s>
+				<span class="mal20">运费：<!--{if($info['product_wlmoney'] == 0):}-->卖家包邮<!--{else:}--><span class="num">¥ {$info['product_wlmoney']}</span><!--{endif;}--></span>
+				<!--{if($info['product_point']):}--><span class="mal20">赠送：<span class="num mar5">{$info['product_point']}</span>积分</span><!--{endif;}-->
+			</p>
 			</td>
 		</tr>
+		<!--{if(count($quan_list)):}-->
+		<tr style="background:#f8f8f8">
+			<td>优 惠</td>
+			<td>
+				<!--{foreach($quan_list as $v):}-->
+				<span class="yh_tb">{$v['quan_money']}元优惠券 <a href="{pe_url('quan-'.$v['quan_key'])}" title="{$v['quan_name']}" target="_blank" class="cblue">领取</a></span>
+				<!--{endforeach;}-->
+			</td>
+		</tr>
+		<!--{endif;}-->
 		<tr>
 			<td style="color:#666">销 量</td>
 			<td>已售出 <span class="cred num strong">{$info['product_sellnum']}</span> 件 <a href="javascript:find_comment();" class="cblue font13"></a></td>
@@ -23,7 +45,7 @@
 		<!--{foreach($rule_list as $k=>$v):}-->
 		<tr>
 			<td style="color:#666">{$cache_rule[$v]['rule_name']}</td>
-			<td>
+			<td>			
 			<!--{foreach($ruledata_list[$k] as $kk=>$vv):}-->
 			<!--{if($cache_rule[$v]['list'][$vv]['ruledata_logo']):}-->
 			<span id="{$vv}" rule_id="{$v}" class="prorule_span"><img src="{pe_thumb($cache_rule[$v]['list'][$vv]['ruledata_logo'])}" style="width:22px;height:22px;" /></span>
@@ -37,7 +59,7 @@
 		<tr>
 			<td style="color:#666">数 量</td>
 			<td class="shuliang">
-				<input type="hidden" name="prorule_id" />
+				<input type="hidden" name="prorule_key" />
 				<span class="img1" onclick="pe_numchange('product_num', '-', 1);">-</span>
 				<div class="shuliang_box"><input type="text" name="product_num" value="1" /></div>
 				<span class="img2" onclick="pe_numchange('product_num', '+', {$info['product_num']});">+</span>
@@ -72,83 +94,42 @@
 		<div class="clear"></div>
 	</div>
 	<div class="clear"></div>
-	<div class="remai fl mat10">
-		<h3>商品分类</h3>
-		<div class="hotlist spfl">
-			<!--{foreach((array)$cache_category_arr[0] as $k=>$v):}-->
-			<!--{$i++}-->
-			<div class="zhulei" <!--{if($i==1):}-->style="border-top:0"<!--{endif;}-->><a href="{pe_url('product-list-'.$k)}" <!--{if($category_id==$k):}-->class="sel"<!--{endif;}-->>{$v['category_name']}</a></div>
-			<div class="clear"></div>
-			<!--{if(is_array($cache_category_arr[$v['category_id']])):}-->
-			<div class="zilei">
-				<!--{foreach($cache_category_arr[$v['category_id']] as $kk=>$vv):}-->
-				<a href="{pe_url('product-list-'.$kk)}" <!--{if($category_id==$kk):}-->class="sel"<!--{endif;}-->>{$vv['category_name']}</a>
-				<!--{endforeach;}-->
-				<div class="clear"></div>
-			</div>
-			<!--{endif;}-->
-			<!--{endforeach;}-->
-		</div>
-		<h3 class="mat10">热销排行</h3>
-		<ul class="hotlist">
-			<!--{foreach((array)$product_selllist as $v):}-->
-			<li>
-				<span class="fl hotimg"><img src="{$pe['host_root']}include/image/load.gif" data-original="{pe_thumb($v['product_logo'], 60, 60)}" title="{$v['product_name']}" /></span>
-				<span class="fl hotname">
-					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a>
-					<span class="cred num strong lh20">¥{$v['product_money']}</span>
-				</span>
-				<div class="clear"></div>
-			</li>
-			<!--{endforeach;}-->
-		</ul>
-	</div>
+	<div class="mat10"></div>
+	<!--{include(pe_tpl('product_left.html'));}-->
 	<div class="fr xiangqing">
 		<div class="caidan1" id="js_menu">
 			<ul class="fl">
-				<li class="sel"><a href="javascript:;">商品展示</a></li>
+				<li class="sel"><a href="javascript:;">商品详情</a></li>
 				<li><a href="javascript:;">商品评价({$info['product_commentnum']})</a><span id="a"></span></li>
-				<li><a href="javascript:;">商品问答({$info['product_asknum']})</a></li>
+				<li><a href="javascript:;">商品咨询({$info['product_asknum']})</a></li>
 			</ul>
 			<div class="fr c666 mat10 mar10">商品货号：{$info['product_mark']}</div>
 			<div class="clear"></div>
 		</div>
-		<div style="height:51px"></div>
 		<div class="promain js_menuhtml">{$info['product_text']}</div>
 		<!--评论 Start-->
 		<div class="promain js_menuhtml" style="display:none">
 			<div class="plrate">
-				<div class="plrate_l fl"><strong>{$comment_rate}%</strong><p class="c888 mat3">好评度</p></div>
+				<div class="plrate_l fl"><strong>{$comment_rate_hao}%</strong><p class="c888 mat3">好评度</p></div>
 				<div class="plrate_m fl">
-					<dl><dt>好评 <span class="c888">({$comment_rate}%)</span></dt><dd><div style="width:{$comment_rate}px;"></div></dd><div class="clear"></div></dl>
-					<dl><dt>中评 <span class="c888">({$comment_rate1}%)</span></dt><dd><div style="width:{$comment_rate1}px;"></div></dd><div class="clear"></div></dl>
-					<dl><dt>差评 <span class="c888">({$comment_rate2}%)</span></dt><dd><div style="width:{$comment_rate2}px;"></div></dd><div class="clear"></div></dl>
+					<dl><dt>好评 <span class="c888">({$comment_rate_hao}%)</span></dt><dd><div style="width:{$comment_rate_hao*2}px;"></div></dd><div class="clear"></div></dl>
+					<dl><dt>中评 <span class="c888">({$comment_rate_zhong}%)</span></dt><dd><div style="width:{$comment_rate_zhong*2}px;"></div></dd><div class="clear"></div></dl>
+					<dl><dt>差评 <span class="c888">({$comment_rate_cha}%)</span></dt><dd><div style="width:{$comment_rate_cha*2}px;"></div></dd><div class="clear"></div></dl>
+				</div>
+				<div class="plrate_r">
+					购买过该商品的用户可以进行评价
+					<div class="mat8"><a href="{$pe['host_root']}user.php?mod=order&state=success" target="_blank">发表评价<span class="font12 normal mal5">{$comment_point}</span></a></div>
 				</div>
 				<div class="clear"></div>
 			</div>
 			<div class="plmenu" id="js_commentmenu">
 				<a href="javascript:;" val="0" class="sel">全部({$info['product_commentnum']})</a>
-				<a href="javascript:;" val="3">好评({intval($comment_ratearr[0])})</a>
-				<a href="javascript:;" val="2">中评({intval($comment_ratearr[1])})</a>
-				<a href="javascript:;" val="1">差评({intval($comment_ratearr[2])})</a>
+				<a href="javascript:;" val="hao">好评({intval($comment_ratearr[0])})</a>
+				<a href="javascript:;" val="zhong">中评({intval($comment_ratearr[1])})</a>
+				<a href="javascript:;" val="cha">差评({intval($comment_ratearr[2])})</a>
 			</div>
-			<div id="js_commentlist"></div>
+			<div style="border-top:1px #ddd solid;"><div id="js_commentlist"></div></div>
 			<div id="js_commentpage"></div>
-			<div class="plmenu_tt">我要评价</div>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="plmain">
-			<tr>
-				<td >评价星级：</td>
-				<td><input type="hidden" name="comment_star" value="5" /><span id="star"></span></td>
-			</tr>
-			<tr>
-				<td >评价内容：</td>
-				<td><textarea name="comment_text" style="width:500px;height:90px;resize:none;"></textarea></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="button" value="提交" class="tj_btn"></td>
-			</tr>
-			</table>
 		</div>
 		<!--评论 End-->
 		<!--咨询 Start-->
@@ -162,29 +143,24 @@
 </div>
 <link type="text/css" rel="stylesheet" href="{$pe['host_root']}include/plugin/jqzoom/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/jqzoom/jquery.jqzoom.js"></script>
-<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.lazyload.min.js"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=simple"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
-<script type="text/javascript" src="{$pe['host_root']}include/plugin/raty/jquery.raty.js"></script>
 <script type="text/javascript">
 var menu_top = $("#js_menu").offset().top;
 $(function(){
 $(window).scroll(function(){
-	menu_topnew = $(document).scrollTop() >= menu_top ? $(document).scrollTop() : menu_top;
-	$("#js_menu").offset({top:menu_topnew});
+	if ( $(document).scrollTop() > menu_top) {
+		$("#js_menu").addClass("js_menu");
+	}
+	else {
+		$("#js_menu").removeClass("js_menu");	
+	}
 })
 $(".jqzoom").jqueryzoom();
-$('#star').raty({
-	path:"{$pe['host_root']}include/plugin/raty/images",
-	hints: ['差评', '中评', '中评', '好评', '好评'],
-	score: 5,
-	click: function (score, evt) {
-		$(":input[name='comment_star']").val(score);
-	}
-});
 $(":input[name='product_num']").keyup(function(){
 	if (!$(this).val().match(/^[1-9]+[0-9]*$/)) $(this).val(1);
 })
+pe_countdown("huodong_time", "{$info['product_hd_etime']}");
 //标签切换
 $("#js_menu").find("li").click(function(){
 	$("#js_menu").find("li").removeClass("sel");
@@ -220,34 +196,19 @@ $(".ask_btn").click(function(){
 		}
 	}, "json")
 })
-//评价发表
-$(".tj_btn").click(function(){
-	if (!{pe_login('user')}) {alert('抱歉：只有登录用户才能发表评价！请先登录...');return;}
-	var comment_text = $(":input[name='comment_text']").val();
-	if (comment_text == '') {alert('评价内容必须填写');return;}
-	$.post("{$pe['host_root']}index.php?mod=comment&act=add&id={$info['product_id']}", {"comment_star":$(":input[name='comment_star']").val(),"comment_text":comment_text,"pesubmit":true}, function(json){
-		if (json.result) {
-			$("#js_commentlist").prepend(json.html);
-			$(":input[name='comment_text']").val('');
-			alert('感谢您的支持，评价提交成功！');
-		}
-		else {
-			alert('抱歉，评价提交失败，请重新提交...')			
-		}
-	}, "json")
-})
 })
 //评价跳转
 function find_comment() {
 	$("#js_menu").find("li").eq(1).click();
-	window.location.href = "#js_menu";
+	//window.location.href = "#js_menu";
 }
 //评价翻页
 function comment_page(page){
 	$.getJSON("{$pe['host_root']}index.php", {"mod":"comment","product_id":"{$info['product_id']}","star":$("#js_commentmenu").find(".sel").attr("val"),"page":page,},function(json){
 		$("#js_commentlist").html(json.html);
 		$("#js_commentpage").html('<div class="fenye">'+json.page+'<div class="clear"></div></div>');
-		$("body,html").animate({scrollTop:menu_top},800);	
+		$("body,html").animate({scrollTop:menu_top}, 1);	
+
 	})
 }
 //咨询翻页
@@ -255,16 +216,20 @@ function ask_page(page){
 	$.getJSON("{$pe['host_root']}index.php", {"mod":"ask","product_id":"{$info['product_id']}","page":page,},function(json){
 		$("#js_asklist").html(json.html);
 		$("#js_askpage").html('<div class="fenye">'+json.page+'<div class="clear"></div></div>');
-		$("body,html").animate({scrollTop:menu_top},800);	
+		$("body,html").animate({scrollTop:menu_top}, 1);	
 	})
 }
 //加入购物车
 function cart_add(id) {
-	if ("{$info['rule_id']}" != '' && $(":input[name='prorule_id']").val() == '') {
+	if ({$cache_setting['web_guestbuy']}==0 && !{pe_login('user')}) {
+		window.location.href = "{$pe['host_root']}user.php?mod=do&act=login";
+		return false;
+	}
+	if ("{$info['rule_id']}" != '' && $(":input[name='prorule_key']").val() == '') {
 		alert('请选择商品规格');
 		return false;
 	}
-	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartadd","product_id":id,"product_num":$(":input[name='product_num']").val(),"prorule_id":$(":input[name='prorule_id']").val()},function(json){
+	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartadd","product_id":id,"product_num":$(":input[name='product_num']").val(),"prorule_key":$(":input[name='prorule_key']").val()},function(json){
 		if (json.result == true) {
 			art.dialog({
 				id: 'cart_add',
@@ -278,6 +243,7 @@ function cart_add(id) {
 		else {
 			alert('抱歉，加入购物车失败，请重新加入...')
 		}
+		$("#cart_num").html(json.cart_num);
 	})
 }
 function dialog_close(){
@@ -302,10 +268,6 @@ $(function(){
 		}
 		prorule_lock();
 	})
-	$("img").lazyload({
-		effect:"fadeIn",
-		container:$("body")
-	});
 })
 function prorule_lock() {
 	var prorule_list = {$prorule_json};
@@ -317,8 +279,8 @@ function prorule_lock() {
 	$(".prorule_span").each(function(){
 		var result = false;
 		for (var i in prorule_list) {
-			if (prorule_list[i]['prorule_id'].indexOf($(this).attr("id")) >= 0 && prorule_list[i]['product_num'] > 0) result = true;
-			//if ($(this).hasClass("prorule_sel") && prorule_list[i]['prorule_id'].indexOf($(this).attr("id")) >= 0 && prorule_list[i]['product_num'] > 0)
+			if (prorule_list[i]['prorule_key'].indexOf($(this).attr("id")) >= 0 && prorule_list[i]['product_num'] > 0) result = true;
+			//if ($(this).hasClass("prorule_sel") && prorule_list[i]['prorule_key'].indexOf($(this).attr("id")) >= 0 && prorule_list[i]['product_num'] > 0)
 		}
 		if (result == false) $(this).addClass("prorule_lock");
 	})
@@ -329,15 +291,15 @@ function prorule_lock() {
 			rule_sel[index] = $(this).attr("rule_id");
 		})
 		//当前选中规格组合
-		var prorule_id = prorule_sel.join(',');
-		$(":input[name='prorule_id']").val('');
+		var prorule_key = prorule_sel.join(',');
+		$(":input[name='prorule_key']").val('');
 		//循环规格选中的有效列表
 		for (var i in prorule_list) {
 			//如果选中规格组合完成
-			if (prorule_list[i]['prorule_id'] == prorule_id) {
-				$(":input[name='prorule_id']").val(prorule_id);
+			if (prorule_list[i]['prorule_key'] == prorule_key) {
+				$(":input[name='prorule_key']").val(prorule_key);
 				$("#product_money").html(prorule_list[i]['product_money']);
-				$("#product_smoney").html(prorule_list[i]['product_smoney']);
+				$("#product_mmoney").html(prorule_list[i]['product_mmoney']);
 				$("#product_num").html(prorule_list[i]['product_num']);
 			}
 		}
@@ -349,7 +311,7 @@ function prorule_lock() {
 				if (_span.attr("rule_id") != _sel.attr("rule_id")) {
 					var result = false;
 					for (var i in prorule_list) {
-						if (prorule_list[i]['prorule_id'].indexOf(_sel.attr("id")) >= 0 && prorule_list[i]['prorule_id'].indexOf(_span.attr("id")) >= 0 && prorule_list[i]['product_num'] > 0) result = true;					
+						if (prorule_list[i]['prorule_key'].indexOf(_sel.attr("id")) >= 0 && prorule_list[i]['prorule_key'].indexOf(_span.attr("id")) >= 0 && prorule_list[i]['product_num'] > 0) result = true;					
 					}
 					if (result == false) _span.addClass("prorule_lock");
 				}

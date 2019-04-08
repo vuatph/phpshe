@@ -1,31 +1,31 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<span class="fl c888">管理中心 > {$menutitle}</span>
-		<span class="fr fabu"><a href="admin.php?mod=link&act=add">增加链接</a></span>
+		<a href="javascript:;" class="sel">{$menutitle}</a>
 		<div class="clear"></div>
 	</div>
-	<div class="right_main">
-		<form method="post">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
-		<tr>
-			<td class="bg_f8" align="right" width="110">链接名称：</td>
-			<td><input type="text" name="info[link_name]" value="{$info['link_name']}" class="inputall input300" /> <span class="c888">(如：简好科技)</span></td>
-		</tr>
-		<tr>
-			<td class="bg_f8" align="right">链接地址：</td>
-			<td><input type="text" name="info[link_url]" value="{$info['link_url']}" class="inputall input300" /> <span class="c888">(如：http://www.phpshe.com)</span></td>
-		</tr>
-		<tr>
-			<td class="bg_f8" align="right">链接排序：</td>
-			<td><input type="text" name="info[link_order]" value="{$info['link_order']}" class="inputall input50" /></td>
-		</tr>
-		<tr>
-			<td class="bg_f8">&nbsp;</td>
-			<td><input type="submit" name="pesubmit" value="提 交" class="tjbtn"></td>
-		</tr>
-		</table>
-		</form>
-	</div>
+	<form method="post">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20">
+	<tr>
+		<td align="right" width="150">链接名称：</td>
+		<td><input type="text" name="info[link_name]" value="{$info['link_name']}" class="inputall input350" /> <span class="c888">(如：简好网络)</span></td>
+	</tr>
+	<tr>
+		<td align="right">链接地址：</td>
+		<td><input type="text" name="info[link_url]" value="{$info['link_url']}" class="inputall input350" /> <span class="c888">(如：http://www.phpshe.com)</span></td>
+	</tr>
+	<tr>
+		<td align="right">链接排序：</td>
+		<td><input type="text" name="info[link_order]" value="{$info['link_order']}" class="inputall input80" /></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<input type="hidden" name="pe_token" value="{$pe_token}" />
+			<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
+		</td>
+	</tr>
+	</table>
+	</form>
 </div>
 <!--{include(pe_tpl('footer.html'));}-->

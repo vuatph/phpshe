@@ -1,0 +1,29 @@
+<div class="remai fl">
+	<div class="hot_border">
+		<!--{foreach((array)$cache_category_arr[$category_pid] as $k=>$v):}-->
+		<h3 <!--{if(!is_array($cache_category_arr[$k])):}-->style="border-bottom:0"<!--{endif;}-->><a href="{pe_url('product-list-'.$k)}" title="{$v['category_name']}">{$v['category_name']}</a></h3>
+		<div class="hotlist">
+			<!--{if(is_array($cache_category_arr[$k])):}-->
+			<!--{foreach($cache_category_arr[$k] as $kk=>$vv):}-->
+			<div class="zhulei"><a href="{pe_url('product-list-'.$kk)}" <!--{if($category_id==$kk):}-->class="sel"<!--{endif;}-->>{$vv['category_name']}</a></div>
+			<!--{endforeach;}-->
+			<!--{endif;}-->
+		</div>
+		<!--{endforeach;}-->
+	</div>
+	<div class="hot_border mat10">
+		<h3>热销排行</h3>
+		<ul class="hotlist">
+			<!--{foreach((array)$product_selllist as $v):}-->
+			<li>
+				<span class="fl hotlogo"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($v['product_logo'], 60, 60)}" title="{$v['product_name']}" width="60" height="60" class="js_imgload" /></a></span>
+				<span class="fl hotname">
+					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a>
+					<span class="cred num strong lh20">¥{$v['product_money']}</span>
+				</span>
+				<div class="clear"></div>
+			</li>
+			<!--{endforeach;}-->
+		</ul>
+	</div>
+</div>

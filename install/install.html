@@ -34,14 +34,14 @@ print<<<html
 -->
 	<div class="main_l"></div>
 	<div class="main_m">
-		<h3 class="c666">欢迎使用PHPSHE商城系统（当前版本PHPSHE1.3），请阅读PHPSHE安装许可协议！</h3>
+		<h3 class="c666">欢迎使用PHPSHE商城系统（当前版本PHPSHE{$ini['phpshe']['version']}），请阅读PHPSHE安装许可协议！</h3>
 		<div class="xieyi">
 			<div class="xieyi_text">
-<p>版权所有 (c) 2008-2014，灵宝简好网络科技有限公司 保留所有权利。</p>
+<p>版权所有 (c) 2008-2015，灵宝简好网络科技有限公司 保留所有权利。</p>
 <p class="mat5">感谢您选择 PHPSHE 产品。希望我们的努力能为您提供一个高效便捷和可靠的电子商务网站解决方案。 
 <br/>PHPSHE 全称为 PHPSHE商城系统。 
 <br/>PHPSHE商城系统的官方网站为 http://www.phpshe.com，是 PHPSHE 产品的开发商，依法独立拥有 PHPSHE 的全部知识产权。无论您是个人或组织、盈利与否、用途如何（包括以学习和研究为目的），均需仔细阅读本协议，在理解、同意、并遵守本协议的全部条款后，方可开始使用 PHPSHE 软件。 
-<br/>本授权协议适用且仅适用于 PHPSHE1.3 版本，灵宝简好网络科技有限公司拥有对本授权协议的最终解释权。</p>
+<br/>本授权协议适用且仅适用于 PHPSHE{$ini['phpshe']['version']} 版本，灵宝简好网络科技有限公司拥有对本授权协议的最终解释权。</p>
 <p class="mat10">
 <strong>I、协议许可的权利</strong>
 <br/>1> 您可以在完全遵守本最终用户授权协议的基础上，将本软件应用于非商业用途，而不必支付软件版权授权费用。
@@ -134,7 +134,7 @@ print<<<html
 				</td>
 			</tr>
 			<tr>
-				<td align="right">数据库名</td>
+				<td align="right">数据库名称</td>
 				<td><input type="text" name="db_name" class="input200" /></td>
 			</tr>
 			<tr>
@@ -189,10 +189,10 @@ $(":button").click(function(){
 		alert('数据库用户名必须填写...');
 		return;
 	}
-	if(!$(":input[name='db_pw']").val()) {
+	/*if(!$(":input[name='db_pw']").val()) {
 		alert('数据库密码必须填写...');
 		return;
-	}
+	}*/
 	if(!$(":input[name='db_name']").val()) {
 		alert('数据库名必须填写...');
 		return;
@@ -226,7 +226,7 @@ html;
 }
 print<<<html
 -->
-	<div class="center mat5">Copyright <span class="num">©</span> 2008-2014 <a href="http://www.phpshe.com" target="_blank" title="灵宝简好网络科技有限公司">灵宝简好网络科技有限公司</a> 版权所有</div>
+	<div class="center mat5">Copyright <span class="num">©</span> 2008-2015 <a href="http://www.phpshe.com" target="_blank" title="灵宝简好网络科技有限公司">灵宝简好网络科技有限公司</a> 版权所有</div>
 </div>
 </body>
 </html>

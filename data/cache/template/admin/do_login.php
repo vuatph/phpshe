@@ -33,26 +33,23 @@ body{background:#3C7DBE; font-family:'Microsoft Yahei','Simsun',"宋体"}
 <form method="post">
 <div class="login">	
 	<div class="input1"><span class="input_name">账 号:</span><input type="text" name="admin_name" /><div class="clear"></div></div>
-	<div class="input2"><span class="input_name">密 码:</span><input type="password" name="admin_pw" /><div class="clear"></div></div>
+	<div class="input2"><span class="input_name">密 码:</span><input type="password" name="admin_pw"  /><div class="clear"></div></div>
 	<div class="input3">
 		<div class="input3_box" style="position:relative;">
 			<span class="fl">验证码:</span>
 			<input class="fl" type="text" name="authcode" />
 			<div class="clear"></div>
-			<img src="<?php echo $pe['host_root'] ?>include/class/authcode.class.php" class="authcode" style="cursor:pointer; position:absolute; left:128px; top:0" />
+			<img src="<?php echo $pe['host_root'] ?>include/class/authcode.class.php?w=80&h=32" onclick="pe_yzm(this)" style="cursor:pointer; position:absolute; left:128px; top:0" />
 		</div>
 		<div class="clear"></div>
 	</div>
 	<div class="login_btn"><input type="submit" name="pesubmit" value=" " /></div>
 </div>
 </form>
-<div class="copyright">Copyright <span class="num">©</span> 2008-2014 <a href="http://www.phpshe.com" target="_blank">灵宝简好网络科技有限公司</a> 版权所有</div>
+<div class="copyright">Copyright <span class="num">©</span> 2008-2015 <a href="http://www.phpshe.com" target="_blank">灵宝简好网络科技有限公司</a> 版权所有</div>
 </body>
 <script type="text/javascript">
 $(function(){
-$(".authcode").click(function(){
-	$(this).attr("src", $(this).attr("src") + '?time=' + new Date().getTime());
-});
 $(":submit").click(function(){
 	if ($(":input[name='info[admin_name]']").val() == '') {
 		alert('帐号不能为空！')

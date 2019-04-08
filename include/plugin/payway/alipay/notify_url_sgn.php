@@ -27,6 +27,7 @@
 include('../../../../common.php');
 require_once("alipay.config.php");
 require_once("lib/alipay_notify.class.php");
+pe_lead('hook/order.hook.php');
 
 //计算得出通知验证结果
 $alipayNotify = new AlipayNotify($alipay_config);
@@ -34,9 +35,9 @@ $verify_result = $alipayNotify->verifyNotify();
 //验证成功
 if ($verify_result) {	
 	//商户订单号
-	$out_trade_no = $_POST['out_trade_no'];
+	$out_trade_no = pe_dbhold($_POST['out_trade_no']);
 	//支付宝交易号
-	$trade_no = $_POST['trade_no'];
+	$trade_no = pe_dbhold($_POST['trade_no']);
 
 	$info = $db->pe_select('order', array('order_id'=>$out_trade_no));
 	//该判断表示买家已在支付宝交易管理中产生了交易记录，但没有付款
@@ -51,6 +52,7 @@ if ($verify_result) {
 			$order['order_state'] = 'paid';
 			$order['order_ptime'] = time();		
 			$db->pe_update('order', array('order_id'=>$out_trade_no), $order);
+			order_callback('pay', $out_trade_no);
 		}
         echo "success";		//请不要修改或删除
     }
@@ -60,6 +62,7 @@ if ($verify_result) {
 			$order['order_state'] = 'send';
 			$order['order_stime'] = time();					
 			$db->pe_update('order', array('order_id'=>$out_trade_no), $order);
+			order_callback('send', $out_trade_no);
 		}	
         echo "success";		//请不要修改或删除
     }
@@ -71,10 +74,12 @@ if ($verify_result) {
 			$order['order_state'] = 'paid';
 			$order['order_ptime'] = time();					
 			$db->pe_update('order', array('order_id'=>$out_trade_no), $order);
+			order_callback('pay', $out_trade_no);
 		}
 		elseif ($info['order_state'] == 'send') {
 			$order['order_state'] = 'success';					
 			$db->pe_update('order', array('order_id'=>$out_trade_no), $order);
+			order_callback('success', $out_trade_no);
 		}
         echo "success";		//请不要修改或删除
     }

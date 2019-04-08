@@ -1,0 +1,32 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="huiyuan_content">
+	<!--{include(pe_tpl('user_menu.html'));}-->
+	<div class="fr huiyuan_main">
+		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tablelist">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<th width="120">交易日期</th>
+				<th width="100">积分类型</th>
+				<th width="80">收入(积分)</th>
+				<th width="80">支出(积分)</th>
+				<th width="80">余额(积分)</th>
+				<th>备注</td>
+			</tr>
+			<!--{foreach($info_list as $v):}-->
+			<tr>
+				<td class="num"><span <!--{if(pe_date($v['pointlog_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['pointlog_atime'])}</span></td>
+				<td>{$ini['pointlog_type'][$v['pointlog_type']]}</td>
+				<td><span class="num cgreen">{$v['pointlog_in']?'+'.$v['pointlog_in']:''}</span></td>
+				<td><span class="num corg">{$v['pointlog_out']?'-'.$v['pointlog_out']:''}</span></td>
+				<td><span class="num">{$v['pointlog_now']}</span></td>
+				<td>{$v['pointlog_text']}</td>
+			</tr>
+			<!--{endforeach;}-->
+			</table>
+			<div class="fenye mat10">{$db->page->html}</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

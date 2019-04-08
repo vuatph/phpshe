@@ -1,35 +1,37 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<span class="fl c888">管理中心 > {$menutitle}</span>
-		<span class="fr fabu"><a href="admin.php?mod=admin&act=add">增加管理</a></span>
+		<a href="admin.php?mod=admin" class="sel">{$menutitle}</a>
+		<a href="admin.php?mod=admin&act=add" id="fabu">添加帐号</a>
 		<div class="clear"></div>
 	</div>
-	<div class="right_main">
-		<form method="post" id="form">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-		<tr>
-			<td class="bgtt" width="60">ID号</td>
-			<td class="bgtt">管理帐号</td>
-			<td class="bgtt" width="150">上次登录</td>
-			<td class="bgtt" width="90">操作</td>
-		</tr>
-		<!--{foreach($info_list as $v):}-->
-		<tr>
-			<td>{$v['admin_id']}</td>
-			<td>{$v['admin_name']}</td>
-			<td>{pe_date($v['admin_ltime'])}</td>
-			<td>
-				<a href="admin.php?mod=admin&act=edit&id={$v['admin_id']}" class="admin_edit mar5">修改</a>
-				<a href="admin.php?mod=admin&act=del&id={$v['admin_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
-			</td>
-		</tr>
-		<!--{endforeach;}-->
-		<tr>
-			<td class="bgtt" colspan="4">&nbsp;<span class="fenye">{$db->page->html}</span></td>
-		</tr>
-		</table>
-		</form>
-	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="50">ID号</th>
+		<th class="bgtt" width="">管理帐号</th>
+		<th class="bgtt" width="200">管理权限</th>
+		<th class="bgtt" width="300">上次登录</th>
+		<th class="bgtt" width="88">操作</th>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr>
+		<td>{$v['admin_id']}</td>
+		<td>{$v['admin_name']}</td>
+		<td>{$adminlevel_list[$v['adminlevel_id']]['adminlevel_name']}</td>
+		<td>{pe_date($v['admin_ltime'])}</td>
+		<td>
+			<a href="admin.php?mod=admin&act=edit&id={$v['admin_id']}" class="admin_edit mar5">修改</a>
+			<a href="admin.php?mod=admin&act=del&id={$v['admin_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+		</td>
+	</tr>
+	<!--{endforeach;}-->
+	<!--{if($db->page->html):}-->
+	<tr>
+		<th class="bgtt" colspan="4"><span class="fenye">{$db->page->html}</span></td>
+	</tr>
+	<!--{endif;}-->
+	</table>
+	</form>
 </div>
 <!--{include(pe_tpl('footer.html'));}-->

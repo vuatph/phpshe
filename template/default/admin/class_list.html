@@ -1,40 +1,39 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<span class="fl c888">管理中心 > {$menutitle}</span>
-		<span class="fr fabu"><a href="admin.php?mod=class&act=add">增加分类</a></span>
+		<a href="admin.php?mod=class" <!--{if($act=='index'):}-->class="sel"<!--{endif;}-->>分类列表</a>
+		<a href="admin.php?mod=class&act=add" <!--{if($act=='add'):}-->class="sel"<!--{endif;}--> id="fabu">添加分类</a>
+		<!--{if($act=='edit'):}--><a href="javascript:;" class="sel">修改信息</a><!--{endif;}-->
 		<div class="clear"></div>
 	</div>
-	<div class="right_main">
-		<form method="post" id="form">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-		<tr>
-			<td class="bgtt" width="80">排序</td>
-			<td class="bgtt">分类名称</td>
-			<td class="bgtt" width="90">操作</td>
-		</tr>
-		<!--{foreach(array('news'=>'资讯中心', 'help'=>'帮助中心') as $k=>$v):}-->
-		<tr>
-			<td></td>
-			<td class="aleft">{$v}</td>
-			<td></td>
-		</tr>
-		<!--{foreach((array)$class_list[$k] as $kk=>$vv):}-->
-		<tr>
-			<td><input type="text" name="class_order[{$vv['class_id']}]" value="{$vv['class_order']}" class="inputtext input40" /></td>
-			<td class="aleft">&nbsp;&nbsp;&nbsp;&nbsp;┝ <a href="{pe_url('article-list-'.$vv['class_id'])}" target="_blank">{$vv['class_name']}</a></td>
-			<td>
-				<a href="admin.php?mod=class&act=edit&id={$vv['class_id']}" class="admin_edit mar5">修改</a>
-				<a href="admin.php?mod=class&act=del&id={$vv['class_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
-			</td>
-		</tr>
-		<!--{endforeach;}-->
-		<!--{endforeach;}-->
-		<tr>
-			<td class="bgtt aleft" colspan="4"><button href="admin.php?mod=class&act=order" onclick="pe_doall(this,'form')">批量排序</button></td>
-		</tr>
-		</table>
-		</form>
-	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="60">排序</th>
+		<th class="bgtt">分类名称</td>
+		<th class="bgtt" width="90">操作</th>
+	</tr>
+	<!--{foreach(array('news'=>'资讯中心', 'help'=>'帮助中心') as $k=>$v):}-->
+	<tr>
+		<td></td>
+		<td class="aleft">{$v}</td>
+		<td></td>
+	</tr>
+	<!--{foreach((array)$class_list[$k] as $kk=>$vv):}-->
+	<tr>
+		<td><input type="text" name="class_order[{$vv['class_id']}]" value="{$vv['class_order']}" class="inputtext input40" /></td>
+		<td class="aleft">&nbsp;&nbsp;&nbsp;&nbsp;┝ <a href="{pe_url('article-list-'.$vv['class_id'])}" target="_blank">{$vv['class_name']}</a></td>
+		<td>
+			<a href="admin.php?mod=class&act=edit&id={$vv['class_id']}" class="admin_edit mar5">修改</a>
+			<a href="admin.php?mod=class&act=del&id={$vv['class_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+		</td>
+	</tr>
+	<!--{endforeach;}-->
+	<!--{endforeach;}-->
+	<tr>
+		<td class="bgtt aleft" colspan="4"><button href="admin.php?mod=class&act=order&token={$pe_token}" onclick="pe_doall(this,'form')">批量排序</button></td>
+	</tr>
+	</table>
+	</form>
 </div>
 <!--{include(pe_tpl('footer.html'));}-->

@@ -24,6 +24,7 @@ switch ($act) {
 	case 'list':
 		pe_lead('hook/category.hook.php');
 		$category_id = intval($id);
+		$category_pid = $cache_category[$category_id]['category_pid'];
 		$info = $db->pe_select('category', array('category_id'=>$category_id));
 		//搜索
 		$sqlwhere = " and `product_state` = 1";
@@ -41,14 +42,13 @@ switch ($act) {
 			$sqlwhere .= " order by `product_id` desc";
 		}
 		$info_list = $db->pe_selectall('product', $sqlwhere, '*', array(20, $_g_page));
-		$cache_category_brand = cache::get('category_brand');
-		
+		$cache_category_brand = cache::get('category_brand');		
 		//热卖排行
 		$product_selllist = product_selllist();
 		//当前路径
 		$nowpath = category_path($category_id);
 
-		$seo = pe_seo($info['category_name']);
+		$seo = pe_seo($info['category_title']?$info['category_title']:$info['category_name'], $info['category_keys'], pe_text($info['category_desc']));
 		include(pe_tpl('product_list.html'));
 	break;
 	//#####################@ 商品内容 @#####################//
@@ -58,29 +58,32 @@ switch ($act) {
 		$comment_ratearr = explode(',', $info['product_commentrate']);
 		if ($info['product_commentnum']) {
 			$comment_star = $info['product_commentstar']/$info['product_commentnum'];
-			$comment_rate = intval($comment_ratearr[0]/$info['product_commentnum']*100);
-			$comment_rate1 = intval($comment_ratearr[1]/$info['product_commentnum']*100);
-			$comment_rate2 = intval($comment_ratearr[2]/$info['product_commentnum']*100);
+			$comment_rate_hao = intval($comment_ratearr[0]/$info['product_commentnum']*100);
+			$comment_rate_zhong = intval($comment_ratearr[1]/$info['product_commentnum']*100);
+			$comment_rate_cha = intval($comment_ratearr[2]/$info['product_commentnum']*100);
 		}
 		else {
 			$comment_star = 5;
-			$comment_rate = '100';
-			$comment_rate1 = '0';
-			$comment_rate2 = '0';
-		}		
+			$comment_rate_hao = '100';
+			$comment_rate_zhong = '0';
+			$comment_rate_cha = '0';
+		}
+		$comment_point = ($cache_setting['point_state'] && $cache_setting['point_comment']) ? "(+{$cache_setting['point_comment']}积分)":'';
 		$category_id = $info['category_id'];
+		$category_pid = $cache_category[$category_id]['category_pid'];
+		$quan_list = $db->pe_selectall('quan', " and `quan_edate` >= '".date('Y-m-d')."' and (`product_id` = '' or find_in_set({$product_id}, `product_id`)) order by `quan_money` asc");
 		//商品规格
 		$cache_rule = cache::get('rule');
 		$rule_list = $info['rule_id'] ? explode(',', $info['rule_id']) : array();
 		$prorule_list = $db->pe_selectall('prorule', array('product_id'=>$product_id));
-		$prorule_json = json_encode($prorule_list);
-		foreach ($prorule_list as $v) {
-			foreach (explode(',', $v['prorule_id']) as $kk=>$vv) {
+		foreach ($prorule_list as $k=>$v) {
+			foreach (explode(',', $v['prorule_key']) as $kk=>$vv) {
 				if (in_array($vv, (array)$ruledata_list[$kk])) continue;
 				$ruledata_list[$kk][] = $vv;
 			}
+			if ($info['product_money'] != $info['product_smoney']) $prorule_list[$k]['product_money'] = $info['product_money'];
 		}
-
+		$prorule_json = json_encode($prorule_list);
 		//热卖排行
 		$product_selllist = product_selllist();
 		//更新点击
@@ -89,7 +92,8 @@ switch ($act) {
 		pe_lead('hook/category.hook.php');
 		$nowpath = category_path($info['category_id'], $info['product_name']);
 
-		$seo = pe_seo($info['product_name']);
+		$info['product_desc'] = $info['product_desc'] ? $info['product_desc'] : pe_cut(pe_text($info['product_text']), 200);
+		$seo = pe_seo($info['product_name'], $info['product_keys'], $info['product_desc']);
 		include(pe_tpl('product_view.html'));
 	break;
 }

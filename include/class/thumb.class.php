@@ -1,31 +1,23 @@
 <?php   
-//中文
-# ========================================================================#   
-#   
-#  Author:    Jarrod Oberto   
-#  Version:  1.0   
-#  Date:      17-Jan-10   
-#  Purpose:   Resizes and saves image   
-#  Requires : Requires PHP5, GD library.   
-#  Usage Example:   
-#                     include("classes/resize_class.php");   
-#                     $resizeObj = new resize('images/cars/large/input.jpg');   
-#                     $resizeObj -> resizeImage(150, 100, 0);   
-#                     $resizeObj -> saveImage('images/cars/large/output.jpg', 100);   
-#   
-#   
-# ========================================================================#   
+/**
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
+ * @creatdate   2011-0501 koyshe <koyshe@gmail.com>
+ */ 
 
-Class thumb   
-{   
+class thumb {   
     // *** Class variables   
     private $image;   
     private $width;
     private $height;   
     private $imageResized;
 
-	function __construct($fileName, $new_path, $new_width, $new_height) 
-	{
+	function __construct($fileName, $new_path, $new_width, $new_height) {
+		//打开一个图片
+		$this->image = $this->open_image($fileName);
+		//获取图片宽高
+		$this->width  = imagesx($this->image);
+		$this->height = imagesy($this->image);
+
 		if ($new_width == 'auto') {
 			$type = 'auto_width';
 		}
@@ -35,26 +27,13 @@ Class thumb
 		else {
 			$type = 'diy';
 		}
-		// *** Open up the file
-		$this->image = $this->openImage($fileName);   
-
-		// *** Get width and height   
-		$this->width  = imagesx($this->image);   
-		$this->height = imagesy($this->image);
-		
-		$this->resizeImage($new_width, $new_height, $type);
-		$this->saveImage($new_path, 100);
+		$this->mark_image($new_width, $new_height, $type);
+		$this->save_image($new_path, 100);
 	}
-
-    ## --------------------------------------------------------   
-
-    private function openImage($file)   
-    {   
+    private function open_image($file) {   
         // *** Get extension   
-        $extension = strtolower(strrchr($file, '.'));   
-
-        switch($extension)   
-        {   
+        $extension = strtolower(strrchr($file, '.'));
+        switch($extension) {   
             case '.jpg':   
             case '.jpeg':   
                 $img = @imagecreatefromjpeg($file);   
@@ -63,164 +42,54 @@ Class thumb
                 $img = @imagecreatefromgif($file);   
                 break;   
             case '.png':   
-                $img = @imagecreatefrompng($file);   
+                $img = @imagecreatefrompng($file);
                 break;   
             default:   
                 $img = false;   
                 break;   
         }   
         return $img;   
-    }   
-
-    ## --------------------------------------------------------   
-
-    public function resizeImage($newWidth, $newHeight, $option="auto")   
-    {   
-        // *** Get optimal width and height - based on $option   
-        $optionArray = $this->getDimensions($newWidth, $newHeight, $option);
-
-        $optimalWidth  = $optionArray['optimalWidth'];   
-        $optimalHeight = $optionArray['optimalHeight'];   
-
-
-        // *** Resample - create image canvas of x, y size   
-        $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);   
-        imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);   
-
-
-        // *** if option is 'crop', then crop too   
-        if ($option == 'crop') {   
-            $this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight);   
-        }   
-    }   
-
-    ## --------------------------------------------------------   
-       
-    private function getDimensions($newWidth, $newHeight, $option)   
-    {
-       switch ($option)   
-        {   
-            case 'diy':   
-                $optimalWidth = $newWidth;   
-                $optimalHeight= $newHeight;   
-                break;   
-            case 'auto_width'://portrait 
-                $optimalWidth = $this->getSizeByFixedHeight($newHeight);   
-                $optimalHeight= $newHeight;   
-                break;   
-            case 'auto_height'://'landscape'
-                $optimalWidth = $newWidth;   
-                $optimalHeight= $this->getSizeByFixedWidth($newWidth);   
-                break;   
-            case 'auto':   
-                $optionArray = $this->getSizeByAuto($newWidth, $newHeight);   
-                $optimalWidth = $optionArray['optimalWidth'];   
-                $optimalHeight = $optionArray['optimalHeight'];   
-                break;   
-            case 'crop':   
-                $optionArray = $this->getOptimalCrop($newWidth, $newHeight);   
-                $optimalWidth = $optionArray['optimalWidth'];   
-                $optimalHeight = $optionArray['optimalHeight'];   
-                break;   
-        }   
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);   
-    }   
-
-    ## --------------------------------------------------------   
-
-    private function getSizeByFixedHeight($newHeight)   
-    {   
-        $ratio = $this->width / $this->height;   
-        $newWidth = $newHeight * $ratio;   
-        return $newWidth;   
-    }   
-
-    private function getSizeByFixedWidth($newWidth)   
-    {   
-        $ratio = $this->height / $this->width;   
-        $newHeight = $newWidth * $ratio;   
-        return $newHeight;   
-    }   
-
-    private function getSizeByAuto($newWidth, $newHeight)   
-    {   
-        if ($this->height < $this->width)   
-        // *** Image to be resized is wider (landscape)   
-        {   
-            $optimalWidth = $newWidth;   
-            $optimalHeight= $this->getSizeByFixedWidth($newWidth);   
-        }   
-        elseif ($this->height > $this->width)   
-        // *** Image to be resized is taller (portrait)   
-        {   
-            $optimalWidth = $this->getSizeByFixedHeight($newHeight);   
-            $optimalHeight= $newHeight;   
-        }   
-        else  
-        // *** Image to be resizerd is a square   
-        {   
-            if ($newHeight < $newWidth) {   
-                $optimalWidth = $newWidth;   
-                $optimalHeight= $this->getSizeByFixedWidth($newWidth);   
-            } else if ($newHeight > $newWidth) {   
-                $optimalWidth = $this->getSizeByFixedHeight($newHeight);   
-                $optimalHeight= $newHeight;   
-            } else {   
-                // *** Sqaure being resized to a square   
-                $optimalWidth = $newWidth;   
-                $optimalHeight= $newHeight;   
-            }   
-        }   
-
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);   
-    }   
-
-    ## --------------------------------------------------------   
-
-    private function getOptimalCrop($newWidth, $newHeight)   
-    {   
-
-        $heightRatio = $this->height / $newHeight;   
-        $widthRatio  = $this->width /  $newWidth;   
-
-        if ($heightRatio < $widthRatio) {   
-            $optimalRatio = $heightRatio;   
-        } else {   
-            $optimalRatio = $widthRatio;   
-        }   
-
-        $optimalHeight = $this->height / $optimalRatio;   
-        $optimalWidth  = $this->width  / $optimalRatio;   
-
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);   
-    }   
-
-    ## --------------------------------------------------------   
-
-    private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight)   
-    {   
-        // *** Find center - this will be used for the crop   
-        $cropStartX = ( $optimalWidth / 2) - ( $newWidth /2 );   
-        $cropStartY = ( $optimalHeight/ 2) - ( $newHeight/2 );   
-
-        $crop = $this->imageResized;   
-        //imagedestroy($this->imageResized);   
-
-        // *** Now crop from center to exact requested size   
-        $this->imageResized = imagecreatetruecolor($newWidth , $newHeight);   
-        imagecopyresampled($this->imageResized, $crop , 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight , $newWidth, $newHeight);   
-    }   
-
-    ## --------------------------------------------------------   
-
-	public function saveImage($savePath, $imageQuality="100")   
-	{
+    }
+    public function mark_image($new_width, $new_height, $type='diy') {
+		switch ($type) {   
+            case 'diy':
+                $size_arr = $this->get_diysize($new_width, $new_height);   
+                $fix_width = $size_arr['fix_width'];   
+                $fix_height = $size_arr['fix_height'];   
+            break;   
+            case 'auto_width':
+                $fix_width = $this->get_autowidth($new_height);
+                $fix_height= $new_height;   
+            break;   
+            case 'auto_height':
+                $fix_width = $new_width;
+                $fix_height= $this->get_autoheight($new_width);
+            break;   
+            /*case 'diy': 
+                $optimalWidth = $new_width;   
+                $optimalHeight = $new_height;   
+            break;*/
+        }
+        // *** Resample - create image canvas of x, y size
+        if ($type == 'diy') {
+			$pos_x = abs(($new_width - $fix_width) / 2);
+			$pos_y = abs(($new_height - $fix_height) / 2);
+			$this->imageResized = imagecreatetruecolor($new_width, $new_height);   
+ 	        $fff = imagecolorallocate($this->imageResized, 255, 255, 255);
+	        imagefill($this->imageResized, 0, 0, $fff);
+        	imagecopyresampled($this->imageResized, $this->image, $pos_x, $pos_y, 0, 0, $fix_width, $fix_height, $this->width, $this->height);         
+        }
+        else {
+			$this->imageResized = imagecreatetruecolor($fix_width, $fix_height);   
+        	imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $fix_width, $fix_height, $this->width, $this->height);         
+        }
+    } 
+	public function save_image($savePath, $imageQuality="100") {
 		$Path = substr($savePath, 0, strripos($savePath, '/'));
 		!is_dir($Path) && mkdir($Path , 0777 ,true);
 		// *** Get extension
 		$extension = strrchr($savePath, '.');
 		$extension = strtolower($extension);
-
 		switch ($extension) {
 			case '.jpg':
 			case '.jpeg':
@@ -245,5 +114,26 @@ Class thumb
 		}
 		imagedestroy($this->imageResized);   
 	}
+
+    ## --------------------------------------------------------   
+    private function get_autowidth($new_height) {
+		return $new_height * $this->width / $this->height;
+	}
+    private function get_autoheight($new_width) {
+		return $new_width * $this->height / $this->width;
+	}
+	private function get_diysize($new_width, $new_height) {
+		$old_rate = $this->width / $this->height;
+		$new_rate = $new_width / $new_height;
+		if ($new_rate > $old_rate) {
+			$fix_height = $new_height;
+			$fix_width = $this->get_autowidth($fix_height);
+		}
+		else {
+			$fix_width = $new_width;
+			$fix_height = $this->get_autoheight($fix_width);
+		}
+		return array('fix_width' => $fix_width, 'fix_height' => $fix_height);
+    }
 }   
 ?>

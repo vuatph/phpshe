@@ -1,5 +1,5 @@
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
 (function($){
@@ -25,7 +25,7 @@ function _success(_this, show_id, show_icon) {
 }
 function _error(_this, show_id, show_text) {
 	_this.attr("pe_result", "false");
-	_this.css("background-color","#ffcccc");
+	_this.css("background-color","#ffdbdb");
 	$("#" + show_id).html('<span style="color:#e3051c;">'+show_text+'</span>');
 }
 //比较数字大小或比较字符串长短（内部调用）

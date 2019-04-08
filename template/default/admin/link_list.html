@@ -1,40 +1,37 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<span class="fl c888">管理中心 > {$menutitle}</span>
-		<span class="fr fabu"><a href="admin.php?mod=link&act=add">增加链接</a></span>
+		<a href="admin.php?mod=link" <!--{if($act=='index'):}-->class="sel"<!--{endif;}-->>链接列表</a>
+		<a href="admin.php?mod=link&act=add" id="fabu">添加链接</a>
 		<div class="clear"></div>
 	</div>
-	<div class="right_main">
-		<form method="post" id="form">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-		<tr>
-			<td class="bgtt" width="60">ID号</td>
-			<td class="bgtt" width="50">排序</td>
-			<td class="bgtt" width="250">链接名称</td>
-			<td class="bgtt">链接地址</td>
-			<td class="bgtt" width="90">操作</td>
-		</tr>
-		<!--{foreach($info_list as $v):}-->
-		<tr>
-			<td>{$v['link_id']}<input type="hidden" name="link_id[]" value="{$v['link_id']}" /></td>
-			<td><input type="text" name="link_order[{$v['link_id']}]" value="{$v['link_order']}" class="inputtext input40" /></td>
-			<td>{$v['link_name']}</td>
-			<td><a href="{$v['link_url']}" target="_blank">{$v['link_url']}</a></td>
-			<td>
-				<a href="admin.php?mod=link&act=edit&id={$v['link_id']}" class="admin_edit mar5">修改</a>
-				<a href="admin.php?mod=link&act=del&id={$v['link_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
-			</td>
-		</tr>
-		<!--{endforeach;}-->
-		<tr>
-			<td class="bgtt aleft" colspan="5">
-				<span class="fl"><button href="admin.php?mod=link&act=order" onclick="pe_doall(this,'form')">批量排序</button></span>
-				<span class="fenye">{$db->page->html}</span>
-			</td>
-		</tr>
-		</table>
-		</form>
-	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="50">ID号</th>
+		<th class="bgtt" width="50">排序</th>
+		<th class="bgtt" width="230">链接名称</th>
+		<th class="bgtt aleft">链接地址</th>
+		<th class="bgtt" width="88">操作</th>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr>
+		<td>{$v['link_id']}<input type="hidden" name="link_id[]" value="{$v['link_id']}" /></td>
+		<td><input type="text" name="link_order[{$v['link_id']}]" value="{$v['link_order']}" class="inputtext input40" /></td>
+		<td>{$v['link_name']}</td>
+		<td class="aleft"><a href="{$v['link_url']}" target="_blank">{$v['link_url']}</a></td>
+		<td>
+			<a href="admin.php?mod=link&act=edit&id={$v['link_id']}" class="admin_edit mar5">修改</a>
+			<a href="admin.php?mod=link&act=del&id={$v['link_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+		</td>
+	</tr>
+	<!--{endforeach;}-->
+	<tr>
+		<td class="bgtt"></td>
+		<td class="bgtt" style="padding:0"><button href="admin.php?mod=link&act=order&token={$pe_token}" onclick="pe_doall(this,'form')">更新排序</button></td>
+		<td class="bgtt" colspan="3"><span class="fenye">{$db->page->html}</span></td>
+	</tr>
+	</table>
+	</form>
 </div>
 <!--{include(pe_tpl('footer.html'));}-->

@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>修改订单价格</title>
+<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+</head>
+<body style="background:none">
+<div class="tixing" style="width:780px">【商品优惠】减价50元：请输入 -50；&nbsp;&nbsp;涨价50元，请输入+50。</div>
+<form method="post">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<tr>
+	<td style="text-align:right;border-top:0;border-left:0" class="bgtt c888" width="80">订单编号</td>
+	<td style="border-top:0" width="260">{$info['order_id']}</td>
+	<td style="text-align:right;border-top:0" class="bgtt c888" width="80">支付方式</td>
+	<td style="border-top:0;border-right:0">
+		<select name="order_payway" class="inputselect">
+		<!--{foreach($cache_payway as $k=>$v):}-->
+		<!--{if(!$v['payway_state'])continue;}-->
+		<option value="{$k}" <!--{if($k==$info['order_payway']):}-->selected="selected"<!--{endif;}-->>{$v['payway_name']}</option>
+		<!--{endforeach;}-->
+		</select>
+	</td>
+</tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" class="hy_tablett">
+<tr>
+	<td class="bgtt" width="" style="border-top:0">商品详情</td>
+	<td class="bgtt" width="50" style="border-top:0">单价(元)</td>
+	<td class="bgtt" width="30" style="border-top:0">数量</td>
+	<td class="bgtt" width="50" style="border-top:0">小计</td>
+	<td class="bgtt" width="60" style="border-top:0">商品优惠</td>
+	<td class="bgtt" width="60" style="border-top:0">运费</td>
+	<td class="bgtt" width="100" style="border-top:0">实付款(元)</td>	
+</tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" class="list">
+<!--{foreach($product_list as $k=>$v):}-->
+<tr>
+	<td style="text-align:left;">
+		<div class="dingdan_list" style="padding-top:0;padding-left:10px">
+			<a href="{pe_url('product-'.$v['product_id'])}" class="fl mar5"><img src="{pe_thumb($v['product_logo'], 40, 40)}" width="40" height="40" class="imgbg"></a>
+			<div class="fl font12">
+				<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue dd_name">{$v['product_name']}</a>
+				<!--{if($v['prorule_name']):}-->
+				<p class="c888 mat5"><!--{foreach(unserialize($v['prorule_name']) as $vv):}-->[{$vv['name']}：{$vv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
+				<!--{endif;}-->
+				</div>
+			<div class="clear"></div>
+		</div>
+	</td>
+	<td width="52"><span class="num">{round($v['product_money'], 1)}</span></td>
+	<td width="32"><span class="num">{$v['product_num']}</span></td>
+	<td width="52"><span class="num">{round($v['product_money']*$v['product_num'], 1)}</span><input type="hidden" name="product_money[{$v['product_id']}]" value="{$v['product_money']*$v['product_num']}" class="js_product_money" /></td>
+	<td width="62"><input type="text" name="product_money_yh[{$v['product_id']}]" value="{order_money_yh($v['product_money_yh'])}" class="js_product_money_yh inputtext c666" style="width:35px" /></td>
+	<!--{if($k==0):}-->
+	<td width="62" rowspan="{count($product_list)}" style="border-left:1px solid #eee;"><input type="text" name="order_wl_money" value="{round($info['order_wl_money'], 1)}" class="inputtext c666" style="width:35px" id="wl_money" /></td>
+	<td width="102" rowspan="{count($product_list)}" style="border-left:1px solid #eee;">
+		<span class="strong num font14 corg" id="order_money">{round($info['order_money'], 1)}</span>
+	</td>
+	<!--{endif;}-->
+</tr>
+<!--{endforeach;}-->
+</table>
+<div class="dingdan_heji" style="width:760px">
+	<span class="fl">交易获得：<span class="cgreen num">{$info['order_point_get']}</span> 积分</span>
+	<div class="fr">
+		<span class="mar20">商品总金额：<span class="cred num" id="order_product_money">{round($info['order_product_money'], 1)}</span></span>
+		<span class="mar20">运费：<span class="cred num" id="order_wl_money">{round($info['order_wl_money'], 1)}</span></span>
+		<span class="mar20">使用优惠券：<a class="cred num" href="javascript:;" title="{$info['order_quan_name']}">-{round($info['order_quan_money'], 1)}</a></span>
+		<span class="mar10">使用积分：<a class="cred num" href="javascript:;" title="使用{$info['order_point_use']}积分">-{round($info['order_point_money'], 1)}</a></span>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="mat20 mab10 center">
+	<input type="hidden" name="pesubmit" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="submit" value="提 交" class="tjbtn" />
+</div>
+</form>
+<script type="text/javascript">
+$(function(){
+	$(".js_product_money_yh").add("#wl_money").keyup(function(){
+		var product_money = 0, wl_money = 0, money= 0;
+		$(".js_product_money").each(function(i){
+			money = parseFloat($(".js_product_money_yh").eq(i).val());
+			if (isNaN(money)) {
+				money = 0;
+			}
+			product_money += parseFloat($(this).val()) + money;
+		})
+		product_money = parseFloat(product_money.toFixed(1));		
+		wl_money = parseFloat(parseFloat($("#wl_money").val()).toFixed(1));
+		if (isNaN(wl_money)) wl_money = 0;
+		var order_money = product_money + wl_money - parseFloat({$info['order_quan_money']}) - parseFloat({$info['order_point_money']});
+		if (order_money < 0) order_money = 0;
+		order_money = parseFloat(order_money.toFixed(1));
+		$("#order_money").html(order_money);
+		$("#order_product_money").html(product_money);
+		$("#order_wl_money").html(wl_money);
+	})
+})
+</script>
+<style type="text/css">
+.hy_tablett,.list,.wenzhang_bak{width:800px;margin:0;}
+</style>
+</body>
+</html>

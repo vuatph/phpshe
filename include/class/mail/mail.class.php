@@ -559,7 +559,7 @@ class PHPMailer {
       $body = $this->CreateBody();
 
       if (empty($this->Body)) {
-        throw new phpmailerException($this->Lang('empty_message'), self::STOP_CRITICAL);
+        //throw new phpmailerException($this->Lang('empty_message'), self::STOP_CRITICAL);
       }
 
       // digitally sign with DKIM if enabled

@@ -8,19 +8,20 @@
 </head>
 <body style="background:none">
 <form method="post" id="form">
-<table style="width:410px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+<table style="width:360px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <tr>
-	<td align="right" class="bg_f8" width="100">当前销量：</td>
+	<td align="right" class="bgtt" width="100">当前销量</td>
 	<td>{$info['product_sellnum']} 件 （已有{$info['product_commentnum']}人评价）</td>
 </tr>
 <tr>
-	<td align="right" class="bg_f8">设置销量：</td>
-	<td><input type="text" name="product_sellnum" class="inputall input150" /> <span id="product_sellnum_show"></span></td>
+	<td align="right" class="bgtt">设置销量</td>
+	<td><input type="text" name="product_sellnum" class="inputall input100" /> <span id="product_sellnum_show"></span></td>
 </tr>
 <tr>
-	<td class="bg_f8">&nbsp;</td>
+	<td class="bgtt"></td>
 	<td>
 		<input type="hidden" name="pesubmit" />
+		<input type="hidden" name="pe_token" value="{$pe_token}" />
 		<input type="button" value="提 交" class="tjbtn" />
 	</td>
 </tr>

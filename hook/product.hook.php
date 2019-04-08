@@ -12,7 +12,7 @@ function product_selllist($num = 5) {
 //商品评价显示
 function comment_star($num) {
 	global $pe;
-	$star_arr = array(1=>'差评', 2=>'中评', 3=>'中评', 4=>'好评', 5=>'好评');
+	$star_arr = array(1=>'很差', 2=>'较差', 3=>'一般', 4=>'满意', 5=>'很满意');
 	for ($i=1; $i<=5; $i++) {
 		if ($i <= $num) {
 			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-on.png' title='{$star_arr[$num]}' />";
@@ -32,10 +32,10 @@ function product_num($type, $id) {
 			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>pe_dbhold($id)));
 			if ($type == 'addnum') {
 				foreach ($orderdata_list as $v) {
-					if ($v['prorule_id']) {
-						if ($db->pe_num('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']))) {
+					if ($v['prorule_key']) {
+						if ($db->pe_num('prorule', array('product_id'=>$v['product_id'], 'prorule_key'=>$v['prorule_key']))) {
 							$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`+{$v['product_num']}");
-							$db->pe_update('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']), "`product_num`=`product_num`+{$v['product_num']}");
+							$db->pe_update('prorule', array('product_id'=>$v['product_id'], 'prorule_key'=>$v['prorule_key']), "`product_num`=`product_num`+{$v['product_num']}");
 						}
 					}
 					else {
@@ -45,10 +45,10 @@ function product_num($type, $id) {
 			}
 			else {
 				foreach ($orderdata_list as $v) {
-					if ($v['prorule_id']) {
-						if ($db->pe_num('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']))) {
+					if ($v['prorule_key']) {
+						if ($db->pe_num('prorule', array('product_id'=>$v['product_id'], 'prorule_key'=>$v['prorule_key']))) {
 							$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`-{$v['product_num']}");
-							$db->pe_update('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']), "`product_num`=`product_num`-{$v['product_num']}");
+							$db->pe_update('prorule', array('product_id'=>$v['product_id'], 'prorule_key'=>$v['prorule_key']), "`product_num`=`product_num`-{$v['product_num']}");
 						}
 					}
 					else {
@@ -68,22 +68,38 @@ function product_num($type, $id) {
 		break;
 		default:
 			$product_id = intval($id);
-
 			if (in_array($type, array('collectnum', 'asknum'))) {
 				$num = $db->pe_num(substr($type, 0, -3), array('product_id'=>$product_id));
 				return $db->pe_update('product', array('product_id'=>$product_id), array("product_{$type}"=>$num));
 			}
 			else if($type == 'commentnum') {
-				$num3 = $db->pe_num('comment', array('product_id'=>$product_id, 'comment_star'=>array(4,5)));
-				$num2 = $db->pe_num('comment', array('product_id'=>$product_id, 'comment_star'=>array(2,3)));
-				$num1 = $db->pe_num('comment', array('product_id'=>$product_id, 'comment_star'=>1));
+				$num_hao = $db->pe_num('comment', array('product_id'=>$product_id, 'comment_star'=>array(4,5)));
+				$num_zhong = $db->pe_num('comment', array('product_id'=>$product_id, 'comment_star'=>3));
+				$num_cha = $db->pe_num('comment', array('product_id'=>$product_id, 'comment_star'=>array(1,2)));
 				$info = $db->pe_select('comment', array('product_id'=>$product_id), "sum(comment_star) as comment_star");
-				$sql_comment['product_commentnum'] = $num3 + $num2 + $num1;
-				$sql_comment['product_commentrate'] = "{$num3},{$num2},{$num1}";
+				$sql_comment['product_commentnum'] = $num_hao + $num_zhong + $num_cha;
+				$sql_comment['product_commentrate'] = "{$num_hao},{$num_zhong},{$num_cha}";
 				$sql_comment['product_commentstar'] = $info['comment_star'];
 				return $db->pe_update('product', array('product_id'=>$product_id), $sql_comment);
 			}
 		break;
 	}
+}
+
+//计算商品活动价
+function huodong_money($huodong_money, $money, $type, $value) {
+	if ($huodong_money) return $huodong_money;
+	if ($type == 'zhe') {
+		$money = round($money * $value, 1);
+	} 
+	else {
+		$money = round($money - $value, 1);	
+	}
+	return $money;
+}
+
+//活动标签
+function huodong_tag($text) {
+	return 'huodong_tag'.intval(strlen($text)/3);
 }
 ?>

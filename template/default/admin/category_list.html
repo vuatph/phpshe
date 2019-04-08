@@ -1,37 +1,36 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<span class="fl c888">管理中心 > {$menutitle}</span>
-		<span class="fr fabu"><a href="admin.php?mod=category&act=add">增加分类</a></span>
+		<a href="admin.php?mod=category" <!--{if($act=='index'):}-->class="sel"<!--{endif;}-->>分类列表</a>
+		<a href="admin.php?mod=category&act=add" <!--{if($act=='add'):}-->class="sel"<!--{endif;}--> id="fabu">添加分类</a>
 		<div class="clear"></div>
 	</div>
-	<div class="right_main">
-		<form method="post" id="form">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-		<tr>
-			<td class="bgtt" width="60">ID号</td>
-			<td class="bgtt" width="80">排序</td>
-			<td class="bgtt">分类名称</td>
-			<td class="bgtt" width="170">操作</td>
-		</tr>
-		<!--{foreach($info_list as $v):}-->
-		<tr>
-			<td>{$v['category_id']}</td>
-			<td><input type="text" name="category_order[{$v['category_id']}]" value="{$v['category_order']}" class="inputtext input40" /></td>
-			<td class="aleft"><a href="{pe_url('product-list-'.$v['category_id'])}" target="_blank">{$v['category_showname']}</a></td>
-			<td>
-				<a href="admin.php?mod=category&act=edit&id={$v['category_id']}" class="admin_edit mar5">修改</a>
-				<a href="admin.php?mod=category&act=del&id={$v['category_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
-				<a href="admin.php?mod=product&act=move&category_id={$v['category_id']}" class="fabu_btn fl mal10" onclick="return pe_dialog(this, '批量转移商品')">转移商品</a>
-			</td>
-		</tr>
-		<!--{endforeach;}-->
-		<tr>
-			<td class="bgtt aleft" colspan="5"><button href="admin.php?mod=category&act=order" onclick="pe_doall(this,'form')">批量排序</button></td>
-		</tr>
-		</table>
-		</form>
-	</div>
+	<form method="post" id="form">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<tr>
+		<th class="bgtt" width="50">ID号</th>
+		<th class="bgtt" width="60">排序</th>
+		<th class="bgtt">分类名称</th>
+		<th class="bgtt" width="165">操作</th>
+	</tr>
+	<!--{foreach($info_list as $v):}-->
+	<tr>
+		<td>{$v['category_id']}</td>
+		<td><input type="text" name="category_order[{$v['category_id']}]" value="{$v['category_order']}" class="inputtext input40" /></td>
+		<td class="aleft"><a href="{pe_url('product-list-'.$v['category_id'])}" target="_blank">{$v['category_showname']}</a></td>
+		<td>
+			<a href="admin.php?mod=category&act=edit&id={$v['category_id']}" class="admin_edit mar5">修改</a>
+			<a href="admin.php?mod=category&act=del&id={$v['category_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+			<a href="admin.php?mod=product&act=move&category_id={$v['category_id']}" class="hy_btn" onclick="return pe_dialog(this, '批量转移商品')">转移商品</a>
+		</td>
+	</tr>
+	<!--{endforeach;}-->
+	<tr>
+		<td class="bgtt"></td>
+		<td class="bgtt aleft" colspan="4"><button href="admin.php?mod=category&act=order&token={$pe_token}" onclick="pe_doall(this,'form')">更新排序</button></td>
+	</tr>
+	</table>
+	</form>
 </div>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>

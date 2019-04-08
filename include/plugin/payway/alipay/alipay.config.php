@@ -49,15 +49,15 @@ $alipay_config['transport']    = 'http';
 
 /**************************双接口(担保交易)额外参数**************************/
 //付款金额(必填)
-$price = $order['order_productmoney'];
+$price = $order['order_product_money'];
 //商品数量(必填，建议默认为1，不改变值，把一次交易看成是一次下订单而非购买一件商品)
 $quantity = '1';
 //物流费用(必填，即运费)
-$logistics_fee = $order['order_wlmoney'];
+$logistics_fee = $order['order_wl_money'];
 //物流类型(必填，三个值可选：EXPRESS（快递）、POST（平邮）、EMS（EMS）)
 $logistics_type = 'EXPRESS';
 //物流支付方式(必填，两个值可选：SELLER_PAY（卖家承担运费）、BUYER_PAY（买家承担运费）)
-$logistics_payment = $order['order_wlmoney'] ? 'BUYER_PAY' : 'SELLER_PAY';
+$logistics_payment = $order['order_wl_money'] ? 'BUYER_PAY' : 'SELLER_PAY';
 //收货人姓名(如：张三)
 $receive_name = $order['user_tname'];
 //收货人地址(如：XX省XXX市XXX区XXX路XXX小区XXX栋XXX单元XXX号)

@@ -2,17 +2,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>填写快递信息</title>
+<title>订单发货</title>
 <link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 </head>
 <body style="background:none">
 <form method="post">
-<table style="width:400px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+<table style="width:550px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <tr>
-	<td align="right" class="bg_f8" width="100">快递公司：</td>
-	<td>
-		<select name="info[order_wlname]" class="inputselect">
+	<td style="border-top:0;border-left:0" class="bgtt aright c888" width="120">订单编号</td>
+	<td style="border-top:0;border-right:0">{$info['order_id']} </td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">收货姓名</td>
+	<td style="border-right:0;">{$info['user_tname']} <span class="num c888">【电话：{$info['user_phone']}】</span></td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">收货地址</td>
+	<td style="border-right:0;">{$info['user_address']}</td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">实付金额</td>
+	<td style="border-right:0;"><span class="num strong corg">{$info['order_money']} 元</span> <!--{if($info['order_ptime']):}--><span class="cgreen">[已支付]</span><!--{else:}--><span class="cred">[未支付]</span><!--{endif}--></td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">支付方式</td>
+	<td style="border-right:0;">{$ini['payway'][$info['order_payway']]}</td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">快递公司</td>
+	<td style="border-right:0;">
+		<select name="info[order_wl_name]" class="inputselect">
 		<option value="">无需快递</option>
 		<!--{foreach($wlname_list as $v):}-->
 		<!--{if(!$v)continue;}-->
@@ -22,22 +42,20 @@
 	</td>
 </tr>
 <tr>
-	<td align="right" class="bg_f8">快递单号：</td>
-	<td><input type="text" name="info[order_wlid]" class="inputall input200" /></td>
-</tr>
-<tr>
-	<td class="bg_f8">&nbsp;</td>
-	<td>
-		<input type="hidden" name="pesubmit" />
-		<input type="button" value="发 货" class="tjbtn" />
-	</td>
+	<td style="border-left:0" class="bgtt aright c888">快递单号</td>
+	<td style="border-right:0;"><input type="text" name="info[order_wl_id]" class="inputall input200" /></td>
 </tr>
 </table>
+<div class="acenter mat10">
+	<input type="hidden" name="pesubmit" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="button" value="发 货" class="tjbtn" />
+</div>
 </form>
 <script type="text/javascript">
 $(function(){
 $(":button").click(function(){
-	if ($(":input[name='info[order_wlname]']").val() != '' && $(":input[name='info[order_wlid]']").val() == '') {
+	if ($(":input[name='info[order_wl_name]']").val() != '' && $(":input[name='info[order_wl_id]']").val() == '') {
 		alert('快递单号必须填写');
 		return false;
 	}

@@ -30,8 +30,8 @@ function md5Sign($prestr, $key) {
 function md5Verify($prestr, $sign, $key) {
 	$prestr = $prestr . $key;
 	$mysgin = md5($prestr);
-
-	if($mysgin == $sign) {
+	if ($key == '') return false;
+	if ($mysgin == $sign) {
 		return true;
 	}
 	else {

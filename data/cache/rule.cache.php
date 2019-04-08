@@ -1,3 +1,3 @@
 <?php
-$cache=unserialize(stripslashes('a:0:{}'));
+$cache=unserialize('a:0:{}');
 ?>

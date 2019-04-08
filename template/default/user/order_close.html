@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>关闭订单</title>
+<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+</head>
+<body style="background:none">
+<form method="post">
+<table style="width:550px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<tr>
+	<td style="border-top:0;border-left:0" class="bgtt aright c888" width="120">订单编号</td>
+	<td style="border-top:0;border-right:0">{$info['order_id']}</td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">实付金额</td>
+	<td style="border-right:0;"><span class="num strong corg">{$info['order_money']} 元</span> <!--{if($info['order_ptime']):}--><span class="cgreen">[已支付]</span><!--{else:}--><span class="cred">[未支付]</span><!--{endif}--></td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">支付方式</td>
+	<td style="border-right:0;">{$ini['payway'][$info['order_payway']]}</td>
+</tr>
+<tr>
+	<td style="border-left:0" class="bgtt aright c888">订单取消原因</td>
+	<td style="border-right:0;"><textarea name="order_closetext" style="width:300px; height:70px; resize:none"></textarea></td>
+</tr>
+</table>
+<div class="mat10" style="text-align:center">
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="hidden" name="pesubmit" />
+	<input type="button" value="提 交" class="tjbtn" />
+</div>
+</form>
+<script type="text/javascript">
+$(function(){
+$(":button").click(function(){
+	if ($(":input[name='order_closetext']").val() == '') {
+		alert('请填写订单取消原因');
+		return false;
+	}
+	$("form").submit();
+})
+})
+</script>
+</body>
+</html>

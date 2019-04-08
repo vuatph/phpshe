@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2011-0501 koyshe <koyshe@gmail.com>
  */
 //#####################@ 系统核心函数 @#####################//
@@ -44,7 +44,7 @@ function pe_dbhold($str, $exc=array())
 function pe_lead($leadname)
 {
 	global $pe;
-	include_once($pe['path_root'].$leadname);
+	return include_once($pe['path_root'].$leadname);
 }
 //前台url
 function pe_url($modact, $argstr=null)
@@ -117,9 +117,9 @@ function pe_seo($title='', $keywords='', $description='', $type = 'index')
 	}
 	else {
 		$setting = cache::get('setting');
-		$seo['title'] = $title ? "{$title} - {$setting['web_title']['setting_value']} - Powered by phpshe" : "{$setting['web_title']['setting_value']} - Powered by phpshe";
-		$seo['keywords'] = $keywords ? $keywords : $setting['web_keywords']['setting_value'];
-		$seo['description'] = $description ? $description : $setting['web_description']['setting_value'];
+		$seo['title'] = $title ? "{$title} - {$setting['web_title']} - Powered by phpshe" : "{$setting['web_title']} - Powered by phpshe";
+		$seo['keywords'] = $keywords ? $keywords : $setting['web_keywords'];
+		$seo['description'] = $description ? $description : $setting['web_description'];
 	}
 	return $seo;
 }
@@ -141,30 +141,29 @@ function pe_result() {
 		isset($_SESSION['msg_show']) && $show = $_SESSION['msg_show'];
 		unset($_SESSION['msg_show']);
 		if ($_SESSION['msg_result'] == 'success') {
-print<<<html
-	<style type="text/css">
-	#msgshow{top:220px; left:45%; position:absolute;font-family:'Arial'}
-	#msgshow_l{background:url({$pe['host_root']}include/image/dui_l.gif) no-repeat; width:38px; height:50px; float:left;}
-	#msgshow_r{background:url({$pe['host_root']}include/image/dui_r.gif) no-repeat; width:7px; height:50px; float:left;}
-	#msgshow_m{background:url({$pe['host_root']}include/image/dui_m.gif) repeat-x; height:34px; float:left; padding:16px 10px 0 10px; font-size:14px; font-weight:bold; color:#598f13; display:inline-block; min-width:130px; _width:130px;}
-	</style>
-html;
+			$bg_name = 'dui';
+			$font_color = '#598f13';
 		}
 		else {
-print<<<html
-	<style type="text/css">
-	#msgshow{top:220px; left:45%; position:absolute;font-family:'Arial'}
-	#msgshow_l{background:url({$pe['host_root']}include/image/cuo_l.gif) no-repeat; width:38px; height:50px; float:left;}
-	#msgshow_r{background:url({$pe['host_root']}include/image/cuo_r.gif) no-repeat; width:7px; height:50px; float:left;}
-	#msgshow_m{background:url({$pe['host_root']}include/image/cuo_m.gif) repeat-x; height:34px; float:left; padding:16px 10px 0 10px; font-size:14px; font-weight:bold; color:#b62c23; display:inline-block; min-width:130px; _width:130px;}
-	</style>
-html;
+			$bg_name = 'cuo';
+			$font_color = '#a7342b';
 		}
 print<<<html
+	<style type="text/css">
+	#msgshow{position:absolute;font-family:'Arial';}
+	#msgshow_l{background:url({$pe['host_root']}include/image/{$bg_name}_l.gif) no-repeat; width:38px; height:50px; float:left;}
+	#msgshow_r{background:url({$pe['host_root']}include/image/{$bg_name}_r.gif) no-repeat; width:7px; height:50px; float:left;}
+	#msgshow_m{background:url({$pe['host_root']}include/image/{$bg_name}_m.gif) repeat-x; height:34px; float:left; padding:16px 10px 0 10px; font-size:14px; font-weight:bold; color:{$font_color}; display:inline-block; min-width:95px; _width:95px;}
+	</style>
 	<script type="text/javascript">
 		$("#msgshow").remove();
 		$("body").append('<div id="msgshow"><div id="msgshow_l"></div><div id="msgshow_m">{$show}</div><div id="msgshow_r"></div><div class="clear"></div></div>');
-		$("#msgshow").show();
+		_w_top = document.body.scrollTop || document.documentElement.scrollTop;
+		_w_height = $(window).height();
+		_w_width = $(window).width();
+		_d_top = _w_top + (_w_height - $("#msgshow").height()) / 2;
+		_d_left = (_w_width - $("#msgshow_m").width() - 65) / 2;
+		$("#msgshow").css({"top":_d_top, "left":_d_left}).show();
 		setTimeout(function(){ $("#msgshow").fadeOut(2000) }, 2000);
 	</script>
 html;
@@ -253,6 +252,15 @@ function pe_filename($path, $type = '')
 }
 
 //#####################@ 杂项函数 @#####################//
+function pe_404()
+{
+	global $pe;
+	header("HTTP/1.1 404 Not Found");
+    header("status: 404 Not Found");
+	$title = "404错误页面，您所访问的页面未找到！";
+	$html = "<title>{$title}</title><p style='width:800px;margin:100px auto;padding:50px 10px;background:#f8f8f8'>{$title}<br/><br/><a href='{$pe['host_root']}'>点击返回主页</a></p>";
+	die($html);
+}
 function pe_bug($notice, $line = null)
 {
 	$html = "<p style='width:800px;margin:100px auto;padding:50px 10px;background:#f8f8f8'>错误提示：{$notice}<br/>错误定位：{$_SERVER[SCRIPT_FILENAME]}(第{$line}行)</p>";
@@ -261,7 +269,7 @@ function pe_bug($notice, $line = null)
 //获取text
 function pe_text($str)
 {
-	$str = str_ireplace(array('\t','\r','\n','\rn','&nbsp;',' '), '', strip_tags($str));
+	$str = str_ireplace(array('\t','\r','\n','\rn','&nbsp;',' ','　'), '', strip_tags($str));
 	return trim($str);
 }
 //针对文本保留html显示格式
@@ -423,41 +431,32 @@ function pe_sqlrange($fieldname, $rangeval, $misc = '-')
 	return $sqlwhere;
 }
 //#####################@ 安全函数 @#####################//
-function pe_csrf_set() {
-	$csrf_token = md5("{$_SERVER['REMOTE_ADDR']}koyshe+andrea=phpshe".time().rand(1,100));
-	setcookie("csrf_token", $csrf_token);
-	return "<input type='hidden' name='csrf_token' value='{$csrf_token}' />";
-}
-function pe_csrf_match() {
-	global $pe;
-	$referer = parse_url($_SERVER['HTTP_REFERER']);
-	if (@stripos($pe['host_root'], $referer['host']) === false or $_POST['csrf_token'] != $_COOKIE['csrf_token'] or $_POST['csrf_token'] == '' or $_COOKIE['csrf_token'] == '') {
-		unset($_COOKIE['csrf_token'], $_POST['csrf_token']);
-		pe_error('请勿csrf或重复提交数据');
+function pe_token_set($str='') {
+	if ($_SESSION['pe_token']) {
+		return $_SESSION['pe_token'];		
 	}
-	unset($_COOKIE['csrf_token'], $_POST['csrf_token']);
-}
-
-function pe_token_set() {
-	$pe_token = md5("{$_SERVER['REMOTE_ADDR']}koyshe+andrea=phpshe".time().rand(1,100));
-	setcookie("pe_token", $pe_token);
+	else {
+		return md5("{$_SERVER['REMOTE_ADDR']}koyshe+andrea=phpshe".microtime(true).rand(1000,100000).$str);	
+	}
+	/*setcookie("pe_token", $pe_token);
+	return $pe_token;
 	if ($type == 'html') {
 		return "<input type='hidden' name='pe_token' value='{$pe_token}' />";
 	}
 	else {
 		return $pe_token;	
-	}
+	}*/
 }
 function pe_token_match() {
 	global $pe;
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
-	if (@stripos($pe['host_root'], $referer['host']) === false or $_REQUEST['pe_token'] != $_COOKIE['pe_token'] or $_REQUEST['pe_token'] == '' or $_COOKIE['pe_token'] == '') {
-		unset($_COOKIE['pe_token'], $_REQUEST['pe_token']);
-		pe_error('请勿csrf或重复提交数据');
+	$pe_token = $_POST['pe_token'] ? $_POST['pe_token'] : $_GET['token'];	
+	if (@stripos($pe['host_root'], $referer['host']) === false or $pe_token != $_SESSION['pe_token'] or $pe_token == '' or $_SESSION['pe_token'] == '') {
+		unset($_POST['pe_token']);
+		pe_error('跨站操作...');
 	}
-	unset($_COOKIE['pe_token'], $_REQUEST['pe_token']);
+	unset($_POST['pe_token']);
 }
-
 
 function pe_dbxss($val) {
    // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed

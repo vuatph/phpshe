@@ -1,0 +1,27 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="huiyuan_content">
+	<!--{include(pe_tpl('user_menu.html'));}-->
+	<div class="fr huiyuan_main">
+		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tablelist">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<th>评价详情</th>
+				<th width="130">评分</th>
+				<th colspan="2">商品信息</th>
+			</tr>
+			<!--{foreach($info_list as $v):}-->
+			<tr>
+				<td valign="top" style="text-align:left">{$v['comment_text']}<p class="font12 c999 num mat2">[{pe_date($v['comment_atime'])}]</p></td>
+				<td>{comment_star($v['comment_star'])}<!--<p class="c999 mat5 font12">( {$v['comment_star']}分 )</p>--></td>
+				<td width="40"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank"><img src="{pe_thumb($v['product_logo'], 40, 40)}" width="40" height="40" class="imgbg" /></a></td>
+				<td class="aleft" width="210" style="padding-left:0"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></td>
+			</tr>
+			<!--{endforeach;}-->
+			</table>
+			<div class="fenye mat10">{$db->page->html}</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

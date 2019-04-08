@@ -1,3 +1,3 @@
 <?php
-$cache=unserialize(stripslashes('a:1:{i:0;a:3:{i:1;a:4:{s:11:\"category_id\";s:1:\"1\";s:12:\"category_pid\";s:1:\"0\";s:13:\"category_name\";s:12:\"精品女装\";s:14:\"category_order\";s:1:\"0\";}i:2;a:4:{s:11:\"category_id\";s:1:\"2\";s:12:\"category_pid\";s:1:\"0\";s:13:\"category_name\";s:12:\"时尚女鞋\";s:14:\"category_order\";s:1:\"0\";}i:3;a:4:{s:11:\"category_id\";s:1:\"3\";s:12:\"category_pid\";s:1:\"0\";s:13:\"category_name\";s:12:\"潮流女包\";s:14:\"category_order\";s:1:\"0\";}}}'));
+$cache=unserialize('a:0:{}');
 ?>

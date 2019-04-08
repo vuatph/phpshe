@@ -16,19 +16,24 @@ $v_md5str  =trim($_POST['v_md5str']);
 /**
  * 重新计算md5的值
  */
-                           
+
+if ($key == '') die('error');               
 $md5string=strtoupper(md5($v_oid.$v_pstatus.$v_amount.$v_moneytype.$key)); //拼凑加密串
 if ($v_md5str==$md5string)
 {
    if($v_pstatus=="20")
 	{
-		$info = $db->pe_select('order', array('order_id'=>$v_oid));
+		$info = $db->pe_select('order', array('order_id'=>pe_dbhold($v_oid)));
 		if ($info['order_state'] == 'notpay') {
 			$order['order_outid'] = $v_pmode;
 			$order['order_payway'] = 'ebank';
 			$order['order_state'] = 'paid';
 			$order['order_ptime'] = time();					
-			$db->pe_update('order', array('order_id'=>$v_oid), $order);
+			$db->pe_update('order', array('order_id'=>pe_dbhold($v_oid)), pe_dbhold($order));
+			if ($cache_setting['notice_orderpay']) {
+				pe_lead('hook/qunfa.hook.php');
+				order_notice('pay', $info['order_id']);
+			}
 		}
 		
 	}

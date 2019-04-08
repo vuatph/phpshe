@@ -1,3 +1,7 @@
+/**
+ * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
+ * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
+ */
 var shengshi = [{"p":"北京市","c":["北京市"]},
 {"p":"天津市","c":["天津市"]},
 {"p":"上海市","c":["上海市"]},

@@ -26,9 +26,9 @@ include("{$pe['path_root']}include/plugin/payway/alipay/lib/alipay_submit.class.
 //支付宝交易号(必填)
 $trade_no = $order['order_outid'];
 //物流公司名称(必填)
-$logistics_name = $order['order_wlname'];
+$logistics_name = $order['order_wl_name'];
 //物流发货单号
-$invoice_no = $order['order_wlid'];
+$invoice_no = $order['order_wl_id'];
 //物流运输类型
 $transport_type = 'EXPRESS';
 //三个值可选：POST（平邮）、EXPRESS（快递）、EMS（EMS）
@@ -38,8 +38,8 @@ $parameter = array(
 		"service" => "send_goods_confirm_by_platform",
 		"partner" => trim($alipay_config['partner']),
 		"trade_no"	=> $trade_no,
-		"logistics_name"	=> $logistics_name,
-		"invoice_no"	=> $invoice_no,
+		"logistics_name"	=> $logistics_name ? $logistics_name : '无',
+		"invoice_no"	=> $invoice_no ? $invoice_no : '无',
 		"transport_type"	=> $transport_type,
 		"_input_charset"	=> trim(strtolower($alipay_config['input_charset']))
 );

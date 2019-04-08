@@ -1,6 +1,6 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
-	<!--{foreach($cache_category_arr[0] as $v):}-->
+	<!--{foreach((array)$cache_category_arr[0] as $v):}-->
 	<!--{if(count($cache_category_brand[$v['category_id']])):}-->
 	<div class="index_fenlei_tt1"><h3>{$v['category_name']}</h3></div>
 	<div class="pinpai_list">
