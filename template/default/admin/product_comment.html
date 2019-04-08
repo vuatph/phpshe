@@ -29,6 +29,25 @@
 	</td>
 </tr>
 <tr>
+	<td align="right" class="bgtt">评价晒图</td>
+	<td>
+		<!--{foreach(array(0,1,2,3,4) as $k=>$v):}-->
+		<!--{$logo = $logo_list[$k] ? pe_thumb($logo_list[$k], '_400', '_400') : $pe['host_tpl']."images/up_bg.jpg"}-->
+		<div class="upload_html fl">
+			<input type="hidden" name="comment_logo[]" value="{$logo_list[$k]}" class="upload_value" />
+			<a href="javascript:;" class="upload_btn"><img src="{$logo}" class="upload_logo" style="width:125px; height:125px;" /></a>
+			<div class="upload_jindu"></div>
+			<div class="upload_bg"></div>
+			<div class="upload_do">
+				<a href="javascript:;" class="upload_left"></a>
+				<a href="javascript:;" class="upload_right"></a>
+				<a href="javascript:;" class="upload_del"></a>
+			</div>	
+		</div>
+		<!--{endforeach;}-->
+	</td>
+</tr>
+<tr>
 	<td align="right" class="bgtt">综合评分</td>
 	<td>
 		<input type="hidden" name="comment_star" value="5" />
@@ -47,6 +66,9 @@
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/raty/jquery.raty.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
+<link rel="stylesheet" type="text/css" href="{$pe['host_root']}include/plugin/webuploader/webuploader.css">
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/webuploader.min.js"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/upload.js"></script>
 <script type="text/javascript">
 $(function() {
 	$('#star').raty({
@@ -59,6 +81,7 @@ $(function() {
 			$(":input[name='comment_star']").val(score);
 		}
 	});
+	$("body").pe_upload('pc', 5);
 })
 var form_info = [
 	{"name":"user_name", "mod":"str", "act":"blur", "arg":"", "show_id":"user_name_show","show_error":"必填", "must":true},

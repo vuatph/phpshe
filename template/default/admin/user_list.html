@@ -1,26 +1,30 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=user" <!--{if($mod=='user'):}-->class="sel"<!--{endif;}-->>会员列表（{$tongji['user']}）</a>
-		<a href="admin.php?mod=userbank" <!--{if($mod=='userbank'):}-->class="sel"<!--{endif;}-->>收款账户（{$tongji['userbank']}）</a>
-		<a href="admin.php?mod=useraddr" <!--{if($mod=='useraddr'):}-->class="sel"<!--{endif;}-->>收货地址（{$tongji['userbank']}）</a>
+		<a href="admin.php?mod=user" <!--{if(!$_g_userlevel_id):}-->class="sel"<!--{endif;}-->>会员列表（{$tongji['all']}）</a>
+		<!--{foreach($cache_userlevel as $k=>$v):}-->
+		<a href="admin.php?mod=user&userlevel_id={$k}" <!--{if($_g_userlevel_id==$k):}-->class="sel"<!--{endif;}-->>{$v['userlevel_name']}（{$tongji[$k]}）</a>		
+		<!--{endforeach;}-->
+		<a href="admin.php?mod=userbank" <!--{if($mod=='userbank'):}-->class="sel"<!--{endif;}--> style="display:none">收款账户（{$tongji['userbank']}）</a>
+		<a href="admin.php?mod=useraddr" <!--{if($mod=='useraddr'):}-->class="sel"<!--{endif;}--> style="display:none">收货地址（{$tongji['userbank']}）</a>
 		<div class="clear"></div>
 	</div>
 	<div class="right_main">
 		<div class="search">
 			<form method="get">
-				<input type="hidden" name="mod" value="{$_g_mod}" />
-				用户名：<input type="text" name="name" value="{$_g_name}" class="inputtext input100 mar5"/>
-				联系电话：<input type="text" name="phone" value="{$_g_phone}" class="inputtext input100 mar5" />
-				常用邮箱：<input type="text" name="email" value="{$_g_email}" class="inputtext input150" />
-				<select name="orderby" class="selectmini">
-				<option value="" href="{pe_updateurl('orderby', '')}">= 默认排序 =</option>
-				<!--{$selnum=1;}-->
-				<!--{foreach(array('ltime|desc'=>'最近登录', 'point|desc'=>'最多积分', 'ordernum|desc'=>'最多订单') as $k=>$v):}-->
-				<option value="{$k}" href="{pe_updateurl('orderby', $k)}" <!--{if($_g_orderby==$k):}-->selected="selected"<!--{endif;}-->>{$selnum++}){$v}</option>
-				<!--{endforeach;}-->
-				</select>
-				<input type="submit" value="搜索" class="input_btn" />
+			<input type="hidden" name="mod" value="{$_g_mod}" />
+			<input type="hidden" name="userlevel_id" value="{$_g_userlevel_id}" />
+			用户名：<input type="text" name="name" value="{$_g_name}" class="inputtext input100 mar5"/>
+			联系电话：<input type="text" name="phone" value="{$_g_phone}" class="inputtext input100 mar5" />
+			常用邮箱：<input type="text" name="email" value="{$_g_email}" class="inputtext input150" />
+			<select name="orderby" class="selectmini">
+			<option value="" href="{pe_updateurl('orderby', '')}">= 默认排序 =</option>
+			<!--{$selnum=1;}-->
+			<!--{foreach(array('ltime|desc'=>'最近登录', 'point|desc'=>'最多积分', 'ordernum|desc'=>'最多订单') as $k=>$v):}-->
+			<option value="{$k}" href="{pe_updateurl('orderby', $k)}" <!--{if($_g_orderby==$k):}-->selected="selected"<!--{endif;}-->>{$selnum++}){$v}</option>
+			<!--{endforeach;}-->
+			</select>
+			<input type="submit" value="搜索" class="input_btn" />
 			</form>
 		</div>
 		<form method="post" id="form">
@@ -29,27 +33,29 @@
 			<th class="bgtt" width="20"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'user_id')" /></th>
 			<th class="bgtt" width="50">ID号</th>
 			<th class="bgtt">用户名</th>
-			<th class="bgtt" width="80">余额</td>
-			<th class="bgtt" width="80">积分</th>
+			<th class="bgtt" width="100">等级</td>
+			<th class="bgtt" width="60">余额</td>
+			<th class="bgtt" width="60">积分</th>
 			<th class="bgtt" width="60">订单数</td>
-			<th class="bgtt" width="90">联系电话</th>
-			<th class="bgtt" width="160">常用邮箱</th>
+			<th class="bgtt" width="80">联系电话</th>
+			<!--<th class="bgtt" width="160">常用邮箱</th>-->
+			<th class="bgtt" width="130">推荐人</th>
 			<th class="bgtt" width="70">注册日期</th>
-			<th class="bgtt" width="70">上次登录</th>
-			<th class="bgtt" width="200">操作</th>
+			<th class="bgtt" width="195">操作</th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
 		<tr>
 			<td><input type="checkbox" name="user_id[]" value="{$v['user_id']}"></td>
 			<td class="num">{$v['user_id']}</td>
 			<td>{$v['user_name']}</td>
+			<td>{$cache_userlevel[$v['userlevel_id']]['userlevel_name']}</td>
 			<td><span class="num corg">{$v['user_money']}</span></td>
 			<td class="num">{$v['user_point']}</td>
 			<td class="num"><a href="admin.php?mod=order&user_id={$v['user_id']}" class="cblue" target="_blank">{$v['user_ordernum']}</a></td>
 			<td class="num">{$v['user_phone']}</td>
-			<td class="num">{$v['user_email']}</td>
+			<!--<td class="num">{$v['user_email']}</td>-->
+			<td>{$v['tguser_id']?$v['tguser_name']:'-'}</td>
 			<td class="num"><span <!--{if(pe_date($v['user_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['user_atime'], 'Y-m-d')}</span></td>
-			<td class="num"><span <!--{if(pe_date($v['user_ltime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_dayago($v['user_ltime'])}</span></td>
 			<td>
 				<a href="admin.php?mod=user&act=edit&id={$v['user_id']}&{pe_fromto()}" class="admin_edit mar3">修改</a>
 				<a href="admin.php?mod=user&act=del&id={$v['user_id']}&token={$pe_token}" class="admin_del mar3" onclick="return pe_cfone(this, '删除')">删除</a>

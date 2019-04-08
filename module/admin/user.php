@@ -5,6 +5,8 @@
  */
 $menumark = 'user';
 pe_lead('hook/user.hook.php');
+$cache_userlevel = cache::get('userlevel');
+$cache_userlevel_arr = cache::get('userlevel_arr');
 switch ($act) {
 	//#####################@ 会员修改 @#####################//
 	case 'edit':
@@ -13,6 +15,7 @@ switch ($act) {
 			pe_token_match();
 			$_p_user_pw && $_p_info['user_pw'] = md5($_p_user_pw);
 			if ($db->pe_update('user', array('user_id'=>$user_id), pe_dbhold($_p_info))) {
+				userlevel_callback($user_id);
 				pe_success('修改成功!', $_g_fromto);
 			}
 			else {
@@ -46,7 +49,7 @@ switch ($act) {
 				pe_success('操作成功!', '', 'dialog');
 			}
 			else {
-				pe_error('操作成功...', '', 'dialog');
+				pe_error('操作失败...', '', 'dialog');
 			}
 		}
 		$info = $db->pe_select('user', array('user_id'=>$user_id));
@@ -67,7 +70,7 @@ switch ($act) {
 				pe_success('操作成功!', '', 'dialog');
 			}
 			else {
-				pe_error('操作成功...', '', 'dialog');
+				pe_error('操作失败...', '', 'dialog');
 			}
 		}
 		$info = $db->pe_select('user', array('user_id'=>$user_id));
@@ -109,6 +112,7 @@ switch ($act) {
 		$_g_name && $sqlwhere .= " and `user_name` like '%{$_g_name}%'";
 		$_g_phone && $sqlwhere .= " and `user_phone` like '%{$_g_phone}%'";
 		$_g_email && $sqlwhere .= " and `user_email` like '%{$_g_email}%'";
+		$_g_userlevel_id && $sqlwhere .= " and `userlevel_id` = '{$_g_userlevel_id}'";
 		if (in_array($_g_orderby, array('ltime|desc', 'point|desc', 'ordernum|desc'))) {
 			$orderby = explode('|', $_g_orderby);
 			$sqlwhere .= " order by `user_{$orderby[0]}` {$orderby[1]}";
@@ -118,9 +122,13 @@ switch ($act) {
 		}
 		$info_list = $db->pe_selectall('user', $sqlwhere, '*', array(20, $_g_page));
 
-		$tongji['user'] = $db->pe_num('user');
-		$tongji['useraddr'] = $db->pe_num('useraddr');
-		$tongji['userbank'] = $db->pe_num('userbank');
+		$tongji['all'] = $db->pe_num('user');
+		$tongji_arr = $db->index('userlevel_id')->pe_selectall('user', array('group by'=>'userlevel_id'), 'userlevel_id, count(1) as `num`');
+		foreach ($cache_userlevel as $k=>$v) {
+			$tongji[$k] = intval($tongji_arr[$k]['num']);
+		}
+		//$tongji['useraddr'] = $db->pe_num('useraddr');
+		//$tongji['userbank'] = $db->pe_num('userbank');
 		$seo = pe_seo($menutitle='会员列表', '', '', 'admin');
 		include(pe_tpl('user_list.html'));
 	break;

@@ -1,56 +1,81 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="javascript:;" class="sel">① 基本信息</a>
-		<a href="javascript:;">② SEO信息</a>
+		<a href="javascript:;" class="sel">{$menutitle}</a>
 		<div class="clear"></div>
 	</div>
+	<form method="post" enctype="multipart/form-data">
 	<div class="right_main">
-		<form method="post" enctype="multipart/form-data">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20">
 		<tr>
 			<td align="right">商品名称：</td>
-			<td colspan="3"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input700" maxlength="36" /></td>
+			<td colspan="3"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input700" /></td>
 		</tr>
 		<tr>
-			<td align="right" width="150">所属分类：</td>
-			<td width="250">
-				<select name="info[category_id]" class="inputselect" style="width:100%">
-				<option value="0">= 请选择分类 =</option>
+			<td align="right" width="150">商品分类：</td>
+			<td>
+				<select name="info[category_id]" class="inputselect" style="width:250px">
+				<option value="0">-- 商品分类 --</option>
 				<!--{foreach($category_treelist as $v):}-->
 				<option value="{$v['category_id']}" <!--{if($v['category_id']==$info['category_id']):}-->selected="selected"<!--{endif;}-->>{$v['category_showname']}</option>
 				<!--{endforeach;}-->
 				</select>
 			</td>
-			<td align="right" width="150">所属品牌：</td>
+		</tr>
+		<tr>
+			<td align="right">品牌名称：</td>
 			<td>
-				<select name="info[brand_id]" class="inputselect" style="width:282px">
-				<option value="0">= 请选择品牌 =</option>
+				<select name="info[brand_id]" class="inputselect" style="width:250px">
+				<option value="0">-- 请选择 --</option>
 				<!--{foreach($cache_brand as $v):}-->
 				<option value="{$v['brand_id']}" <!--{if($v['brand_id']==$info['brand_id']):}-->selected="selected"<!--{endif;}-->>[{$v['brand_word']}] {$v['brand_name']}</option>
 				<!--{endforeach;}-->
 				</select>
 			</td>
 		</tr>
-		<tr class="base_html">
-			<td align="right">商品价格：</td>
-			<td><input type="text" name="info[product_smoney]" value="{floatval($info['product_smoney'])}" class="inputall input100" /> <span class="c888">元</span></td>
-			<td align="right">市场售价：</td>
-			<td><input type="text" name="info[product_mmoney]" value="{floatval($info['product_mmoney'])}" class="inputall input100" /> <span class="c888">元</span></td>
+		<tr id="base_html">
+			<td align="right">价　　格：</td>
+			<td>
+				<input type="text" name="info[product_smoney]" value="{floatval($info['product_smoney'])}" class="inputall input100" /> <span class="c888">元</span></span>，	
+				库存：<input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputall input100" /> <span class="c888">件</span>
+			</td>
 		</tr>
-		<tr class="base_html">
-			<td align="right">剩余库存：</td>
-			<td><input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputall input100" /> <span class="c888">件</span></td>	
+		<!--<tr id="base_html">
+			<td align="right">基本信息：</td>
+			<td>	
+				<table width="100%" class="list" style="width:702px;border:1px #eee solid">
+				<tr>
+					<th class="bgtt" width="70">本店价</th>
+					<th class="bgtt" width="70">市场价</th>
+					<th class="bgtt" width="70">库存</th>
+				</tr>
+				<tr>
+					<td><input type="text" name="info[product_smoney]" value="{floatval($info['product_smoney'])}" class="inputtext input100" /> 元</td>
+					<td><input type="text" name="info[product_mmoney]" value="{floatval($info['product_mmoney'])}" class="inputtext input100" /> 元</td>
+					<td><input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputtext input100" /> 件</td>
+				</tr>
+				</table>
+			</td>
+		</tr>-->
+		<!--<tr>
+			<td align="right">商品货号：</td>
+			<td><input type="text" name="info[product_mark]" value="{$info['product_mark']}" class="inputall input100" /></td>
+		</tr>-->
+		<tr>
 			<td align="right">运　　费：</td>
 			<td><input type="text" name="info[product_wlmoney]" value="{floatval($info['product_wlmoney'])}" class="inputall input100" /> <span class="c888">元</span></td>
 		</tr>
-		<tr class="base_html">
-			<td align="right">赠送积分：</td>
-			<td colspan="3"><input type="text" name="info[product_point]" value="{floatval($info['product_point'])}" class="inputall input100" /> <span class="c888">积分</span></td>
-		</tr>
 		<tr>
-			<td align="right">商品图片：</td>
-			<td colspan="3">
+			<td align="right">赠送积分：</td>
+			<td><input type="text" name="info[product_point]" value="{floatval($info['product_point'])}" class="inputall input100" /> <span class="c888">点</span></td>
+		</tr>
+		</table>
+	</div>
+	<div class="right_main2">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
+		<tr>
+			<td align="right" width="150">商品图片：</td>
+			<td>
 				<!--{foreach(array(0,1,2,3,4) as $k=>$v):}-->
 				<!--{$logo = $album_list[$k] ? pe_thumb($album_list[$k], '_400', '_400') : $pe['host_tpl']."images/up_bg.jpg"}-->
 				<div class="upload_html fl">
@@ -67,22 +92,32 @@
 				<!--{endforeach;}-->					
 			</td>
 		</tr>
+		</table>
+	</div>
+	<div class="right_main2">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
 		<tr>
-			<td align="right">商品详情：</td>
-			<td colspan="3" style="padding:5px">
+			<td align="right" width="150">商品详情：</td>
+			<td style="padding:5px">
 				<textarea name="info[product_text]" id="editortext" style="width:850px;height:500px">{htmlspecialchars($info['product_text'])}</textarea>		
 			</td>
 		</tr>
+		</table>
+	</div>
+	<!--<div class="right_main2">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
 		<tr>
-			<td align="right"></td>
-			<td colspan="3"> 
-				<input type="hidden" name="pesubmit" />
-				<input type="hidden" name="pe_token" value="{$pe_token}" />
-				<input type="button" value="提 交" class="tjbtn" style="margin-left:380px" />
-			</td>
+			<td align="right" width="150">页面关键词：</td>
+			<td><input type="text" name="info[product_keys]" value="{$info['product_keys']}" class="inputall input500" /> <span class="c888">（SEO选项）</span></td>
+		</tr>
+		<tr>
+			<td align="right">页面描述：</td>
+			<td><textarea name="info[product_desc]" style="width:500px;height:100px;">{$info['product_desc']}</textarea> <span class="c888">（SEO选项）</span></td>
 		</tr>
 		</table>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20" style="display:none">
+	</div>-->
+	<div class="right_main"  style="display:none">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat10 mab10">
 		<tr>
 			<td align="right" width="140">页面关键词：</td>
 			<td><input type="text" name="info[product_keys]" value="{$info['product_keys']}" class="inputall input500" /> <span class="c888">（SEO选项）</span></td>
@@ -91,23 +126,21 @@
 			<td align="right">页面描述：</td>
 			<td><textarea name="info[product_desc]" style="width:500px;height:100px;">{$info['product_desc']}</textarea> <span class="c888">（SEO选项）</span></td>
 		</tr>
-		<tr>
-			<td align="right"></td>
-			<td>
-				<input type="hidden" name="pesubmit" />
-				<input type="hidden" name="pe_token" value="{$pe_token}" />
-				<input type="button" value="提 交" class="tjbtn" style="margin-left:380px" />
-			</td>
-		</tr>
 		</table>
-		</form>
 	</div>
+	<div class="center mat20 mab20">
+		<input type="hidden" name="pesubmit" />
+		<input type="hidden" name="pe_token" value="{$pe_token}" />
+		<input type="button" value="提 交" class="tjbtn" />
+	</div>
+	</form>
 </div>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/editor/kindeditor.js"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/editor/lang/zh_CN.js"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/webuploader.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{$pe['host_root']}include/plugin/webuploader/webuploader.css">
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/webuploader.min.js"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/upload.js"></script>
 <script type="text/javascript" charset="utf-8">
 var editor;
 KindEditor.ready(function(K) {
@@ -120,6 +153,20 @@ KindEditor.ready(function(K) {
 });
 $(function(){
 	rule_list("{$info['product_id']}", 'init');
+	$("body").pe_upload('pc', 5);
+	$(".now a").click(function(){
+		var _index = $(this).index();
+		$(".now a").removeClass("sel");	
+		$(this).addClass("sel");
+		if (_index == 0) {
+			$(".right_main:eq(0), .right_main2").show();
+			$(".right_main:eq(1)").hide();
+		}
+		else {
+			$(".right_main:eq(0), .right_main2").hide();
+			$(".right_main:eq(1)").show();
+		}
+	})
 	$(":button").click(function(){
 		var kong_num = rule_num = 0;
 		if ($(":input[name='prorule_key[]']").length > 0) {
@@ -133,118 +180,6 @@ $(function(){
 			}
 		}
 		$("form").submit();
-	})
-	$(".now a").click(function(){
-		var _index = $(this).index();
-		$(".now a").removeClass("sel");	
-		$(this).addClass("sel");
-		$(".wenzhang").hide().eq(_index).show();
-	})
-	//按钮锁定
-    $(".upload_value").each(function(){
-    	var lock = $(this).val() ? 1 : 0;
-    	var upload_html = $(this).parents(".upload_html")
-    	if ($(this).val()) {
-    		upload_html.attr("lock", 1);
-    		upload_html.find(".upload_bg").show();
-    		//upload_html.find(".upload_do").show();
-    	}
-    	else {
-    		upload_html.attr("lock", 0);
-     		upload_html.find(".upload_bg").hide();
-    		//upload_html.find(".upload_do").hide();
-    	}
-    })
-    // 初始化Web Uploader
-    var uploader = WebUploader.create({
-        // 自动上传。
-        auto: true,
-        // swf文件路径
-        swf: "{$pe['host_root']}include/plugin/webuploader/Uploader.swf",
-        // 文件接收服务端。
-        server: "{$pe['host_root']}include/plugin/webuploader/upload.php",	
-        // 选择文件的按钮。可选。
-        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-        pick: {id:'.upload_btn', multiple:true},
-        fileNumLimit : 5,
-        // 只允许选择文件，可选。
-        accept: {
-            title: 'Images',
-            extensions: 'gif,jpg,jpeg,bmp,png',
-            mimeTypes: 'image/*'
-        }
-    });
-    // 当有文件添加进来的时候
-    uploader.on('fileQueued', function( file ) {
-    	//$("#rt_"+file.source.ruid).parents(".upload_html").attr("id", file.id);
-    	if ($(".upload_html[lock=0]:eq(0)").length == 0) {
-    		uploader.removeFile( file ,true);
-    	}
-    	$(".upload_html[lock=0]:eq(0)").attr("id", file.id).attr("lock", 1);
-        $("#"+file.id).find(".upload_jindu").show().html("（上传中 0%）");
-    });
-    // 文件上传过程中创建进度条实时显示。
-    uploader.on('uploadProgress', function( file, percentage ) {
-        $("#"+file.id).find(".upload_jindu").html('（上传中' + parseInt(percentage * 100) + '%）' );
-    });
-    // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-    uploader.on('uploadSuccess', function( file, response) {
-	    if ( response.result == true ) {
-	        $("#"+file.id).find(".upload_jindu").html('（上传成功）').hide();
-	        $("#"+file.id).find(".upload_logo").attr("src", response.img);
-	        $("#"+file.id).find(".upload_value").val(response.val);
-	        $("#"+file.id).find(".upload_bg").show();
-	        //$("#"+file.id).find(".upload_do").show();
-	    }
-	    else {
-	        $("#"+file.id).attr('lock', 0);
-	        $("#"+file.id).find(".upload_jindu").html('（上传失败）');
-	        $("#"+file.id).find(".upload_bg").hide();
-	        //$("#"+file.id).find(".upload_do").hide();
-	    }
-    });
-    //文件上传失败，现实上传出错。
-    uploader.on('uploadError', function(file){
-        $("#"+file.id).attr('lock', 0);
-        $("#"+file.id).find(".upload_jindu").html('（上传失败）');
-        $("#"+file.id).find(".upload_bg").hide();
-        //$("#"+file.id).find(".upload_do").hide();
-    });
-    //所有文件上次完成
-    uploader.on('uploadFinished', function(){
-    	uploader.reset();
-    })
-	$(".upload_html").mouseenter(function(){
-		if ($(this).find(".upload_bg").is(":visible")) {
-			$(this).find(".upload_do").show();
-		}
-    }).mouseleave(function(){
-        $(".upload_do").hide();
-    });
-	//删除图片
-	$(".upload_del").click(function(){
-		var upload_html = $(this).parents(".upload_html");
-	    upload_html.attr("lock", 0);
-	    upload_html.find(".upload_logo").attr("src", "{$pe['host_tpl']}images/up_bg.jpg");
-	    upload_html.find(".upload_value").val('');
-	    upload_html.find(".upload_bg").hide();
-        //upload_html.find(".upload_do").hide();
-	})
-	$(".upload_left").live("click", function(){
-	    var current = $(this).parents(".upload_html");
-	    var prev = current.prev();
-	    if (current.index() > 0) {
-	    	current.find(".upload_do").hide();
-	    	current.insertBefore(prev);
-	    }
-	})
-	$(".upload_right").live("click", function(){
-	    var current = $(this).parents(".upload_html");
-	    var next = $(this).parents(".upload_html").next();
-	    if (current.index() < $(".upload_html").length - 1) {
-	    	current.find(".upload_do").hide();
-	    	current.insertAfter(next);
-	    }
 	})
 });
 //打开规格框
@@ -264,15 +199,15 @@ function rule_open() {
 function rule_close() {
 	$("#rule_html").hide();
 	$("#rule_html tr").remove();
-	$(".base_html").show();
+	$("#base_html").show();
 }
 //显示规格列表
 function rule_list(id, type) {
 	$.getJSON("admin.php?mod=product&act=rule_list&type="+type+"&id="+id, function(json){
 		if (json.result) {
 			$("#rule_html").show();
-			$(".base_html").hide();
-			pe_jsontpl('rule_html', json);
+			$("#base_html").hide();
+			pe_jsontpl('rule_list', json);
 		}
 	})
 }
@@ -287,7 +222,7 @@ function rule_del(id) {
 }
 //批量设置价格
 function rule_bat(name) {
-	if (name == 'product_money') text = '本店价';
+	if (name == 'product_smoney') text = '本店价';
 	if (name == 'product_mmoney') text = '市场价';
 	if (name == 'product_num') text = '库存数';
 	var num = window.prompt("批量设置" + text, "");
@@ -300,13 +235,7 @@ function rule_bat(name) {
 }
 </script>
 <style>
-#rule_html th{padding:3px 5px; border:1px #e5e5e5 solid; border-right:0; border-left:0; font-weight:normal;}
-#rule_html td{padding:5px}
-.webuploader-container{width:100%; height:100%; display:block}
-.webuploader-pick{background:none; width:100%; height:100%; padding:0; border-radius:0}
-.upload_html{position:relative; border:1px solid #ddd; margin-right:17px;}
-.upload_bg{position:absolute; top:0; left:0; width:100%; height:100%;background:#ddd; filter:alpha(opacity=0);-moz-opacity:0;opacity:0; display:none}
-.upload_do{position:absolute; bottom:0; left:0; width:125px; height:18px; padding-top:8px; background:#000; z-index:9; display:none;}
-.upload_jindu{position:absolute; bottom:0; left:0; width:125px; height:22px;line-height:22px; background:#000; filter:alpha(opacity=50); -moz-opacity:0.50; opacity:0.50; color:#fff; font-weight:bold; font-size:12px; text-align:center;display:none}
+#base_html table th, #rule_html table th{padding:3px 5px; border:1px #e5e5e5 solid; border-right:0; border-left:0; font-weight:normal;}
+#base_html table td, #rule_html table td{padding:5px}
 </style>
 <!--{include(pe_tpl('footer.html'));}-->

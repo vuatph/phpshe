@@ -12,6 +12,7 @@ switch ($act) {
 		$info = $db->pe_select('comment', array('comment_id'=>$comment_id));
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
+			$_p_info['comment_logo'] = implode(',', array_filter($_p_comment_logo));	
 			if ($db->pe_update('comment', array('comment_id'=>$comment_id), pe_dbhold($_p_info))) {
 				product_num($info['product_id'], 'commentnum');
 				pe_success('修改成功!', 'admin.php?mod=comment');
@@ -20,6 +21,7 @@ switch ($act) {
 				pe_error('修改失败...');
 			}
 		}
+		$comment_logo = explode(',', $info['comment_logo']);
 		$seo = pe_seo($menutitle='修改评价', '', '', 'admin');
 		include(pe_tpl('comment_add.html'));
 	break;
@@ -37,6 +39,18 @@ switch ($act) {
 		else {
 			pe_error('删除失败...');
 		}
+	break;
+	//#####################@ 晒图详情 @#####################//
+	case 'logo':
+		$comment_id = intval($_g_id);
+		$info = $db->pe_select('comment', array('comment_id'=>$comment_id));
+		$info_list = $info['comment_logo'] ? explode(',', $info['comment_logo']) : array();
+		$nownum = 0;
+		foreach ($info_list as $k=>$v) {
+			if ($k == $_g_num) $nownum = $k;
+		}		
+		$seo = pe_seo($menutitle='晒图详情');
+		include(pe_tpl('comment_logo.html'));
 	break;
 	//#####################@ 评价列表 @#####################//
 	default :

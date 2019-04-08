@@ -30,11 +30,20 @@
 			<th class="bgtt" width="110">操作</th>
 		</tr>
 		<!--{foreach($info_list as $v):}-->
+		<!--{$comment_logo = $v['comment_logo'] ? explode(',', $v['comment_logo']) : array()}-->
 		<tr>
 			<td><input type="checkbox" name="comment_id[]" value="{$v['comment_id']}" /></td>
 			<td>{$v['comment_id']}</td>
 			<td><a href="http://www.ip138.com/ips.asp?ip={$v['user_ip']}" target="_blank">{$v['user_name']}</a></td>
-			<td valign="top" style="text-align:left">{$v['comment_text']}<p class="font12 cbbb num mat2">[{pe_date($v['comment_atime'])}]</p></td>
+			<td valign="top" style="text-align:left">
+				<p>{$v['comment_text']}</p>
+				<p>
+				<!--{foreach($comment_logo as $index=>$logo):}-->
+				<a href="admin.php?mod=comment&act=logo&id={$v['comment_id']}&num={$index}" target="_blank"><img src="{pe_thumb($logo, _40, _40)}" /></a>
+				<!--{endforeach;}-->
+				</p>
+				<p class="font12 cbbb num mat2">[{pe_date($v['comment_atime'])}]</p>
+			</td>
 			<td>{pe_comment($v['comment_star'])}<!--<p class="c999 mat5 font12">( {$v['comment_star']}分 )</p>--></td>
 			<td width="40"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank"><img src="{pe_thumb($v['product_logo'], 100, 100)}" width="40" height="40" class="imgbg" /></a></td>
 			<td class="aleft" width="210" style="padding-left:0"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></td>

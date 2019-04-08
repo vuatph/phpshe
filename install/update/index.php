@@ -21,6 +21,13 @@ fieldset{padding:8px 18px; border:1px solid #eee; border-radius:0 0 8px 8px}
 <body>
 <h1 class="center font20">PHPSHE商城系统升级程序</h1>
 <div class="main font14">
+	<div class="list">
+	<div class="tt strong">【1.5 升级至 1.6】教程说明</div>
+	<p>1> 请务必先备份整站程序和数据库到本地，防止升级失败造成数据丢失；(数据库备份可参考：<a class="cblue" href="http://jingyan.baidu.com/article/27fa7326da2bbc46f9271f6e.html" target="_blank">phpmyadmin备份mysql数据库</a>)</p>
+	<p class="mat5">2> 删除FTP中除 <span class="cred">./data目录</span>和 <span class="cred">./config.php文件</span>之外的其他目录和文件；</p>
+	<p class="mat5">3> 上传PHPSHE1.6程序中除 <span class="cred">./data目录</span>和 <span class="cred">./config.php文件</span>之外的其他目录和文件；</p>
+	<p class="mat5">4> <a href="{$pe['host_root']}install/update/update1.5_1.6.php" target="_blank" class="cblue" onclick="return pe_cfone(this, '升级数据库')">[点击升级数据库1.5->1.6]</a>，数据库升级完成后删除 ./install目录；</p>
+</div>
 <div class="list">
 	<div class="tt strong">【1.4 升级至 1.5】教程说明</div>
 	<p>1> 请务必先备份整站程序和数据库到本地，防止升级失败造成数据丢失；(数据库备份可参考：<a class="cblue" href="http://jingyan.baidu.com/article/27fa7326da2bbc46f9271f6e.html" target="_blank">phpmyadmin备份mysql数据库</a>)</p>

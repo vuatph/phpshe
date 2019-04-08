@@ -123,27 +123,61 @@ function wechat_menuurl($match) {
 //运行微信并获取openid
 function wechat_run() {
 	global $db, $pe, $cache_setting;
-	if (stripos($_SERVER["HTTP_USER_AGENT"], "MicroMessenger") && $_GET['code'] && $_GET['state'] == 'phpshe_wechat') {
-		$json = file_get_contents("https://api.weixin.qq.com/sns/oauth2/access_token?appid={$cache_setting['wechat_appid']}&secret={$cache_setting['wechat_appsecret']}&code={$_GET['code']}&grant_type=authorization_code");
-		$json = json_decode($json, true);
-		if ($json['openid']) {
-			//判断微信用户是否已经注册，没注册过需要拉取用户昵称
-			$info = $db->pe_select('user', array('user_wx_openid'=>pe_dbhold($json['openid'])));
-			if ($info['user_id']) {
-				$db->pe_update('user', array('user_id'=>$info['user_id']), array('user_ltime'=>time()));
-				$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
-				$_SESSION['user_id'] = $info['user_id'];
-				$_SESSION['user_name'] = $info['user_name'];
-				$_SESSION['user_ltime'] = $info['user_ltime'];
-				$_SESSION['user_wx_openid'] = $info['user_wx_openid'];
-				$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
-				if (!$db->pe_num('pointlog', " and `user_id` = '{$info['user_id']}' and `pointlog_type` = 'give' and `pointlog_text` = '每日登录' and `pointlog_atime` >= '".strtotime(date('Y-m-d'))."'")) {
-					add_pointlog($info['user_id'], 'give', $cache_setting['point_login'], '每日登录');				
+	if (stripos($_SERVER["HTTP_USER_AGENT"], "MicroMessenger") && !pe_login('user')) {
+		if ($_GET['code'] && $_GET['state'] == 'phpshe_wechat') {
+			$json = file_get_contents("https://api.weixin.qq.com/sns/oauth2/access_token?appid={$cache_setting['wechat_appid']}&secret={$cache_setting['wechat_appsecret']}&code={$_GET['code']}&grant_type=authorization_code");
+			$json = json_decode($json, true);		
+			if ($json['openid']) {
+				pe_lead('hook/user.hook.php');
+				//检测是否注册
+				$info = $db->pe_select('user', array('user_wx_openid'=>pe_dbhold($json['openid'])));
+				if ($info['user_id']) {
+					$db->pe_update('user', array('user_id'=>$info['user_id']), array('user_ltime'=>time()));
+					$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
+					$_SESSION['user_id'] = $info['user_id'];
+					$_SESSION['user_name'] = $info['user_name'];
+					$_SESSION['user_ltime'] = $info['user_ltime'];
+					$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
+					if (!$db->pe_num('pointlog', " and `user_id` = '{$info['user_id']}' and `pointlog_type` = 'give' and `pointlog_text` = '每日登录' and `pointlog_atime` >= '".strtotime(date('Y-m-d'))."'")) {
+						add_pointlog($info['user_id'], 'give', $cache_setting['point_login'], '每日登录');				
+					}
 				}
+				else {
+					$json = file_get_contents("https://api.weixin.qq.com/sns/userinfo?access_token={$json['access_token']}&openid={$json['openid']}&lang=zh_CN ");
+					$json = json_decode($json, true);
+					$sql_set['user_name'] = 'wx'.time().rand(0,9);
+					$sql_set['user_pw'] = '';
+					$sql_set['user_ip'] = pe_ip();
+					$sql_set['user_atime'] = $sql_set['user_ltime'] = time();
+					$sql_set['user_wx_openid'] = $json['openid'];
+					if ($json['headimgurl']) {
+						$user_logo = "data/avatar/".date('Y-m')."/";
+						if (@is_dir("{$pe['path_root']}{$user_logo}") === false) mkdir("{$pe['path_root']}{$user_logo}", 0777, true);
+						$sql_set['user_logo'] = "{$user_logo}".date('YmdHis').rand(0, 100).'.jpg';
+						//file_put_contents("{$pe['path_root']}{$sql_set['user_logo']}", file_get_contents(substr($json['headimgurl'], 0, -1).'132'));
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, substr($json['headimgurl'], 0, -1).'132');
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($ch, CURLOPT_HEADER, 0);
+						file_put_contents("{$pe['path_root']}{$sql_set['user_logo']}", curl_exec($ch));
+						curl_close($ch);
+					}
+					if ($user_id = $db->pe_insert('user', pe_dbhold($sql_set))) {
+						$info = $db->pe_select('user', array('user_id'=>$user_id));
+						$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
+						$_SESSION['user_id'] = $info['user_id'];
+						$_SESSION['user_name'] = $info['user_name'];
+						$_SESSION['user_ltime'] = time();
+						$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
+						add_pointlog($user_id, 'give', $cache_setting['point_reg'], '新用户注册');
+					}
+				}
+				pe_goto(pe_nowurl());
 			}
-			else {
-				$_SESSION['user_wx_openid'] = $json['openid'];
-			}
+		}
+		else {
+			$nowurl = urlencode(pe_nowurl());
+			pe_goto("https://open.weixin.qq.com/connect/oauth2/authorize?appid={$cache_setting['wechat_appid']}&redirect_uri={$nowurl}&response_type=code&scope=snsapi_userinfo&state=phpshe_wechat#wechat_redirect");
 		}
 	}
 }
@@ -197,6 +231,7 @@ function wechat_jspay($order_id) {
 	$wechat_config['key'] = $payway['wechat_key'];
 	$wechat_config['notify_url'] = "{$pe['host_root']}include/plugin/payway/wechat/notify_url.php";
 	$order = $db->pe_select(order_table($order_id), array('order_id'=>pe_dbhold($order_id)));
+	$user = $db->pe_select('user', array('user_id'=>$order['user_id']), 'user_wx_openid');
 	if ($order['order_state'] != 'wpay') {
 		return array('result'=>false, 'show'=>'请勿重复支付');		
 	}
@@ -211,7 +246,7 @@ function wechat_jspay($order_id) {
 	$xml_arr['spbill_create_ip'] = pe_ip();
 	$xml_arr['notify_url'] = $wechat_config['notify_url'];
 	$xml_arr['trade_type'] = 'JSAPI';
-	$xml_arr['openid'] = $_SESSION['user_wx_openid'];
+	$xml_arr['openid'] = $user['user_wx_openid'];
 	$xml_arr['sign'] = wechat_sign($xml_arr, $wechat_config['key']);
 	//发送xml下单请求
 	$json = wechat_sendxml($xml_arr, 'https://api.mch.weixin.qq.com/pay/unifiedorder');

@@ -11,12 +11,8 @@
 				<td>{$info['user_name']}</td>
 			</tr>
 			<tr>
-				<td style="text-align:right;">账户余额：</td>
-				<td><span class="corg">{$info['user_money']} 元</span></td>
-			</tr>
-			<tr>
-				<td style="text-align:right;">当前积分：</td>
-				<td><span class="c999">{$info['user_point']} 点</span></td>
+				<td style="text-align:right;">会员等级：</td>
+				<td><span class="corg">{$cache_userlevel[$info['userlevel_id']]['userlevel_name']}</span></td>
 			</tr>
 			<tr>
 				<td style="text-align:right;">真实姓名：</td>
@@ -27,7 +23,7 @@
 				<td><input type="text" name="user_phone" value="{$info['user_phone']}" class="inputall input200" /> <span id="user_phone_show"></span></td>
 			</tr>
 			<tr>
-				<td style="text-align:right;">联系邮箱：</td>
+				<td style="text-align:right;">电子邮箱：</td>
 				<td><input type="text" name="user_email" value="{$info['user_email']}" class="inputall input200" /> <span id="user_email_show"></span></td>
 			</tr>
 			<tr>

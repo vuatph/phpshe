@@ -137,6 +137,27 @@ switch ($act) {
 		$info = $db->pe_select('order', array('order_id'=>$order_id));
 		include(pe_tpl('order_address.html'));
 	break;
+	//#####################@ 打印购物单 @#####################//
+	case 'print_product':
+		$order_id = explode(',', pe_dbhold($_g_id));
+		$info_list = $db->pe_selectall('order', array('order_id'=>$order_id));
+		$seo = pe_seo($menutitle='打印发货单', '', '', 'admin');
+		include(pe_tpl('order_print_product.html'));
+	break;
+	//#####################@ 打印快递单 @#####################//
+	case 'print_express':
+		$order_id = pe_dbhold($_g_id);
+		$express_id = intval($_g_express_id);
+		$order = $db->pe_select('order', array('order_id'=>$order_id));
+
+		$express_list = $db->pe_selectall('express', array('order by'=>'`express_order` asc, `express_id` desc'));
+		!$express_id && $express_id = $express_list[0]['express_id'];
+		$info = $db->pe_select('express', array('express_id`'=>$express_id));
+		$tag_list = $info['express_tag'] ? unserialize($info['express_tag']) : array();
+
+		$seo = pe_seo($menutitle='打印快递单', '', '', 'admin');
+		include(pe_tpl('order_print_express.html'));
+	break;
 	//#####################@ 订单列表 @#####################//
 	default:
 		$_g_state && $sql_where .= " and `order_state` = '{$_g_state}'";	
@@ -158,21 +179,44 @@ switch ($act) {
 		}
 		else {
 			$sql_where .= " order by `order_id` desc";		
-		}	
-		$info_list = $db->pe_selectall('order', $sql_where, '*', array(20, $_g_page));
-		foreach ($info_list as $k => $v) {
-			$info_list[$k]['product_list'] = $db->pe_selectall('orderdata', array('order_id'=>$v['order_id']));
 		}
-		//统计订单数量
-		$tongji['all'] = $db->pe_num('order');
-		$tongji['wpay'] = $db->pe_num('order', array('order_state'=>'wpay'));
-		$tongji['wsend'] = $db->pe_num('order', array('order_state'=>'wsend'));
-		$tongji['wget'] = $db->pe_num('order', array('order_state'=>'wget'));
-		$tongji['success'] = $db->pe_num('order', array('order_state'=>'success'));
-		$tongji['close'] = $db->pe_num('order', array('order_state'=>'close'));
+		if ($act == 'excel_out') {
+			$info_list = $db->pe_selectall('order', $sql_where);
+			foreach ($info_list as $k => $v) {
+				$info_list[$k]['product_list'] = $db->pe_selectall('orderdata', array('order_id'=>$v['order_id']));
+			}
+			pe_lead('include/class/excel_out.class.php');	 	 	 	 	 	 	 	 	
+			$xls_data[] = array('订单编号', '订单时间', '人民币金额', '支付单号', '订单支付时间', '商品信息', '商品数量', '物流公司', '货运单号', '收货人姓名', '收货人地址', '收货人手机号', '订单描述');
+			foreach($info_list as $k=>$v) {
+				$product_name = $product_num = array();
+				foreach ($v['product_list'] as $kk=>$vv) {
+					$product_name[] = $vv['product_name'];
+					$product_num[] = $vv['product_num'];				
+				}
+				$product_name = implode('#', $product_name);
+				$product_num = implode('#', $product_num);
+				$xls_data[] = array($v['order_id'], pe_date($v['order_atime'], 'Y/m/d H:i:s'), $v['order_money'], $v['order_outid'], pe_date($v['order_ptime'], 'Y/m/d H:i:s'), $product_name, $product_num, $v['order_wl_name'], $v['order_wl_id'], $v['user_tname'], $v['user_address'], $v['user_phone'], $v['order_text']);
+			}
+			$xls = new excel('UTF-8', false, '订单导出');  
+			$xls->addArray($xls_data);  
+			$xls->generateXML('订单导出');
+		}
+		else {
+			$info_list = $db->pe_selectall('order', $sql_where, '*', array(20, $_g_page));
+			foreach ($info_list as $k => $v) {
+				$info_list[$k]['product_list'] = $db->pe_selectall('orderdata', array('order_id'=>$v['order_id']));
+			}
+			//统计订单数量
+			$tongji['all'] = $db->pe_num('order');
+			$tongji['wpay'] = $db->pe_num('order', array('order_state'=>'wpay'));
+			$tongji['wsend'] = $db->pe_num('order', array('order_state'=>'wsend'));
+			$tongji['wget'] = $db->pe_num('order', array('order_state'=>'wget'));
+			$tongji['success'] = $db->pe_num('order', array('order_state'=>'success'));
+			$tongji['close'] = $db->pe_num('order', array('order_state'=>'close'));
 
-		$seo = pe_seo($menutitle='订单列表', '', '', 'admin');
-		include(pe_tpl('order_list.html'));
+			$seo = pe_seo($menutitle='订单列表', '', '', 'admin');
+			include(pe_tpl('order_list.html'));
+		}
 	break;
 }
 ?>

@@ -1,0 +1,72 @@
+<?php include(pe_tpl('header.html'));?>
+<div class="right">
+	<?php include(pe_tpl('setting_menu.html'));?>
+	<div class="right_main">
+		<form method="post" enctype="multipart/form-data">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20">
+		<tr>
+			<td align="right" width="150">网站标题：</td>
+			<td><input type="text" name="info[web_title]" value="<?php echo $info['web_title']['setting_value'] ?>" class="inputall input500" /></td>
+		</tr>
+		<tr>
+			<td align="right">关 键 词：</td>
+			<td><input type="text" name="info[web_keywords]" value="<?php echo $info['web_keywords']['setting_value'] ?>" class="inputall input500" /></td>
+		</tr>
+		<tr>
+			<td align="right">网站描述：</td>
+			<td><textarea name="info[web_description]" style="width:500px;height:100px;"><?php echo $info['web_description']['setting_value'] ?></textarea></td>
+		</tr>
+		<tr>
+			<td align="right">网站Logo：</td>
+			<td>
+				<?php if($info['web_logo']['setting_value']):?>
+				<p class="mab5"><img src="<?php echo pe_thumb($info['web_logo']['setting_value']) ?>" height="60" style="border:1px solid #ddd" /></p>
+				<?php endif?>
+				<p><input type="file" name="web_logo" /></p>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">微信二维码：</td>
+			<td>
+				<?php if($info['web_qrcode']['setting_value']):?>
+				<p class="mab5"><img src="<?php echo pe_thumb($info['web_qrcode']['setting_value']) ?>" height="70" style="border:1px solid #ddd" /></p>
+				<?php endif?>
+				<p><input type="file" name="web_qrcode" /></p>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">咨询电话：</td>
+			<td><input type="text" name="info[web_phone]" value="<?php echo $info['web_phone']['setting_value'] ?>" class="inputall input500" /></td>
+		</tr>
+		<tr>
+			<td align="right">咨询Q Q：</td>
+			<td><input type="text" name="info[web_qq]" value="<?php echo $info['web_qq']['setting_value'] ?>" class="inputall input500" /></td>
+		</tr>
+		<tr>
+			<td align="right">版权所有：</td>
+			<td><input type="text" name="info[web_copyright]" value="<?php echo $info['web_copyright']['setting_value'] ?>" class="inputall input500" /></td>
+		</tr>
+		<tr>
+			<td align="right">备 案 号：</td>
+			<td><input type="text" name="info[web_icp]" value="<?php echo $info['web_icp']['setting_value'] ?>" class="inputall input500" /></td>
+		</tr>
+		<tr>
+			<td align="right">热门搜索：</td>
+			<td><input type="text" name="info[web_hotword]" value="<?php echo $info['web_hotword']['setting_value'] ?>" class="inputall input500" /><span class="c888">（多个请用“,”隔开）</span></td>
+		</tr>
+		<tr>
+			<td align="right">统计代码：</td>
+			<td><textarea name="info[web_tongji]" style="width:500px;height:150px;"><?php echo $info['web_tongji']['setting_value'] ?></textarea><span class="c888">（第三方流量统计代码）</span></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="hidden" name="pe_token" value="<?php echo $pe_token ?>" />
+				<input type="submit" name="pesubmit" value="提 交" class="tjbtn">
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
+</div>
+<?php include(pe_tpl('footer.html'));?>

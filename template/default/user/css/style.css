@@ -102,7 +102,7 @@ textarea{font-size:14px; line-height:24px;border:1px #ddd solid; border-radius:2
 /*#####################@ 公共样式表部分 End @#####################*/
 /*head Start*/
 .width980{width:1200px; margin:0 auto;}
-.logo{width:170px; text-align:center; font-size:24px; color:#fff; position:absolute; margin-top:21px; text-align:center}
+.logo{width:190px; text-align:center; font-size:28px; color:#fff; position:absolute; margin-top:26px; text-align:center}
 .logo a{color:#fff;}
 .logo img{width:130px; height:35px;}
 .quick_menu{height:35px; line-height:35px; color:#888; text-align:right; background:#f5f5f5; border-bottom:1px #e5e5e5 solid; font-family:"宋体";}
@@ -187,15 +187,15 @@ textarea{font-size:14px; line-height:24px;border:1px #ddd solid; border-radius:2
 
 /*会员中心 Start*/
 .huiyuan_content{width:1200px; margin:0 auto;padding-top:15px;}
-.huiyuan_left{float:left; width:166px; border:1px #eee solid; background:#fff; padding-top:10px; padding:5px 10px;}
+.huiyuan_left{float:left; width:170px; border:1px #f2f2f2 solid; background:#fff; padding-top:10px; padding:5px 10px;}
 .huiyuan_left ul{margin-bottom:10px;}
-.huiyuan_left h3{margin:6px 0;padding-left:28px; padding-left:28px; font-size:16px; height:35px; line-height:35px; color:#333; font-weight:normal; border-bottom:1px #ddd dotted}
+.huiyuan_left h3{margin:6px 0;padding-left:28px; padding-left:28px; font-size:16px; height:35px; line-height:35px; color:#333; font-weight:normal;}
 .huiyuan_left li a{display:block; height:32px; line-height:32px; padding-left:52px; font-size:14px; color:#888;}
 .huiyuan_left li a:hover{ color:#ff5500;}
 .huiyuan_left li a.sel{text-decoration:none; color:#ff5500; position:relative; background:#f5f5f5;}
 .huiyuan_left li a.sel b{background:url(../images/tb7.gif) no-repeat; height:9px; width:6px; display:block; overflow:hidden; position:absolute; right:10px; top:9px;}
-.huiyuan_left .xuxian{border-bottom:1px dashed #FCE6D1; width:145px; margin:8px auto 0;}
-.huiyuan_main{width:966px; min-height:598px; _height:598px; background:#fff; padding:10px 15px; border:1px #eee solid}
+.huiyuan_left .xuxian{border-bottom:1px dashed #f2f2f2; width:145px; margin:8px auto 0;}
+.huiyuan_main{width:966px; min-height:682px; _height:682px; background:#fff; padding:10px 15px; border:1px #f2f2f2 solid}
 /*.hy_tt{height:25px; background:#fff; font-family:'微软雅黑';}
 .hy_tt a{display:block; font-size:15px; float:left;  height:20px; line-height:20px; margin-right:8px; padding:0 15px;}
 .hy_tt a.sel{display:block; margin-top:1px; color:#666; border-left:3px #faa62e solid}
@@ -221,8 +221,8 @@ textarea{font-size:14px; line-height:24px;border:1px #ddd solid; border-radius:2
 .hy_tablelist1 td{border-bottom:1px #E8E6E7 solid; padding:10px 8px; text-align:center; color:#555}
 .hy_tablelist1 td.aright{text-align:right;}
 .hy_tablelist1 td.aleft{text-align:left;}
-.hy_ordertt{background:#f5f5f5; color:#888; height:30px; line-height:30px; border:1px solid #e5e5e5; margin-top:15px; padding:0 8px; font-size:12px;}
-.hy_orderlist td{border:1px solid #e5e5e5; border-top:0; padding:12px 8px; text-align:center; background:#fff;}
+.hy_ordertt{background:#f5f5f5; color:#888; height:30px; line-height:30px; border:1px solid #eee; margin-top:15px; padding:0 8px; font-size:12px;}
+.hy_orderlist td{border:1px solid #eee; border-top:0; padding:12px 8px; text-align:center; background:#fff;}
 .hy_tablett{text-align:center}
 .hy_tablett td{border-right:0; height:35px; line-height:35px; padding:0;}
 .hy_tablett .bgtt{padding:5px 8px; font-size:12px; background:url(../images/tt5.gif) repeat-x bottom; height:20px; line-height:20px; border-bottom:1px #e8e8e8 solid; border-top:1px #e8e8e8 solid;}
@@ -235,13 +235,14 @@ textarea{font-size:14px; line-height:24px;border:1px #ddd solid; border-radius:2
 .hy_tb2 s{background:url(../images/i2.png) no-repeat; background-size:18px auto; width:18px; height:18px; display:block; float:left; margin:8px 5px 0 0;}
 .hy_tb3 s{background:url(../images/i4.png) no-repeat; background-size:18px auto; width:18px; height:18px; display:block; float:left; margin:8px 5px 0 0;}
 .hy_tb4 s{background:url(../images/i3.png) no-repeat; background-size:18px auto; width:18px; height:18px; display:block; float:left; margin:8px 5px 0 0;}
-.hy_tb5 s{background:url(../images/i1.png) no-repeat; background-size:18px auto; width:18px; height:18px; display:block; float:left; margin:8px 5px 0 0;}
+.hy_tb5 s{background:url(../images/i5.png) no-repeat; background-size:18px auto; width:18px; height:18px; display:block; float:left; margin:8px 5px 0 0;}
+.hy_tb6 s{background:url(../images/i1.png) no-repeat; background-size:18px auto; width:18px; height:18px; display:block; float:left; margin:8px 5px 0 0;}
 a.hy_btn{background:#f3f3f3; display:inline-block; height:20px; line-height:20px; padding:0 8px; color:#555; border:1px solid #ccc; border-radius:2px; font-size:12px;}
 .tag_green{background:#5CB85C; height:24px; line-height:24px; padding:0 8px; border-radius:2px; color:#fff; display:inline-block; font-size:12px;}
 .tag_org{background:#FF5722; height:24px; line-height:24px; padding:0 8px; border-radius:2px; color:#fff; display:inline-block;font-size:12px;}
 .tag_blue{background:#1E9FFF; height:24px; line-height:24px; padding:0 8px; border-radius:2px; color:#fff; display:inline-block;font-size:12px;}
 .tag_red{background:#ff6464; height:24px; line-height:24px; padding:0 8px; border-radius:2px; color:#fff; display:inline-block;font-size:12px;}
-.tag_gray{background:#f0f0f0; border:1px #ddd solid; height:22px; line-height:22px; padding:0 8px; border-radius:2px; color:#555; display:inline-block;font-size:12px;}
+.tag_gray{background:#f0f0f0; border:1px #ddd solid; height:22px; line-height:22px; padding:0 8px; border-radius:2px; color:#888; display:inline-block;font-size:12px;}
 a:hover.tag_green{background:#7cd27c; color:#fff;}
 a:hover.tag_org{background:#ff794e; color:#fff;}
 a:hover.tag_blue{background:#53b3fb; color:#fff;}
@@ -352,12 +353,12 @@ a.tag_kd{color:#666; padding-bottom:2px; border-bottom:1px #bbb dotted;}
 .loto_top{margin:20px auto 0; text-align:center}
 
 /*.zx_info1{color:#666; background:#fff; margin:5px 0 15px;}*/
-.u_index_l{float:left; width:280px; padding:15px 0;}
+.u_index_l{float:left; width:290px; padding:15px 0;}
 .u_tx{float:left; width:140px; height:140px;}
 .u_tx img{width:130px; height:130px; padding:4px; border:1px #ddd solid;}
 .u_info{width:250px; line-height:40px; font-size:14px; margin-left:20px;}
 .u_index_r{float:left; width:400px;}
-.u_index_rtt{background:#5eb2bc; padding:0 18px; height:35px; line-height:35px; color:#fff; font-size:15px;}
+.u_index_rtt{background:#f6faff; border-bottom:1px solid #E3EAF2; padding:0 18px; height:80px; line-height:30px; font-size:14px;}
 .u_ye_l{float:left; width:180px; padding:15px 0 0 15px; font-size:14px; line-height:40px;}
 .u_ye_l p{color:#fc4c01;font-family:'微软雅黑'; }
 .mat15{margin-top:15px;}
@@ -374,7 +375,7 @@ a.tag_kd{color:#666; padding-bottom:2px; border-bottom:1px #bbb dotted;}
 .u_table th{padding:10px; background:#fafafa; border-bottom:1px #ddd solid;  border-top:1px #ddd solid; font-size:12px; font-family:"宋体"; font-weight:normal;}
 .u_help{font-size:16px; border-bottom:1px #ddd solid; height:40px; line-height:40px; margin-top:30px;}
 .u_helplist li{float:left; background:url(../images/wen.gif) no-repeat 0 12px; padding-left:20px; line-height:35px; width:350px;}
-.u_index_box{border:1px #eee solid; padding-bottom:15px;}
+.u_index_box{border:1px #E3EAF2 solid; padding-bottom:5px;}
 .u_index_m{float:left; width:230px; font-size:14px; margin-top:15px; line-height:40px; }
 .u_index_m a{color:#FF5A00; text-decoration:underline}
 a.fabu_btn{float:right; color:#0055ee; margin-right:10px}
@@ -387,4 +388,8 @@ input:-moz-placeholder { color:#888; font-size:12px; }
 .login_bg1{background:url(../images/login_bg.jpg) no-repeat center top; height:420px;}
 .foot_bq{text-align:center; font-size:14px; margin-top:50px; color:#888;}
 .foot_bq a{color:#888;}
+.tglink{margin:30px 0 30px 50px; line-height:40px; font-size:16px; color:#888;}
+.tglink input{height:35px; line-height:35px; border:1px #ddd solid; width:620px; padding:0 10px; display:inline;}
 
+.user_tx{width:64px; height:64px; overflow:hidden; text-align:center; background:#fff; border-radius:50%; margin-top:8px; float:left}
+.user_tx img{ border-radius:50%; width:60px; height:60px; padding:2px;}

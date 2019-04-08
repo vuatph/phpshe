@@ -143,7 +143,7 @@ switch ($act) {
 					$ruledata_list[$k]['id'] = $v['prorule_key'];
 					$ruledata_list[$k]['name'] = $v['prorule_name'];
 					$ruledata_list[$k]['name_list'] = explode(',', $v['prorule_name']);
-					$ruledata_list[$k]['money'] = $v['product_money'];
+					$ruledata_list[$k]['smoney'] = $v['product_smoney'];
 					$ruledata_list[$k]['mmoney'] = $v['product_mmoney'];				
 					$ruledata_list[$k]['num'] = $v['product_num'];	
 				}
@@ -209,6 +209,7 @@ switch ($act) {
 			$info = $db->pe_select('product', array('product_id'=>$product_id), 'product_id, product_name, product_logo');
 			$sql_set['comment_star'] = intval($_p_comment_star);
 			$sql_set['comment_text'] = $_p_comment_text;
+			$sql_set['comment_logo'] = implode(',', array_filter($_p_comment_logo));		
 			$sql_set['comment_atime']= $_p_comment_atime ? strtotime($_p_comment_atime) : time();
 			$sql_set['product_id'] = $info['product_id'];
 			$sql_set['product_name'] = $info['product_name'];
@@ -274,7 +275,7 @@ switch ($act) {
 			$sqlwhere .= " `product_{$orderby[0]}` {$orderby[1]},";
 		}
 		$sqlwhere .= " `product_order` asc, `product_id` desc";
-		$info_list = $db->pe_selectall('product', $sqlwhere, '*', array(15, $_g_page));
+		$info_list = $db->pe_selectall('product', $sqlwhere, '*', array(30, $_g_page));
 		$tongji['all'] = $db->pe_num('product');
 		$tongji['xiajia'] = $db->pe_num('product', array('product_state'=>2));
 		$tongji['quehuo'] = $db->pe_num('product', array('product_num'=>0));
@@ -319,7 +320,8 @@ function product_callback($product_id) {
 			$sqlset_prorule['product_id'] = $product_id;
 			$sqlset_prorule['prorule_key'] = $v;
 			$sqlset_prorule['prorule_name'] = $_POST['prorule_name'][$k];
-			$sqlset_prorule['product_money'] = $_POST['product_money'][$k];
+			$sqlset_prorule['product_money'] = $_POST['product_smoney'][$k];
+			$sqlset_prorule['product_smoney'] = $_POST['product_smoney'][$k];
 			$sqlset_prorule['product_mmoney'] = $_POST['product_mmoney'][$k];
 			$sqlset_prorule['product_num'] = $_POST['product_num'][$k];
 			$db->pe_insert('prorule', $sqlset_prorule);
@@ -330,9 +332,9 @@ function product_callback($product_id) {
 				$ruledata_list[$kk][$vv] = array('id'=>$vv, 'name'=>$ruledata_namearr[$kk]);
 			}
 			//计算商品价格和库存
-			if ($_POST['product_money'][$k] <= $sqlset_product['product_money'] or !isset($sqlset_product['product_money'])) {
-				$sqlset_product['product_money'] = $_POST['product_money'][$k];
-				$sqlset_product['product_smoney'] = $_POST['product_money'][$k];
+			if ($_POST['product_smoney'][$k] <= $sqlset_product['product_smoney'] or !isset($sqlset_product['product_smoney'])) {
+				$sqlset_product['product_money'] = $_POST['product_smoney'][$k];
+				$sqlset_product['product_smoney'] = $_POST['product_smoney'][$k];
 				$sqlset_product['product_mmoney'] = $_POST['product_mmoney'][$k];
 			}
 			$sqlset_product['product_num'] += $_POST['product_num'][$k];

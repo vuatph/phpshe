@@ -8,12 +8,32 @@
 		<form method="post" id="form">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20">
 		<tr>
-			<td align="right" width="150">用 户 名：</td>
+			<td align="right" width="150">用&nbsp;&nbsp;户 名：</td>
 			<td>{$info['user_name']}</td>
 		</tr>
 		<tr>
 			<td align="right">密　　码：</td>
 			<td><input type="password" name="user_pw" class="inputall input200" autocomplete="off" /> <span class="c888">如无需修改请留空</span></td>
+		</tr>
+		<tr>
+			<td align="right">用户等级：</td>
+			<td>
+				<select name="info[userlevel_id]" class="inputselect mar10">
+				<option value="0">无符合等级</option>
+				<optgroup label="自动升级">
+				<!--{foreach($cache_userlevel_arr[1] as $v):}-->
+				<!--{$disabled = ($v['userlevel_id'] == $info['userlevel_id']) ? '' : 'disabled="disabled"'}-->
+				<option value="{$v['userlevel_id']}" <!--{if($v['userlevel_id']==$info['userlevel_id']):}-->selected="selected"<!--{endif;}--> {$disabled}>├ {$v['userlevel_name']}({$v['userlevel_zhe']*100}%)</option>
+				<!--{endforeach;}-->
+				</optgroup>
+				<optgroup label="手动指定">
+				<!--{foreach($cache_userlevel_arr[0] as $v):}-->
+				<option value="{$v['userlevel_id']}" <!--{if($v['userlevel_id']==$info['userlevel_id']):}-->selected="selected"<!--{endif;}-->>├ {$v['userlevel_name']}({$v['userlevel_zhe']*100}%)</option>
+				<!--{endforeach;}-->
+				</optgroup>
+				</select>
+				（累计消费：{$info['user_money_cost']} 元）
+			</td>
 		</tr>
 		<tr>
 			<td align="right">账户余额：</td>
@@ -48,6 +68,10 @@
 		<tr>
 			<td align="right">常用邮箱：</td>
 			<td><input type="text" name="info[user_email]" value="{$info['user_email']}" class="inputall input200" /></td>
+		</tr>
+		<tr>
+			<td align="right">推&nbsp;&nbsp;荐 人：</td>
+			<td>{$info['tguser_id']?$info['tguser_name']:'无'}</td>
 		</tr>
 		<tr>
 			<td align="right">注册地区：</td>

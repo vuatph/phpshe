@@ -7,8 +7,11 @@
 		</div>-->
 		<div class="u_index_box mat5">
 			<div class="u_index_rtt">
-				<div class="fl">您好，{$_s_user_name}</div>
-				<div class="fr font12">上次登录：{pe_date($_s_user_ltime)}</div>
+				<div class="user_tx"><a href="user.php?mod=setting&act=logo"><img src="{pe_thumb($info['user_logo'], _120, _120, 'avatar')}" /></a></div>
+				<div class="fl mal20 mat8">
+					您好，<span class="cred">{$_s_user_name}</span><span class="mal10">（{$cache_userlevel[$info['userlevel_id']]['userlevel_name']}）</span>
+					<div class="">上次登录：{pe_date($_s_user_ltime)}</div>
+				</div>
 				<div class="clear"></div>
 			</div>
 			<div class="u_index_l">

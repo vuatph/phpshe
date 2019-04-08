@@ -84,6 +84,7 @@ switch($act) {
 	break;
 	//#####################@ 用户注册 @#####################//
 	case 'register':
+		if ($_g_u) $_SESSION['tguser_id'] = $_s_tguser_id = intval($_g_u);
 		if (isset($_p_pesubmit)) {
 			if (mb_strlen($_p_user_name, 'utf8') < 5 or mb_strlen($_p_user_name, 'utf8') > 15) pe_jsonshow(array('result'=>false, 'show'=>'用户名为5-15位字符'));
 			if (!pe_formcheck('uname', $_p_user_name)) pe_jsonshow(array('result'=>false, 'show'=>'用户名有特殊字符'));				
@@ -99,14 +100,24 @@ switch($act) {
 			$sql_set['user_ip'] = pe_ip();
 			$sql_set['user_atime'] = $sql_set['user_ltime'] = time();
 			if ($_s_user_wx_openid) $sql_set['user_wx_openid'] = $_s_user_wx_openid;
+			//记录推荐人
+			if ($cache_setting['tg_state'] && $_s_tguser_id) {
+				$tguser = $db->pe_select('user', array('user_id'=>$_s_tguser_id), 'user_id, user_name');
+				if ($tguser['user_id']) {
+					$sql_set['tguser_id'] = $tguser['user_id'];
+					$sql_set['tguser_name'] = $tguser['user_name'];			
+				}
+			}
 			if ($user_id = $db->pe_insert('user', pe_dbhold($sql_set))) {
 				add_pointlog($user_id, 'give', $cache_setting['point_reg'], '新用户注册');
+				userlevel_callback($user_id);
 				$info = $db->pe_select('user', array('user_id'=>$user_id));
 				$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
 				$_SESSION['user_id'] = $info['user_id'];
 				$_SESSION['user_name'] = $info['user_name'];
 				$_SESSION['user_ltime'] = time();
 				$_SESSION['pe_token'] = pe_token_set($_SESSION['user_idtoken']);
+				if ($info['tguser_id']) add_tguser($info['user_id']);
 				//add_noticelog($_s_user_id, 'reg');
 				pe_jsonshow(array('result'=>true, 'show'=>'注册成功！'));
 			}

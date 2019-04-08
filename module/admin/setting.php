@@ -96,7 +96,14 @@ switch ($act) {
 			$sql = "update `".dbpre."setting` set `setting_value` = case `setting_key`
 				when 'sms_key' then '".pe_dbhold($_p_info['sms_key'])."'
 				when 'sms_sign' then '".pe_dbhold($_p_info['sms_sign'])."'
-				when 'sms_admin' then '".pe_dbhold($_p_info['sms_admin'])."' else `setting_value` end";
+				when 'sms_admin' then '".pe_dbhold($_p_info['sms_admin'])."'
+				when 'email_smtp' then '".pe_dbhold($_p_info['email_smtp'])."'
+				when 'email_ssl' then '".pe_dbhold($_p_info['email_ssl'])."'
+				when 'email_port' then '".pe_dbhold($_p_info['email_port'])."'
+				when 'email_name' then '".pe_dbhold($_p_info['email_name'])."'
+				when 'email_pw' then '".pe_dbhold($_p_info['email_pw'])."'
+				when 'email_nname' then '".pe_dbhold($_p_info['email_nname'])."'
+				when 'email_admin' then '".pe_dbhold($_p_info['email_admin'])."' else `setting_value` end";
 			if ($db->sql_update($sql)) {
 				cache_write('setting');
 				pe_success('设置成功!');
@@ -136,7 +143,11 @@ switch ($act) {
 			$sql = "update `".dbpre."setting` set `setting_value` = case `setting_key`
 				when 'web_guestbuy' then '".intval($_p_info['web_guestbuy'])."'
 				when 'cashout_min' then '".round($_p_info['cashout_min'], 1)."'
-				when 'cashout_fee' then '".(round($_p_info['cashout_fee'], 2)/100)."' else `setting_value` end";
+				when 'cashout_fee' then '".(round($_p_info['cashout_fee'], 2)/100)."'
+				when 'tg_state' then '".intval($_p_info['tg_state'])."'
+				when 'tg_fc1' then '".(round($_p_info['tg_fc1'], 2)/100)."'
+				when 'tg_fc2' then '".(round($_p_info['tg_fc2'], 2)/100)."'
+				when 'tg_fc3' then '".(round($_p_info['tg_fc3'], 2)/100)."' else `setting_value` end";
 			if ($db->sql_update($sql)) {
 				cache_write('setting');
 				pe_success('设置成功!');

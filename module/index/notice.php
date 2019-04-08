@@ -5,13 +5,19 @@
  */
 session_write_close();
 //检测活动信息
-$db->pe_update('product', " and `product_hd_etime` > 0 and `product_hd_etime` <= '".time()."'", "product_money = product_smoney, product_hd_tag = '', product_hd_stime = 0, product_hd_etime = 0");
-$table_huodong = "(select `product_id` from `".dbpre."huodongdata` where `huodong_stime` <= '".time()."' and `huodong_etime` > '".time()."' group by `product_id`)";
-$sql = "update `".dbpre."product` a left join {$table_huodong} b on a.`product_id` = b.`product_id` set a.`product_money` = a.`product_smoney`, a.`product_hd_tag` = '', a.`product_hd_stime` = 0, a.`product_hd_etime` = 0 where b.`product_id` is null";
-$db->sql_update($sql);
-$table_huodong = "(select * from (select * from `".dbpre."huodongdata` where `huodong_stime` <= '".time()."' and `huodong_etime` > '".time()."' order by `huodong_stime` asc) aa group by `product_id`)";
-$sql = "update `".dbpre."product` a, {$table_huodong} b set a.`product_money` = b.`huodong_money`, a.`product_hd_tag` = b.`huodong_tag`, a.`product_hd_stime` = b.`huodong_stime`, a.`product_hd_etime` = b.`huodong_etime` where a.`product_id` = b.`product_id`";
-$db->sql_update($sql);
+$nowtime = time();
+$hd_list = $db->index('product_id')->sql_selectall("select * from `".dbpre."huodongdata` where `huodong_stime` <= '{$nowtime}' and `huodong_etime` > '{$nowtime}' group by `product_id`");
+$hd_id = count($hd_list) ? implode(',', array_keys($hd_list)) : "''";
+//恢复已过期活动
+$db->pe_update('product', " and `product_id` not in ({$hd_id}) and `product_money` != `product_smoney`", "product_money = product_smoney, product_hd_tag = '', product_hd_stime = 0, product_hd_etime = 0");
+$db->pe_update('prorule', " and `product_id` not in ({$hd_id}) and `product_money` != `product_smoney`", "product_money = product_smoney");
+//更新进行中活动
+foreach ($hd_list as $k=>$v) {
+	$db->pe_update('product', array('product_id'=>$k), "product_money = product_smoney * {$v['huodong_zhe']}, product_hd_tag = '{$v['huodong_tag']}', product_hd_stime = '{$v['huodong_stime']}', product_hd_etime = '{$v['huodong_etime']}'");	
+	$db->pe_update('prorule', array('product_id'=>$k), "product_money = product_smoney * {$v['huodong_zhe']}");	
+}
+//删除10天以上购物车商品
+$db->pe_delete('cart', "and `cart_atime` <= ".($nowtime-864000));
 //检测邮件/短信通知
 pe_lead('hook/qunfa.hook.php');
 //if (!$cache_setting['email_smtp'] or !$cache_setting['email_port'] or !$cache_setting['email_name']) die();

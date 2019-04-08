@@ -175,8 +175,9 @@ function app_confirm(show, func_url) {
 }
 
 //ajax表单post提交
-function app_submit(url, func) {
-	$.post(url, $("#form").serialize(), function(json){
+function app_submit(url, func, id) {
+	var form_id = typeof(id) == 'undefined' ? 'form' : id;
+	$.post(url, $("#"+form_id).serialize(), function(json){
     	if (json.show != '') app_tip(json.show);
     	if (func && typeof(func) == "function") {
     		func(json);
@@ -303,11 +304,11 @@ function app_confirm_login(url) {
 
 //加载侧栏iframe层
 function app_iframe(url) {
-	var width = $("body").width() + 'px';
-	$("body").css("overflow-y", "hidden");
-	var html = '<div id="app_iframe" style="position:fixed;top:0;width:0;height:100%;margin-left:640px;z-index:999999;overflow:hidden"><iframe src="'+url+'" style="width:100%;height:100%;border:0"></iframe></div>';
+	$("body").css({"overflow-y":"hidden"});
+	var width = $(window).width() + 'px';
+	var html = '<div id="app_iframe" style="position:fixed;top:0;left:0;width:0;height:100%;margin-left:'+width+';z-index:999999;overflow:hidden"><iframe src="'+url+'" style="width:100%;height:100%;border:0"></iframe></div>';
 	$("body").append(html)
-	$("#app_iframe").animate({"margin-left":"0px", "width":width}, 500)
+	$("#app_iframe").animate({"margin-left":"0px", "width":width}, 300)
 }
 
 //关闭侧栏iframe层
@@ -318,8 +319,37 @@ function app_iframe_close(reload, time) {
 			window.parent.location.reload();
 		}
 		else {
-			$(window.parent.document).find("body").css("overflow-y", "auto");
+			$(window.parent.document).find("body").css({"overflow-y":"auto"});
 			$(window.parent.document).find("#app_iframe").remove();
 		} 
 	}, time);
+}
+
+//打开底部弹出页
+function app_page(id, func) {
+	$("body").css("overflow-y", "hidden");
+	$("#"+id).wrap('<div class="app_page" style="position:relative; z-index:99;"></div>');
+	var _height = $("#"+id).height() > $(window).height() ? $(window).height() : 'auto';
+	$("#"+id).css({"position":"fixed", "width":"100%", "height":_height, "z-index":100, "bottom": 0, "left":0, "background-color":"#fff", "overflow-y":"auto"}).fadeIn(400).addClass("app_pagemain");
+	$("#"+id).before('<div class="app_pagehide" style="position:fixed; background-color:rgba(0, 0, 0, 0.7); width:100%; height:100%; z-index:99;top:0;left:0" onclick="app_page_close()"></div>');
+	return;
+	var html = $("#"+id).html();
+	$("#"+id).remove();
+	layer.open({
+		type: 1
+		,content: html
+		,anim: 'up'
+		,style: 'position:fixed; bottom:0; left:0; width: 100%; padding:0; border:none; background:#f8f8f8'
+	});
+	if (func && typeof(func) == "function") {
+		func;
+	}
+}
+//关闭底部弹出页
+function app_page_close(time) {
+	$("body").css("overflow-y", "auto");
+	$(".app_pagemain").unwrap(".app_page").slideUp();
+	$(".app_pagehide").remove();		
+	return;
+	layer.closeAll();
 }

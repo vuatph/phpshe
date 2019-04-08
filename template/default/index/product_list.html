@@ -1,14 +1,23 @@
 <!--{include(pe_tpl('header.html'));}-->
-<style type="text/css">
-body{background:#f8f8f8;}
-</style>
 <div class="content">
 	<div class="now">{$nowpath}</div>
-	<!--{include(pe_tpl('product_left.html'));}-->
-	<div class="fr xiangqing">		
+	<div class="xiangqing">		
 		<div class="list_sx">
+			<div class="pinpai_fl mal10">
+				<span class="list_sx_l">分类：</span>
+				<div class="list_sx_r">
+				<a href="{pe_url('product-list-'.$category_zk_id)}" title="全部" <!--{if($category_id==$category_zk_id):}-->class="sel"<!--{endif;}-->>全部</a>
+				<!--{if(is_array($cache_category_arr[$category_zk_id])):}-->
+				<!--{foreach($cache_category_arr[$category_zk_id] as $k=>$v):}-->				
+				<a href="{pe_url('product-list-'.$v['category_id'])}" title="{$v['category_name']}" <!--{if($category_id==$k):}-->class="sel"<!--{endif;}-->>{$v['category_name']}</a>
+				<!--{endforeach;}-->
+				<!--{endif;}-->
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="shixian mat15 mab15"></div>
 			<!--{if(count($brand_list)):}-->
-			<div class="pinpai_fl">
+			<div class="pinpai_fl mal10">
 				<span class="list_sx_l">品牌：</span>
 				<div class="list_sx_r">
 				<a href="{pe_updateurl('brand', '')}" title="全部" <!--{if(!$_g_brand):}-->class="sel"<!--{endif;}-->>全部</a>
@@ -18,9 +27,9 @@ body{background:#f8f8f8;}
 				</div>
 				<div class="clear"></div>
 			</div>
-			<div class="xuxian mat10 mab10"></div>
+			<div class="shixian mat15 mab15"></div>
 			<!--{endif;}-->
-			<div class="caidan">
+			<div class="pinpai_fl mal10">
 				<span class="list_sx_l">排序：</span>
 				<div class="list_sx_r">
 				<ul>
@@ -43,17 +52,15 @@ body{background:#f8f8f8;}
 				<div class="clear"></div>
 			</div>
 		</div>
-		<div class="tuijian_list">
+		<div class="prolist_html">
 			<!--{foreach($info_list as $kk=>$vv):}-->
-			<div class="prolist_1 prolist_2" <!--{if(($kk+1)%4==0):}-->style="margin-right:0"<!--{endif;}-->>
+			<div class="prolist" <!--{if(($kk+1)%4==0):}-->style="margin-right:0"<!--{endif;}-->>
 				<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank">
-				<p class="prolist_img"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($vv['product_logo'], 226, 226)}" title="{$vv['product_name']}" width="226" height="226" class="js_imgload" /></p>
+				<p class="prolist_img"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($vv['product_logo'], 400, 400)}" title="{$vv['product_name']}" width="250" height="250" class="js_imgload" /></p>
 				<!--{if($vv['product_hd_tag']):}--><div class="{huodong_tag($vv['product_hd_tag'])}">{$vv['product_hd_tag']}</div><!--{endif;}-->
-				<div style="padding:10px 10px 0">
-					<p class="prolist_name">{$vv['product_name']}</p>
-					<p class="mat8"><span class="money1 fl"><span class="num mar3">¥</span>{$vv['product_money']}</span> <s class="num c888 fr">¥ {$vv['product_mmoney']}</s></p>
-					<div class="clear"></div>
-				</div>
+				<p class="prolist_name">{$vv['product_name']}</p>
+				<p class="mat20"><span class="money1 fl"><span class="num font18 mar3">¥</span>{product_money($vv['product_money'])}</span> <span class="c999 fr font12">已售{$vv['product_sellnum']}件</span></p>
+				<div class="clear"></div>
 				</a>
 			</div>
 			<!--{endforeach;}-->

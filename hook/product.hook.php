@@ -67,6 +67,16 @@ function product_num($id, $type) {
 	}
 }
 
+//商品价格
+function product_money($money) {
+	global $user, $cache_userlevel;
+	if ($user['user_id']) {
+		$zhe = $cache_userlevel[$user['userlevel_id']]['userlevel_zhe'];
+		$money = $zhe ? pe_num($money * $zhe, 'round', 1) : $money;	
+	}
+	return $money;
+}
+
 //计算商品活动价
 function huodong_money($huodong_money, $money, $type, $value) {
 	if ($huodong_money) return $huodong_money;

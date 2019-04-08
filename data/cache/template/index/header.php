@@ -39,7 +39,7 @@
 <div class="width980">
 	<div class="header">
 		<div class="fl logo"><a href="<?php echo $pe['host_root'] ?>" title="<?php echo $cache_setting['web_name'] ?>"><img src="<?php echo pe_thumb($cache_setting['web_logo']) ?>" alt="<?php echo $cache_setting['web_name'] ?>" /></a></div>
-		<div class="head_gwc"><a href="<?php echo $pe['host_root'] ?>index.php?mod=order&act=add"><div class="head_gwc_tb">购物车 <span id="cart_num" class="num cred"><?php echo user_cartnum() ?></span> 件　 ></div></a></div>
+		<div class="head_gwc"><a href="<?php echo pe_url('cart') ?>"><div class="head_gwc_tb">购物车 <span id="cart_num" class="num cred"><?php echo user_cartnum() ?></span> 件　 ></div></a></div>
 		<!--<p class="top_tel fr"><?php echo $cache_setting['web_phone'] ?></p>-->
 		<div class="sear fr">				
 			<form method="get" action="<?php echo $pe['host_root'] ?>index.php">

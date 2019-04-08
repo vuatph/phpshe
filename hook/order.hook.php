@@ -1,18 +1,18 @@
 <?php
 //购物车商品列表和价格
-function cart_list() {
+function cart_list($type = '', $cart_id = '') {
 	global $db;
-	$user_id = pe_login('user') ? $_SESSION['user_id'] : pe_user_id();
-	$cart_list = $db->pe_selectall('cart', array('user_id'=>$user_id));
+	in_array($type, array('cart', 'buy')) && $sql_cart['cart_type'] = $type;
+	$sql_cart['user_id'] = pe_login('user') ? $_SESSION['user_id'] : pe_user_id();
+	$cart_id && $sql_cart['cart_id'] = pe_dbhold(explode(',', $cart_id));
+	$cart_list = $db->pe_selectall('cart', $sql_cart);
 	foreach ($cart_list as $k=>$v) {
 		$v['product_id'] = intval($v['product_id']);
 		$v['prorule_key'] = pe_dbhold($v['prorule_key']);
 		$product_guid = pe_dbhold($v['product_guid']);
 		if ($v['prorule_key']) {
-			$sql = "select a.`product_id`, a.`product_name`, a.`product_logo`, a.`product_money`, a.`product_smoney`, b.`product_money` as `prorule_money`, a.`product_wlmoney`, a.`product_point`, b.`product_num` as `product_maxnum`, a.`product_rule`, b.`prorule_name` from `".dbpre."product` a, `".dbpre."prorule` b where a.`product_id` = b.`product_id` and b.`product_id` = '{$v['product_id']}' and b.`prorule_key` = '{$v['prorule_key']}'";
+			$sql = "select a.`product_id`, a.`product_name`, a.`product_logo`, b.`product_money`, a.`product_wlmoney`, a.`product_point`, b.`product_num` as `product_maxnum`, a.`product_rule`, b.`prorule_name` from `".dbpre."product` a, `".dbpre."prorule` b where a.`product_id` = b.`product_id` and b.`product_id` = '{$v['product_id']}' and b.`prorule_key` = '{$v['prorule_key']}'";
 			$product = $db->sql_select($sql);
-			//检测活动价格
-			$product['product_money'] = $product['product_money'] == $product['product_smoney'] ? $product['prorule_money'] : $product['product_money'];
 			//如果管理后台已经把购物者中这个商品的规格或者变更了
 			if (!$product['product_id']) continue;
 		}
@@ -21,10 +21,12 @@ function cart_list() {
 			//如果管理后台已经把购物者中这个商品的规格或者变更了
 			if (!$product['product_id'] or $product['product_rule']) continue;
 		}
+		$product['product_money'] = product_money($product['product_money']);
 		$info_list[$product_guid] = $product;
 		$info_list[$product_guid]['product_guid'] = $product_guid;
 		$info_list[$product_guid]['product_num'] = intval($v['product_num']);
 		$info_list[$product_guid]['prorule_key'] = $v['prorule_key'];
+		$info_list[$product_guid]['cart_id'] = $v['cart_id'];
 		if ($product['product_rule']) {
 			$prorule_name = '';
 			$prorule_name_arr = explode(',', $product['prorule_name']);
@@ -37,11 +39,13 @@ function cart_list() {
 		$money['order_product_money'] += $v['product_num'] * $product['product_money'];
 		$money['order_wl_money'] += $product['product_wlmoney'];
 		$money['order_point_get'] += $v['product_num'] * $product['product_point'];
+		$money['order_num'] += $v['product_num'];
 	}
-	$money['order_money'] = number_format($money['order_wl_money'] + $money['order_product_money'], 1, '.', '');
-	$money['order_product_money'] = number_format($money['order_product_money'], 1, '.', '');
-	$money['order_wl_money'] = number_format($money['order_wl_money'], 1, '.', '');
+	$money['order_money'] = pe_num($money['order_product_money'] + $money['order_wl_money'], 'round', 1, true);
+	$money['order_product_money'] = pe_num($money['order_product_money'], 'round', 1, true);
+	$money['order_wl_money'] = pe_num($money['order_wl_money'], 'round', 1, true);
 	$money['order_point_get'] = intval($money['order_point_get']);
+	$money['order_num'] = intval($money['order_num']);
 	return array('list'=>(array)$info_list, 'money'=>$money);
 }
 
@@ -135,7 +139,7 @@ function order_table($id) {
 }
 
 //订单创建操作
-function order_calback_add($order_id) {
+function order_calback_add($order_id, $cart_id = '') {
 	global $db;
 	pe_lead('hook/user.hook.php');
 	pe_lead('hook/product.hook.php');
@@ -150,7 +154,7 @@ function order_calback_add($order_id) {
 	$db->pe_update('user', array('user_id'=>$info['user_id']), array('user_ordernum'=>$user_ordernum));
 	//清空购物车
 	$user_id = pe_login('user') ? $_SESSION['user_id'] : pe_user_id();
-	$db->pe_delete('cart', array('user_id'=>$user_id));
+	$db->pe_delete('cart', array('user_id'=>$user_id, 'cart_id'=>pe_dbhold(explode(',', $cart_id))));
 	return true;
 }
 
@@ -219,7 +223,7 @@ function order_callback_send($order_id, $order_wl_id='', $order_wl_name='') {
 
 //订单收货操作
 function order_callback_success($order_id) {
-	global $db;
+	global $db, $cache_setting, $ini;
 	pe_lead('hook/user.hook.php');
 	pe_lead('hook/product.hook.php');
 	$info = $db->pe_select('order', array('order_id'=>$order_id));
@@ -234,6 +238,21 @@ function order_callback_success($order_id) {
 		add_pointlog($info['user_id'], 'give', $info['order_point_get'], "交易完成获得，单号【{$order_id}】");
 		if ($info['order_payway'] == 'cod') {
 			product_num($order_id, 'sellnum');
+		}
+		//更新用户累计消费
+		$db->pe_update('user', array('user_id'=>$info['user_id']), "`user_money_cost` = `user_money_cost` + '{$info['order_money']}'");
+		userlevel_callback($info['user_id']);
+		//给上级推广用户发钱
+		if ($cache_setting['tg_state']) {
+			$tguser_list = $db->pe_selectall('tguser', array('user_id'=>$info['user_id']));
+			foreach ($tguser_list as $v) {
+				$moneylog_money = $info['order_money'] * $cache_setting["tg_fc{$v['tguser_level']}"];
+				$moneylog_text = "获得{$ini['tg_level'][$v['tguser_level']]}级下线【{$info['user_name']}】".($cache_setting["tg_fc{$v['tguser_level']}"]*100)."%收益，单号【{$order_id}】消费{$info['order_money']}元";
+				add_moneylog($v['tguser_id'], 'tg', $moneylog_money, $moneylog_text);
+				//计算已获得总佣金
+				$tj = $db->pe_select('moneylog', array('user_id'=>$v['tguser_id'], 'moneylog_type'=>'tg'), 'sum(moneylog_in) as `money`');
+				$db->pe_update('user', array('user_id'=>$v['tguser_id']), array('user_money_tg'=>$tj['money']));
+			}
 		}
 		return true;
 	}
@@ -301,80 +320,5 @@ function order_pay_goto($order_id, $jump = 1) {
 	else {
 		return array('show'=>$show, 'url'=>$url);
 	}
-}
-
-//添加下单收货地址
-function useraddr_add($info) {
-	global $db, $_s_user_id, $_c_pe_useraddr;
-	if (pe_login('user')) {
-		if ($info['address_default'] == 1) {
-			$db->pe_update('useraddr', array('user_id'=>$_s_user_id), array('address_default'=>0));
-		}
-		$result = $address_id = $db->pe_insert('useraddr', pe_dbhold($info));
-	}
-	else {
-		$useraddr_list = pe_getcookie('pe_useraddr', 'array');
-		if ($info['address_default'] == 1) {
-			foreach ($useraddr_list as $k=>$v) {
-				$useraddr_list[$k]['address_default'] = 0; 
-			}
-		}
-		$info['address_id'] = $address_id = md5(time().rand(1,99999));
-		$address_new = array($address_id=>$info);
-		$useraddr_list = count($useraddr_list) ? array_merge($address_new, $useraddr_list) : $address_new;
-		pe_setcookie('pe_useraddr', $useraddr_list);
-		$result = true;
-	}
-	if ($result) {
-		pe_jsonshow(array('result'=>true, 'show'=>'添加成功！', 'id'=>$address_id));
-	}
-	else {
-		pe_jsonshow(array('result'=>false, 'show'=>'添加失败'));
-	}
-}
-
-//获取下单收货地址
-function useraddr_list($address_id) {
-	global $db, $_s_user_id, $_c_pe_useraddr;
-	if (pe_login('user')) {
-		$info_list = $db->pe_selectall('useraddr', array('user_id'=>$_s_user_id, 'order by'=>'address_default desc, address_id desc'));
-	}
-	else {
-		$useraddr_list = pe_getcookie('pe_useraddr', 'array');
-		foreach ($useraddr_list as $k=>$v) {
-			if ($v['address_default']) {
-				unset($useraddr_list[$k]);
-				$address_new = array($k=>$v);
-			} 
-		}
-		$info_list = is_array($address_new) ? array_merge($address_new, $useraddr_list) : $useraddr_list;
-	}
-	$one = key($info_list);
-	foreach ($info_list as $k=>$v) {
-		if ($address_id && $address_id == $v['address_id']) {
-			$info_list[$k]['sel'] = 1;
-		}
-		elseif (!$address_id && $k == $one) {
-			$info_list[$k]['sel'] = 1;			
-		}
-	}
-	pe_jsonshow(array('result'=>true, 'list'=>$info_list));
-}
-//获取下单地址详情
-function useraddr_info($address_id) {
-	global $db, $_s_user_id, $_c_pe_useraddr;
-	if (pe_login('user')) {
-		$info = $db->pe_select('useraddr', array('user_id'=>$_s_user_id, 'address_id'=>intval($address_id)));
-	}
-	else {
-		$useraddr_list = pe_getcookie('pe_useraddr', 'array');
-		foreach ($useraddr_list as $k=>$v) {
-			if ($v['address_id'] == $address_id) {
-				$info = $v;
-				break;
-			}
-		}
-	}
-	return $info;
 }
 ?>

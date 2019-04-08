@@ -8,62 +8,10 @@ $cache_payway = cache::get('payway');
 $payway_list = payway_list('order');
 $user_id = pe_login('user') ? $_s_user_id : pe_user_id();
 switch ($act) {
-	//#####################@ 购物车商品加入 @#####################//
-	case 'cart_add':
-		if (!user_checkguest()) pe_jsonshow(array('result'=>false, 'show'=>'请先登录'));
-		$product_id = intval($_g_id);
-		$product_num = intval($_g_num);
-		$prorule_key = pe_dbhold($_g_rule);
-		$product_guid = md5("{$product_id},{$prorule_key}");
-		//检测库存
-		$product = $db->pe_select('product', array('product_id'=>$product_id), '`product_num`, `product_rule`');
-		if ($product['product_rule']) {
-			$prorule = $db->pe_select('prorule', array('product_id'=>$product_id, 'prorule_key'=>$prorule_key), '`product_num`');
-			$product['product_num'] = $prorule['product_num'];
-		}
-		if ($product['product_num'] < $product_num) pe_jsonshow(array('result'=>false, 'show'=>'库存不足'));
-		$cart = $db->pe_select('cart', array('user_id'=>$user_id, 'product_guid'=>$product_guid));
-		if ($cart['cart_id']) {
-			$sql_set['product_num'] = $cart['product_num'] + $product_num;			
-			$result = $db->pe_update('cart', array('cart_id'=>$cart['cart_id']), $sql_set) ? true : false;
-		}
-		else {
-			$sql_set['product_id'] = $product_id;
-			$sql_set['product_guid'] = $product_guid;
-			$sql_set['product_num'] = $product_num;
-			$sql_set['prorule_key'] = $prorule_key;
-			$sql_set['user_id'] = $user_id;
-			$sql_set['cart_atime'] = time();
-			$result = $db->pe_insert('cart', $sql_set) ? true : false;		
-		}
-		if (!$result) pe_jsonshow(array('result'=>false, 'show'=>'异常请重新操作'));
-		pe_jsonshow(array('result'=>true, 'cart_num'=>user_cartnum()));
-	break;
-	//#####################@ 购物车商品更改数量(为零就删除吧) @#####################//
-	case 'cart_edit':
-		if (!user_checkguest()) pe_jsonshow(array('result'=>false, 'show'=>'请先登录'));
-		$product_guid = pe_dbhold($_g_guid);
-		$product_num = intval($_g_num);
-		$sql_where['user_id'] = $user_id;
-		$sql_where['product_guid'] = $product_guid;
-		if ($product_num) {
-			$result = $db->pe_update('cart', $sql_where, array('product_num'=>$product_num)) ? true : false;
-		}
-		else {
-			$result = $db->pe_delete('cart', $sql_where) ? true : false;			
-		}
-		$cart_list = cart_list();
-		//读取优惠券
-		$quan_list = user_quanlist();
-		$quan_html = "<option value='0' quan_money='0.0'>不使用优惠券</option>";
-		foreach ($quan_list as $v) {
-			$quan_html .= "<option value='{$v['quanlog_id']}' quan_money='{$v['quan_money']}'>省{$v['quan_money']}元：{$v['quan_name']}</option>";	
-		}
-		echo json_encode(array('result'=>$result, 'cart_num'=>user_cartnum(), 'money'=>$cart_list['money'], 'quan_html'=>$quan_html));
-	break;
-	//#####################@ 订单增加 @#####################//
+	//#####################@ 提交订单 @#####################//
 	case 'add':
-		$cart_list = cart_list();
+		$cart_id = $_g_id;
+		$cart_list = cart_list('all', $cart_id);
 		$info_list = $cart_list['list'];
 		$money = $cart_list['money'];
 		$user = $db->pe_select('user', array('user_id'=>$_s_user_id));
@@ -71,17 +19,17 @@ switch ($act) {
 		$user['user_money'] = pe_num($user['user_money'], 'round', 1, true);
 		$user_point_money = $cache_setting['point_money'] ? round($user['user_point']/$cache_setting['point_money'], 1) : 0;
 		user_quancheck();
-		$quan_list = user_quanlist();
+		$quan_list = user_quanlist($cart_id);
 		if (isset($_p_pesubmit)) {
 			$order_quan_id = intval($_p_order_quan_id);
 			$order_point_use = intval($_p_order_point_use);
-			if (!user_checkguest()) pe_error('请先登录...', "{$pe['host_root']}user.php?mod=do&act=login");
- 			if (!count($info_list)) pe_error('购物车商品为空...');
-			if (!$_p_order_payway) pe_error('请选择付款方式...');
-			if ($order_quan_id && !$quan_list[$order_quan_id]['quan_id']) pe_error('优惠券无效...');
-			if ($order_point_use > $user['user_point']) pe_error('积分余额不足...');
+			if (!user_checkguest()) pe_jsonshow(array('result'=>false, 'show'=>'请先登录'));
+ 			if (!count($info_list)) pe_jsonshow(array('result'=>false, 'show'=>'购物车商品为空'));
+			if (!$_p_order_payway) pe_jsonshow(array('result'=>false, 'show'=>'请选择付款方式'));
+			if ($order_quan_id && !$quan_list[$order_quan_id]['quan_id']) pe_jsonshow(array('result'=>false, 'show'=>'优惠券无效'));
+			if ($order_point_use > $user['user_point']) pe_jsonshow(array('result'=>false, 'show'=>'积分余额不足'));
 			$address = useraddr_info($_p_address_id);
-			if (!$address['address_id']) pe_error('请选择收货地址...');
+			if (!$address['address_id']) pe_jsonshow(array('result'=>false, 'show'=>'请选择收货地址'));
 			$sql_order['order_id'] = $order_id = order_setid();			
 			$sql_order['order_product_money'] = $money['order_product_money'];
 			$sql_order['order_wl_money'] = $money['order_wl_money'];
@@ -122,14 +70,14 @@ switch ($act) {
 					$order_name[] = $v['product_name'];
 				}
 				$db->pe_update('order', array('order_id'=>$order_id), array('order_name'=>implode(';', $order_name)));
-				order_calback_add($order_id);
-				pe_success('订单提交成功！', "{$pe['host_root']}index.php?mod=order&act=pay&id={$order_id}");
+				order_calback_add($order_id, $cart_id);
+				pe_jsonshow(array('result'=>true, 'show'=>'订单已提交！', 'order_id'=>$order_id));
 			}
 			else {
-				pe_error('订单提交失败...');
+				pe_jsonshow(array('result'=>false, 'show'=>'订单提交失败！'));
 			}	
 		}
-		$seo = pe_seo($menutitle='我的购物车');
+		$seo = pe_seo($menutitle='提交订单');
 		include(pe_tpl('order_add.html'));
 	break;
 	//#####################@ 订单支付 @#####################//

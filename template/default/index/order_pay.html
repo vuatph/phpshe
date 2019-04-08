@@ -18,21 +18,23 @@
 		<div class="mat10">收货信息：<span class="c888 mal5">{$info['user_tname']}，{$info['user_phone']}，{$info['user_address']}</span></div>
 		<div class="dd_yingfu">应付金额：<span>{$info['order_money']}</span> 元</div>
 	</div>
-	<div class="fkfs" id="payway_html" style="margin-top:20px; padding-bottom:70px; padding-left:50px; display:none">
-		<div class="fkfs_tt">请选择支付方式</div>
-		<ul>
-			<!--{foreach($payway_list as $k=>$v):}-->
-			<!--{if($v['payway_mark'] == 'cod')continue}-->
-			<li class="js_radio" val="{$k}">
-				<img src="{$pe['host_root']}include/plugin/payway/{$k}/logo.png" class="fl" />
-				<!--{if($v['payway_mark'] == 'balance'):}-->
-				<span class="fr corg mat5">（余额：{$user['user_money']}元）</span>
-				<!--{endif;}-->
-				<div class="clear"></div><i></i>
-			</li>
-			<!--{endforeach;}-->
-		</ul>
-		<div class="clear"></div>	
+	<div class="dd_box" id="payway_html" style="padding-bottom:40px;display:none">
+		<div class="liucheng">支付方式</div>
+		<div class="fkfs">
+			<ul>
+				<!--{foreach($payway_list as $k=>$v):}-->
+				<!--{if($v['payway_mark'] == 'cod')continue}-->
+				<li class="js_radio" val="{$k}">
+					<img src="{$pe['host_root']}include/plugin/payway/{$k}/logo.png" class="fl" />
+					<!--{if($v['payway_mark'] == 'balance'):}-->
+					<span class="fr corg mat5">（余额：{$user['user_money']}元）</span>
+					<!--{endif;}-->
+					<div class="clear"></div><i></i>
+				</li>
+				<!--{endforeach;}-->
+			</ul>
+			<div class="clear"></div>
+		</div>
 	</div>
 	<!--{if($info['order_state'] == 'wpay'):}-->
 	<input type="hidden" name="order_payway" value="" />
@@ -66,7 +68,4 @@ function payway_show() {
 	$("#payway_html").show();
 }
 </script>
-<style type="text/css">
-body{background:#f5f5f5;}
-</style>
 <!--{include(pe_tpl('footer.html'));}-->

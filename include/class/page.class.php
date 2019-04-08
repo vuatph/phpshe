@@ -16,15 +16,15 @@ class page {
 	//构造函数初始化类设置
 	function __construct($allnum, $page = null, $listnum = null, $pagenum = null) 
 	{
+		global $pe;
 		$this->listnums = $allnum;
 		$this->page = $page === null ? 1 : intval($page);
 		$this->listnum = $listnum === null ? 20 : intval($listnum);
 		$this->pagenum = $pagenum === null ? 10 : intval($pagenum);
-
 		$this->pagenums = ceil($this->listnums / $this->listnum);
 		
 		$this->limit = $this->get_limit();
-		$this->html = $this->getpagelisthtml();
+		$this->html = $pe['mobile'] ? $this->getpagelisthtml_m() : $this->getpagelisthtml();
 	}
 	//获取sql中limit函数的开始指针位置
 	function get_limit()
@@ -85,6 +85,26 @@ $pagelisthtml .=<<<html
 .fenye a{border:1px #ccc solid; padding:0 10px; border-radius:2px; color:#666; background:#fff;display:inline-block;  height:24px; line-height:24px; font-weight:normal; margin-left:3px;}
 .fenye a:hover,.fenye .sel{background:#1DABDF; color:#fff; border:1px #0D95C7 solid;  padding:0 10px;}
 .fenye .sel{ font-weight:bold;}
+</style>
+html;
+			return $pagelisthtml;
+		}
+	}
+	//获取翻页块带html的列表(手机版)
+	function getpagelisthtml_m()
+	{
+		if (count($this->get_pagelist()) > 1) {
+			$url = $this->page <= 1 ? "javascript:;" : pe_updateurl('page', $this->page-1);
+			$pagelisthtml = "<a href='{$url}'><span>上一页</span></a>";
+			$pagelisthtml .= "<span class='fy_m'>{$this->page} / {$this->pagenums}</span>";
+			$url = $this->page >= $this->pagenums ? "javascript:;" : pe_updateurl('page', $this->page+1);
+			$pagelisthtml .= "<a href='{$url}'><span>下一页</span></a>";
+$pagelisthtml .=<<<html
+<style type="text/css">
+.fenye{text-align:center; margin-top:10px; padding:0 10px;}
+.fenye a{width:34%; text-align:center; border-radius:4px; border:1px #ddd solid; color:#666; background:#fff; display:inline-block; font-weight:normal;}
+.fenye a span{display:inline-block; width:100%; height:32px; line-height:32px; color:#666;}
+.fenye .fy_m{width:30%; display:inline-block; color:#888;}
 </style>
 html;
 			return $pagelisthtml;

@@ -21,6 +21,7 @@
 				下单时间：<input type="text" name="date1" value="{$_g_date1}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate inputtext" style="width:90px;height:20px;" />	
 				至 <input type="text" name="date2" value="{$_g_date2}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate inputtext" style="width:90px;height:20px;" />			
 				<input type="submit" value="搜索" class="input_btn" />
+				<input type="button" value="导出" class="input_btn" id="excel_btn" />
 			</form>
 		</div>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
@@ -41,18 +42,23 @@
 		</div>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_orderlist">
 		<tr>
-			<td class="aleft" style="border-left:0;padding-left:10px;padding-right:15px">
+			<td class="aleft" style="border-left:0;padding:8px 10px;">
 				<!--{foreach($v['product_list'] as $kk => $vv):}-->
 				<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
-					<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5" target="_blank"><img src="{pe_thumb($vv['product_logo'], 100, 100)}" width="40" height="40" class="imgbg" /></a>
-					<div class="fl">
-						<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{pe_cut($vv['product_name'], 22, '...')}</a>
+				<table width="100%" class="dd_tb1">
+				<tr>
+					<td width="50"><a href="{pe_url('product-'.$vv['product_id'])}" target="_blank"><img src="{pe_thumb($vv['product_logo'], 100, 100)}" width="40" height="40" class="imgbg" /></a></td>
+					<td>
+						<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{$vv['product_name']}</a>
 						<!--{if($vv['prorule_name']):}-->
-						<p class="c999 mat5"><!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
+						<p class="c999"><!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
 						<!--{endif;}-->
-					</div>
-					<span class="fr"><span class="num">{$vv['product_money']}</span>(×{$vv['product_num']})</span>
-					<div class="clear"></div>
+					</td>
+					<td width="70" class="aright">
+						<span class="num">{$vv['product_money']}</span>(×{$vv['product_num']})
+					</td>
+				</tr>
+				</table>
 				</div>
 				<!--{endforeach;}-->
 			</td>
@@ -69,6 +75,8 @@
 			<td width="80">
 				<img src="{$pe['host_tpl']}images/fu_{$v['order_pstate']}.png" title="{pe_date($v['order_ptime'])}" />
 				<img src="{$pe['host_tpl']}images/fa_{$v['order_sstate']}.png" title="{pe_date($v['order_stime'])}" />
+				<p><a href="admin.php?mod=order&act=print_product&id={$v['order_id']}" class="c999" onclick="return pe_dialog(this, '打印发货单', 1000, 580)">[发货单]</a></p>
+				<p><a href="admin.php?mod=order&act=print_express&id={$v['order_id']}" class="c999" onclick="return pe_dialog(this, '打印快递单', 1000, 580)">[快递单]</a></p>
 			</td>
 			<td width="85">{order_stateshow($v)}<p class="mat5"><a href="admin.php?mod=order&act=edit&id={$v['order_id']}" target="_blank" class="c999">订单详情</a></p></td>
 			<td width="85" style="border-right:0;">
@@ -97,4 +105,11 @@
 	</div>
 </div>
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#excel_btn").click(function(){
+		window.location.href = "admin.php?{$_SERVER['QUERY_STRING']}&act=excel_out";
+	})
+})
+</script>
 <!--{include(pe_tpl('footer.html'));}-->

@@ -72,6 +72,12 @@ function pe_url($modact, $argstr=null)
 	}
 	return $url;
 }
+//获取当前url
+function pe_nowurl() {
+	//global $pe;
+	//return $pe['host_root'].($_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : $_SERVER['REQUEST_URI']);
+	return "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+}
 //获取当前网址为下个地址的fromto
 function pe_fromto()
 {
@@ -110,18 +116,18 @@ function pe_thumb($img = '', $w = null, $h = null, $thumbtype = null)
 }
 
 //评价星级
-function pe_comment($val) {
+function pe_comment($val, $width=16) {
 	global $pe;
 	$star_arr = array(1=>'很差', 2=>'较差', 3=>'一般', 4=>'满意', 5=>'很满意');
 	for ($i=1; $i<=5; $i++) {
 		if ($i <= intval($val)) {
-			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-on.png' title='{$i}' style='width:16px;margin-right:1px' />";
+			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-on.png' title='{$i}' style='width:{$width}px;margin-right:1px' />";
 		}
 		elseif (ceil($val) == $i) {
-			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-half.png' title='{$i}' style='width:16px;margin-right:1px' />";			
+			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-half.png' title='{$i}' style='width:{$width}px;margin-right:1px' />";			
 		}
 		else {
-			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-off.png' title='{$i}' style='width:16px;margin-right:1px' />";	
+			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-off.png' title='{$i}' style='width:{$width}px;margin-right:1px' />";	
 		}
 	}
 	return $html;
@@ -141,33 +147,7 @@ function pe_seo($title='', $keywords='', $description='', $type = 'index')
 	}
 	return $seo;
 }
-//获取域名及根路径
-function pe_root($type = 'host') {
-	$ftp_path = rtrim(str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']), '/');
-	$web_path = str_replace('\\', '/', dirname(dirname(dirname(__FILE__))));
-	if ($type == 'host') {
-		if (stripos($ftp_path, $web_path) === false) {			
-			$file_arr = explode('/', $web_path);
-			$file_arrnum = count($file_arr);
-			$php_self = trim($_SERVER['PHP_SELF'], '/');
-			$root['host'] = "http://{$_SERVER['HTTP_HOST']}/";
-			for ($i = 1; $i <= $file_arrnum; $i++) {
-				array_shift($file_arr);
-				if (stripos($php_self, implode('/', $file_arr)) === 0) {
-					$root['host'] .= implode('/', $file_arr)."/";
-					break;
-				}
-			}
-			return $root['host'];
-		}
-		else {
-			return $root['host'] = 'http://'.str_ireplace($ftp_path, $_SERVER['HTTP_HOST'], $web_path).'/';
-		}
-	}
-	if ($type == 'path') {
-		return $root['path'] = "{$web_path}/";	
-	}
-}
+
 //#####################@ 处理结果展示 @#####################//
 function pe_success($msg, $url=null, $type=null)
 {
@@ -330,20 +310,28 @@ function pe_404($title = null, $show = null)
  		$show  = $show  ? $show  : "{$title}";
     }
     else {
-    	$title = "404错误页面，您所访问的页面未找到！";
- 		$show  = "{$title}<a href='{$pe['host_root']}' style='text-decoration:none'>点击返回首页</a>";
+    	$title = "您访问的页面未找到！";
+ 		$show  = "{$title}<a href='{$pe['host_root']}' style='text-decoration:none'>返回首页</a>";
+    }
+    if ($pe['mobile']) {
+    	$meta = '<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />';
+    	$css = 'max-width:640px; min-width:300px;'; 
+    }
+    else {
+     	$meta = '';
+     	$css = 'max-width:600px;';  
     }
 print<<<html
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />{$meta}
 <title>{$title}</title>
 <meta name="keywords" content="phpshe" />
 <meta name="description" content="phpshe" />
 </head>
 <body style="background:#F9F9F9">
-	<div style="max-width:600px;margin:100px auto;padding:40px 10px 40px 30px; background:#ffffff; border:1px solid #DFDFDF; border-radius:3px;font-size:14px">{$show}</div>
+	<div style="{$css}margin:100px auto;padding:40px 10px 40px 30px; background:#ffffff; border:1px solid #DFDFDF; border-radius:3px;font-size:14px">{$show}</div>
 </body>
 </html>
 html;
@@ -632,8 +620,9 @@ function pe_dbxss($val) {
 }
 
 //判断手机还是PC
-function pe_mobile(){
+function pe_mobile($mobile=null){
 	global $pe;
+	if ($mobile) return true;
 	$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';  
 	$useragent_mark = preg_match('|\(.*?\)|' , $useragent , $matches) >0 ? $matches[0] : '';  	  
 	function CheckSubstrs($substrs,$text){  

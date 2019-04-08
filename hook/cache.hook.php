@@ -15,8 +15,8 @@ function cache_write($cache_type = 'all') {
 		cache::write('category_brand', $category_brand);
 	}
 	if (in_array($cache_type, array('brand', 'all', 'data'))) {
-		cache::write('brand', $db->index('brand_id')->pe_selectall('brand', array('order by'=>'`brand_word` asc, `brand_order` asc, `brand_id` asc')));
-		cache::write('brand_arr', $db->index('brand_word|brand_id')->pe_selectall('brand', array('order by'=>'`brand_word` asc, `brand_order` asc, `brand_id` asc')));
+		cache::write('brand', $db->index('brand_id')->pe_selectall('brand', array('order by'=>'`brand_word` asc, `brand_order` asc, `brand_id` desc')));
+		cache::write('brand_arr', $db->index('brand_word|brand_id')->pe_selectall('brand', array('order by'=>'`brand_word` asc, `brand_order` asc, `brand_id` desc')));
 	}	
 	if (in_array($cache_type, array('rule', 'all', 'data'))) {
 		$rule_list = $db->index('rule_id')->pe_selectall('rule');
@@ -31,6 +31,12 @@ function cache_write($cache_type = 'all') {
 		cache::write('class', $db->index('class_id')->pe_selectall('class', array('order by'=>'`class_order` asc, `class_id` asc')));
 		cache::write('class_arr', $db->index('class_type|class_id')->pe_selectall('class', array('order by'=>'`class_order` asc, `class_id` asc')));
 	}
+	if (in_array($cache_type, array('userlevel', 'all', 'data'))) {
+		cache::write('userlevel', $db->index('userlevel_id')->pe_selectall('userlevel', array('order by'=>'`userlevel_up` desc, `userlevel_value` asc, `userlevel_id` asc')));
+		$userlevel_arr[1] = $db->index('userlevel_id')->pe_selectall('userlevel', array('userlevel_up'=>1, 'order by'=>'`userlevel_value` asc, `userlevel_id` asc'));
+		$userlevel_arr[0] = $db->index('userlevel_id')->pe_selectall('userlevel', array('userlevel_up'=>0, 'order by'=>'`userlevel_zhe` asc, `userlevel_id` asc'));
+		cache::write('userlevel_arr', $userlevel_arr);
+	}	
 	if (in_array($cache_type, array('adminlevel', 'all', 'data'))) {
 		cache::write('adminlevel', $db->index('adminlevel_id')->pe_selectall('adminlevel'));
 	}

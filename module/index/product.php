@@ -23,8 +23,7 @@ switch ($act) {
 	//#####################@ 商品列表 @#####################//
 	case 'list':
 		$category_id = intval($id);
-		$category_sid = is_array($cache_category_arr[$category_id]) ? $category_id : intval($cache_category[$category_id]['category_pid']);
-		$category_sname = $category_sid ? $cache_category[$category_sid]['category_name'] : '所有分类';
+		$category_zk_id = is_array($cache_category_arr[$category_id]) ? $category_id : intval($cache_category[$category_id]['category_pid']);
 
 		$info = $db->pe_select('category', array('category_id'=>$category_id));
 		//搜索
@@ -80,12 +79,13 @@ switch ($act) {
 		}
 		$comment_point = ($cache_setting['point_state'] && $cache_setting['point_comment']) ? "(+{$cache_setting['point_comment']}积分)":'';
 		//优惠券列表
-		$quan_list = $db->pe_selectall('quan', " and `quan_edate` >= '".date('Y-m-d')."' and (`product_id` = '' or find_in_set({$product_id}, `product_id`)) order by `quan_money` asc");
+		$quan_list = $db->pe_selectall('quan', "and `quan_type` = 'online' and `quan_edate` >= '".date('Y-m-d')."' and (`product_id` = '' or find_in_set({$product_id}, `product_id`)) order by `quan_money` asc");
 		//商品规格
 		$rule_list = $info['product_rule'] ? unserialize($info['product_rule']) : array();
-		$prorule_list = $db->pe_selectall('prorule', array('product_id'=>$product_id));
+		$prorule_list = $db->pe_selectall('prorule', array('product_id'=>$product_id), 'prorule_key, product_money, product_mmoney, product_num');
 		foreach ($prorule_list as $k=>$v) {
-			if ($info['product_money'] != $info['product_smoney']) $prorule_list[$k]['product_money'] = $info['product_money'];
+			$prorule_list[$k]['product_money'] = product_money($v['product_money']);
+			//if ($info['product_money'] != $info['product_smoney']) $prorule_list[$k]['product_money'] = $info['product_money'];
 			if (!$v['product_num']) unset($prorule_list[$k]);
 		}
 		$prorule_list = json_encode($prorule_list);

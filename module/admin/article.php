@@ -56,7 +56,7 @@ switch ($act) {
 		$_g_class_id && $sqlwhere .= " and a.`class_id` = '{$_g_class_id}'";
 		$sqlwhere .= " order by a.`article_id` desc";
 		$sql = "select * from `".dbpre."article` a left join `".dbpre."class` b on a.`class_id` = b.`class_id` where {$sqlwhere}";
-		$info_list = $db->sql_selectall($sql, array(20, $_g_page));
+		$info_list = $db->sql_selectall($sql, array(30, $_g_page));
 
 		$tongji['news'] = $db->sql_num("select count(1) from `".dbpre."article` a left join `".dbpre."class` b on a.`class_id` = b.`class_id` where b.`class_type` = 'news'");
 		$tongji['help'] = $db->sql_num("select count(1) from `".dbpre."article` a left join `".dbpre."class` b on a.`class_id` = b.`class_id` where b.`class_type` = 'help'");

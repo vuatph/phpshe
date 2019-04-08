@@ -26,7 +26,7 @@ CREATE TABLE `{dbpre}admin` (
   PRIMARY KEY  (`admin_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
-INSERT INTO `{dbpre}admin` VALUES('1','admin','21232f297a57a5a743894a0e4a801fc3','1269059337','1496214768','1');
+INSERT INTO `{dbpre}admin` VALUES('1','admin','21232f297a57a5a743894a0e4a801fc3','1269059337','1505793824','1');
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}adminlevel`;
 /*#####################@ pe_cutsql @#####################*/
@@ -108,6 +108,7 @@ DROP TABLE IF EXISTS `{dbpre}cart`;
 /*#####################@ pe_cutsql @#####################*/
 CREATE TABLE `{dbpre}cart` (
   `cart_id` int(10) unsigned NOT NULL auto_increment,
+  `cart_type` varchar(4) NOT NULL default 'cart' COMMENT '购买类型(cart加入购物车/buy立即购买)',
   `cart_atime` int(10) unsigned NOT NULL default '0',
   `product_guid` char(32) NOT NULL COMMENT '唯一id',
   `product_id` int(10) unsigned NOT NULL default '0',
@@ -190,6 +191,7 @@ CREATE TABLE `{dbpre}comment` (
   `comment_id` int(10) unsigned NOT NULL auto_increment COMMENT '留言id',
   `comment_star` tinyint(1) unsigned NOT NULL default '5' COMMENT '评价星级',
   `comment_text` text NOT NULL COMMENT '留言内容',
+  `comment_logo` text NOT NULL COMMENT '评价晒图',
   `comment_atime` int(10) NOT NULL default '0' COMMENT '留言时间',
   `product_id` int(10) unsigned NOT NULL,
   `product_name` varchar(50) NOT NULL COMMENT '商品名称',
@@ -197,10 +199,30 @@ CREATE TABLE `{dbpre}comment` (
   `order_id` int(10) unsigned NOT NULL default '0',
   `user_id` int(10) unsigned NOT NULL COMMENT '接受方用户id',
   `user_name` varchar(20) NOT NULL,
+  `user_logo` varchar(100) NOT NULL COMMENT '用户头像',
   `user_ip` char(15) NOT NULL default '0.0.0.0',
   PRIMARY KEY  (`comment_id`),
   KEY `product_id` (`product_id`),
   KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*#####################@ pe_cutsql @#####################*/
+DROP TABLE IF EXISTS `{dbpre}express`;
+/*#####################@ pe_cutsql @#####################*/
+CREATE TABLE `{dbpre}express` (
+  `express_id` smallint(5) unsigned NOT NULL auto_increment COMMENT '快递模板id',
+  `express_name` varchar(30) NOT NULL COMMENT '快递模板名',
+  `express_logo` varchar(100) NOT NULL COMMENT '快递模板logo',
+  `express_tag` text NOT NULL COMMENT '快递模板信息',
+  `express_width` int(10) unsigned NOT NULL,
+  `express_height` int(10) unsigned NOT NULL,
+  `express_width_px` int(10) unsigned NOT NULL default '0' COMMENT '像素宽',
+  `express_height_px` int(10) unsigned NOT NULL default '0' COMMENT '像素高',
+  `express_x` int(10) unsigned NOT NULL default '0' COMMENT 'x轴偏移量',
+  `express_y` int(10) unsigned NOT NULL default '0' COMMENT 'y轴偏移量',
+  `express_atime` int(10) unsigned NOT NULL default '0' COMMENT '添加时间',
+  `express_state` tinyint(1) unsigned NOT NULL default '1' COMMENT '启用状态',
+  `express_order` tinyint(3) unsigned NOT NULL default '255',
+  PRIMARY KEY  (`express_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}getpw`;
@@ -236,6 +258,7 @@ CREATE TABLE `{dbpre}huodongdata` (
   `huodong_tag` varchar(10) NOT NULL,
   `huodong_stime` int(10) unsigned NOT NULL default '0',
   `huodong_etime` int(10) unsigned NOT NULL default '0',
+  `huodong_zhe` float unsigned NOT NULL default '0' COMMENT '折扣率',
   `huodong_money` decimal(10,1) unsigned NOT NULL default '0.0',
   `product_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`huodongdata_id`)
@@ -252,10 +275,9 @@ CREATE TABLE `{dbpre}iplog` (
   PRIMARY KEY  (`iplog_id`),
   KEY `iplog_ip` (`iplog_ip`),
   KEY `iplog_adate` (`iplog_adate`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
-INSERT INTO `{dbpre}iplog` VALUES('1','192.168.3.106','','1496203431','2017-05-31'),
-('2','127.0.0.1','','1496204406','2017-05-31');
+INSERT INTO `{dbpre}iplog` VALUES('1','192.168.3.104','','1505794312','2017-09-19');
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}link`;
 /*#####################@ pe_cutsql @#####################*/
@@ -267,7 +289,7 @@ CREATE TABLE `{dbpre}link` (
   PRIMARY KEY  (`link_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
-INSERT INTO `{dbpre}link` VALUES('1','简好科技官方网站','http://www.phpshe.com','1'),
+INSERT INTO `{dbpre}link` VALUES('1','简好网络官方网站','http://www.phpshe.com','1'),
 ('2','PHPSHE商城系统','http://www.phpshe.com/phpshe','2');
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}menu`;
@@ -428,7 +450,7 @@ CREATE TABLE `{dbpre}payway` (
   `payway_order` tinyint(3) unsigned NOT NULL default '0',
   `payway_state` tinyint(1) unsigned NOT NULL default '1',
   PRIMARY KEY  (`payway_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
 INSERT INTO `{dbpre}payway` VALUES('1','余额支付','balance','include/plugin/payway/balance/logo.gif','','','使用帐户余额支付，只有会员才能使用。','0','1'),
 ('2','支付宝','alipay','include/plugin/payway/alipay/logo.gif','a:3:{s:11:\"alipay_name\";a:2:{s:4:\"name\";s:15:\"支付宝账户\";s:9:\"form_type\";s:4:\"text\";}s:10:\"alipay_pid\";a:2:{s:4:\"name\";s:18:\"合作者身份Pid\";s:9:\"form_type\";s:4:\"text\";}s:10:\"alipay_key\";a:2:{s:4:\"name\";s:18:\"安全校验码Key\";s:9:\"form_type\";s:4:\"text\";}}','a:3:{s:11:\"alipay_name\";s:0:\"\";s:10:\"alipay_pid\";s:0:\"\";s:10:\"alipay_key\";s:0:\"\";}','即时到帐接口，买家交易金额直接转入卖家支付宝账户。','0','1'),
@@ -457,7 +479,7 @@ DROP TABLE IF EXISTS `{dbpre}product`;
 /*#####################@ pe_cutsql @#####################*/
 CREATE TABLE `{dbpre}product` (
   `product_id` smallint(5) unsigned NOT NULL auto_increment COMMENT '商品id',
-  `product_name` varchar(50) NOT NULL COMMENT '商品名称',
+  `product_name` varchar(100) NOT NULL COMMENT '商品名称',
   `product_text` text NOT NULL COMMENT '商品描述',
   `product_keys` varchar(50) NOT NULL COMMENT '页面关键词',
   `product_desc` varchar(255) NOT NULL COMMENT '页面描述',
@@ -472,7 +494,7 @@ CREATE TABLE `{dbpre}product` (
   `product_weight` decimal(7,2) NOT NULL COMMENT '商品尺寸',
   `product_state` tinyint(1) unsigned NOT NULL default '1' COMMENT '商品状态',
   `product_atime` int(10) unsigned NOT NULL default '0' COMMENT '商品发布时间',
-  `product_order` tinyint(3) unsigned NOT NULL default '255' COMMENT '商品排序',
+  `product_order` smallint(5) unsigned NOT NULL default '10000' COMMENT '商品排序',
   `product_num` smallint(5) unsigned NOT NULL COMMENT '商品库存数',
   `product_sellnum` int(10) unsigned NOT NULL default '0' COMMENT '商品销售数',
   `product_clicknum` int(10) unsigned NOT NULL default '0' COMMENT '商品点击数',
@@ -501,7 +523,8 @@ CREATE TABLE `{dbpre}prorule` (
   `prorule_id` int(10) unsigned NOT NULL auto_increment COMMENT '商品规格id',
   `prorule_key` varchar(30) NOT NULL COMMENT '规格id组合',
   `prorule_name` varchar(50) NOT NULL COMMENT '规格名组合',
-  `product_money` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '规格商城价',
+  `product_money` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '商品商城价（有活动即活动价）',
+  `product_smoney` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '商城价',
   `product_mmoney` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '规格市场价',
   `product_num` smallint(5) unsigned NOT NULL default '0' COMMENT '规格数量',
   `product_id` int(10) unsigned NOT NULL default '0' COMMENT '商品id',
@@ -513,8 +536,8 @@ DROP TABLE IF EXISTS `{dbpre}quan`;
 /*#####################@ pe_cutsql @#####################*/
 CREATE TABLE `{dbpre}quan` (
   `quan_id` int(10) unsigned NOT NULL auto_increment COMMENT '优惠券自增id',
-  `quan_key` char(10) NOT NULL,
   `quan_name` varchar(30) NOT NULL COMMENT '优惠券名称',
+  `quan_type` varchar(10) NOT NULL default 'online' COMMENT '发放方式(online线上领取/offline线下发放)',
   `quan_money` int(10) unsigned NOT NULL default '0' COMMENT '优惠券面值',
   `quan_limit` smallint(5) unsigned NOT NULL default '0' COMMENT '优惠券限制条件',
   `quan_num` int(10) unsigned NOT NULL default '0' COMMENT '优惠券发行量',
@@ -544,7 +567,11 @@ CREATE TABLE `{dbpre}quanlog` (
   `product_id` text NOT NULL COMMENT '商品id',
   `user_id` int(10) unsigned NOT NULL default '0',
   `user_name` varchar(20) NOT NULL,
-  PRIMARY KEY  (`quanlog_id`)
+  PRIMARY KEY  (`quanlog_id`),
+  KEY `quanlog_state` (`quanlog_state`),
+  KEY `quan_id` (`quan_id`),
+  KEY `quan_key` (`quan_key`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}rule`;
@@ -612,7 +639,26 @@ INSERT INTO `{dbpre}setting` VALUES('cashout_fee','0.01'),
 ('wechat_token','phpshe590d6a7331976'),
 ('wechat_rssadd','hellow'),
 ('wechat_access_token',''),
-('wechat_menu','a:2:{i:1;a:3:{s:4:\"name\";s:12:\"商城系统\";s:3:\"url\";s:21:\"http://www.phpshe.com\";s:4:\"list\";a:2:{i:1;a:2:{s:4:\"name\";s:12:\"系统简介\";s:3:\"url\";s:28:\"http://www.phpshe.com/phpshe\";}i:2;a:2:{s:4:\"name\";s:12:\"系统演示\";s:3:\"url\";s:33:\"http://www.phpshe.com/demo/phpshe\";}}}i:2;a:2:{s:4:\"name\";s:12:\"网站建设\";s:3:\"url\";s:25:\"http://www.phpshe.com/web\";}}');
+('wechat_menu','a:2:{i:1;a:3:{s:4:\"name\";s:12:\"商城系统\";s:3:\"url\";s:21:\"http://www.phpshe.com\";s:4:\"list\";a:2:{i:1;a:2:{s:4:\"name\";s:12:\"系统简介\";s:3:\"url\";s:28:\"http://www.phpshe.com/phpshe\";}i:2;a:2:{s:4:\"name\";s:12:\"系统演示\";s:3:\"url\";s:33:\"http://www.phpshe.com/demo/phpshe\";}}}i:2;a:2:{s:4:\"name\";s:12:\"网站建设\";s:3:\"url\";s:25:\"http://www.phpshe.com/web\";}}'),
+('tg_state','0'),
+('tg_fc1','0.05'),
+('tg_fc2','0.03'),
+('tg_fc3','0.02');
+/*#####################@ pe_cutsql @#####################*/
+DROP TABLE IF EXISTS `{dbpre}tguser`;
+/*#####################@ pe_cutsql @#####################*/
+CREATE TABLE `{dbpre}tguser` (
+  `tg_id` int(10) unsigned NOT NULL auto_increment COMMENT '自增id',
+  `tguser_id` int(10) unsigned NOT NULL default '0' COMMENT '推广用户id',
+  `tguser_name` varchar(20) NOT NULL COMMENT '推广用户名',
+  `tguser_level` tinyint(1) unsigned NOT NULL default '0' COMMENT '推广层级关系',
+  `user_id` int(10) unsigned NOT NULL default '0' COMMENT '用户id',
+  `user_name` varchar(20) NOT NULL COMMENT '用户名',
+  `user_atime` int(10) unsigned NOT NULL default '0' COMMENT '注册时间',
+  PRIMARY KEY  (`tg_id`),
+  KEY `tguser_id` (`tguser_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}user`;
 /*#####################@ pe_cutsql @#####################*/
@@ -622,6 +668,8 @@ CREATE TABLE `{dbpre}user` (
   `user_pw` varchar(32) NOT NULL COMMENT '用户密码',
   `user_logo` varchar(100) NOT NULL,
   `user_money` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '账户余额',
+  `user_money_cost` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '总消费额',
+  `user_money_tg` decimal(10,1) unsigned NOT NULL default '0.0' COMMENT '推广总收益',
   `user_point` int(10) unsigned NOT NULL default '0' COMMENT '账户积分余额',
   `user_point_all` int(10) unsigned NOT NULL default '0' COMMENT '累计获得积分',
   `user_tname` varchar(10) NOT NULL COMMENT '用户姓名',
@@ -635,9 +683,13 @@ CREATE TABLE `{dbpre}user` (
   `user_ordernum` int(10) unsigned NOT NULL default '0',
   `user_ip` char(15) NOT NULL COMMENT '用户注册ip',
   `user_wx_openid` varchar(50) NOT NULL,
+  `userlevel_id` smallint(5) unsigned NOT NULL default '0' COMMENT '用户等级id',
+  `tguser_id` int(10) unsigned NOT NULL default '0' COMMENT '推广用户id',
+  `tguser_name` varchar(20) NOT NULL COMMENT '推广用户名',
   PRIMARY KEY  (`user_id`),
   KEY `user_name` (`user_name`),
-  KEY `user_wx_openid` (`user_wx_openid`)
+  KEY `user_wx_openid` (`user_wx_openid`),
+  KEY `tguser_id` (`tguser_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*#####################@ pe_cutsql @#####################*/
 DROP TABLE IF EXISTS `{dbpre}useraddr`;
@@ -673,3 +725,17 @@ CREATE TABLE `{dbpre}userbank` (
   PRIMARY KEY  (`userbank_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*#####################@ pe_cutsql @#####################*/
+DROP TABLE IF EXISTS `{dbpre}userlevel`;
+/*#####################@ pe_cutsql @#####################*/
+CREATE TABLE `{dbpre}userlevel` (
+  `userlevel_id` smallint(5) unsigned NOT NULL auto_increment COMMENT '自增id',
+  `userlevel_name` varchar(10) NOT NULL COMMENT '用户组名',
+  `userlevel_value` int(10) unsigned NOT NULL default '0' COMMENT '用户组最大值',
+  `userlevel_logo` varchar(100) NOT NULL COMMENT '用户组图标',
+  `userlevel_zhe` decimal(3,2) unsigned NOT NULL default '0.00' COMMENT '折扣率',
+  `userlevel_up` tinyint(1) unsigned NOT NULL default '1' COMMENT '自动升级(0否/1是)',
+  PRIMARY KEY  (`userlevel_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*#####################@ pe_cutsql @#####################*/
+INSERT INTO `{dbpre}userlevel` VALUES('1','注册用户','0','','1.00','1');

@@ -29,6 +29,7 @@ $adminmenu[4] = array(
 	'headnav' => '用户中心',
 	'subnav' => array(
 		array('name' => '会员列表', 'menumark' => 'user', 'url' => 'admin.php?mod=user'),
+		array('name' => '会员等级', 'menumark' => 'userlevel', 'url' => 'admin.php?mod=userlevel'),
 		array('name' => '管 理 员', 'menumark' => 'admin', 'url' => 'admin.php?mod=admin'),
 		array('name' => '管理权限', 'menumark' => 'adminlevel', 'url' => 'admin.php?mod=adminlevel')
 	)
@@ -47,8 +48,7 @@ $adminmenu[6] = array(
 		array('name' => '支付设置', 'menumark' => 'payway', 'url' => 'admin.php?mod=payway'),
 		array('name' => '导航管理', 'menumark' => 'menu', 'url' => 'admin.php?mod=menu'),
 		array('name' => '广告管理', 'menumark' => 'ad', 'url' => 'admin.php?mod=ad'),
-		array('name' => '友情链接', 'menumark' => 'link', 'url' => 'admin.php?mod=link'),
-		array('name' => '短/邮记录', 'menumark' => 'noticelog', 'url' => 'admin.php?mod=noticelog')
+		array('name' => '友情链接', 'menumark' => 'link', 'url' => 'admin.php?mod=link')
 	)
 );
 if (!pe_login('admin') && !($mod == 'do' && $act == 'login')) {

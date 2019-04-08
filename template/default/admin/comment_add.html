@@ -27,6 +27,25 @@
 			<td><textarea name="info[comment_text]" style="width:520px;height:150px;resize:none">{$info['comment_text']}</textarea></td>
 		</tr>
 		<tr>
+			<td align="right">评价晒图</td>
+			<td>
+				<!--{foreach(array(0,1,2,3,4) as $k=>$v):}-->
+				<!--{$logo = $comment_logo[$k] ? pe_thumb($comment_logo[$k]) : $pe['host_tpl']."images/up_bg.jpg"}-->
+				<div class="upload_html fl">
+					<input type="hidden" name="comment_logo[]" value="{$comment_logo[$k]}" class="upload_value" />
+					<a href="javascript:;" class="upload_btn"><img src="{$logo}" class="upload_logo" style="width:125px; height:125px;" /></a>
+					<div class="upload_jindu"></div>
+					<div class="upload_bg"></div>
+					<div class="upload_do">
+						<a href="javascript:;" class="upload_left"></a>
+						<a href="javascript:;" class="upload_right"></a>
+						<a href="javascript:;" class="upload_del"></a>
+					</div>	
+				</div>
+				<!--{endforeach;}-->
+			</td>
+		</tr>
+		<tr>
 			<td align="right">综合评分：</td>
 			<td>
 				<input type="hidden" name="info[comment_star]" value="{$info['comment_star']}" />
@@ -46,7 +65,10 @@
 		</form>
 	</div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/plugin/raty/jquery.raty.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/plugin/raty/jquery.raty.js"></script>、
+<link rel="stylesheet" type="text/css" href="{$pe['host_root']}include/plugin/webuploader/webuploader.css">
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/webuploader.min.js"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/webuploader/upload.js"></script>
 <script type="text/javascript">
 $(function() {
 	$('#star').raty({
@@ -59,6 +81,7 @@ $(function() {
 			$(":input[name='info[comment_star]']").val(score);
 		}
 	});
+	$("body").pe_upload('pc', 5);
 })
 </script>
 <!--{include(pe_tpl('footer.html'));}-->
