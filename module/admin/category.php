@@ -70,7 +70,6 @@ switch ($act) {
 	//#####################@ 分类列表 @#####################//
 	default :
 		$info_list = $category_treelist;
-
 		$seo = pe_seo($menutitle='商品分类', '', '', 'admin');
 		include(pe_tpl('category_list.html'));
 	break;

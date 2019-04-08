@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
  * @creatdate   2012-1116 koyshe <koyshe@gmail.com>
  */
 $menumark = 'payway';
@@ -31,7 +31,7 @@ switch ($act) {
 	case 'edit':
 		$payway_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
-			$_p_info['payway_config'] = serialize($_p_config);
+			$_p_info['payway_config'] = $_p_config ? serialize($_p_config) : '';
 			if ($db->pe_update('payway', array('payway_id'=>$payway_id), $_p_info)) {
 				cache_write('payway');
 				pe_success('支付修改成功!', 'admin.php?mod=payway');
@@ -41,8 +41,8 @@ switch ($act) {
 			}
 		}
 		$info = $db->pe_select('payway', array('payway_id'=>$payway_id));
-		$info['payway_model'] = unserialize($info['payway_model']);
-		$info['payway_config'] = unserialize($info['payway_config']);
+		$info['payway_model'] = $info['payway_model'] ? unserialize($info['payway_model']) : array();
+		$info['payway_config'] = $info['payway_config'] ? unserialize($info['payway_config']) : array();
 		$seo = pe_seo($menutitle='修改支付方式', '', '', 'admin');
 		include(pe_tpl('payway_add.html'));
 	break;

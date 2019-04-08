@@ -14,8 +14,8 @@
 	<tr>
 		<td class="bgtt" width="50">ID号</td>
 		<td class="bgtt">管理帐号</td>
-		<td class="bgtt" width="100">上次登录</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="150">上次登录</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
@@ -23,7 +23,7 @@
 		<td>{$v['admin_name']}</td>
 		<td>{pe_date($v['admin_ltime'])}</td>
 		<td>
-			<a href="admin.php?mod=admin&act=edit&id={$v['admin_id']}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=admin&act=edit&id={$v['admin_id']}" class="admin_edit mar3">修改</a>
 			<a href="admin.php?mod=admin&act=del&id={$v['admin_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>

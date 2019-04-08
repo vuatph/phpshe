@@ -22,6 +22,7 @@ img{border:0;}
 .mat5{margin-top:5px;}
 .mat8{margin-top:8px;}
 .mat10{margin-top:10px;}
+.mat15{margin-top:15px;}
 .mab5{margin-bottom:5px;}
 .mab10{margin-bottom:10px;}
 .mar5{margin-right:5px;}
@@ -31,6 +32,7 @@ img{border:0;}
 .font12{font-size:12px;}
 .font14{font-size:14px;}
 .font16{font-size:16px;}
+.font18{font-size:18px;}
 .more{float:right; color:#999;font-size:12px;padding-right:10px;font-weight:normal;}
 .more a:hover{color:#ff4400;}
 .num{font-family:"Arial";}
@@ -54,5 +56,5 @@ body{background:#BEE7FD;}
 .xieyi .input150{width:150px; height:24px; line-height:24px; border:1px #5893B4 solid;}
 .xieyi .input200{width:200px; height:24px; line-height:24px; border:1px #5893B4 solid;}
 .btn{background:url(../images/anzhuang.gif) no-repeat; width:133px; height:34px; border:0; cursor:pointer;}
-.main{background:#F7FBE9; width:500px; height:160px; margin:0 auto; border:1px #9DD3F0 solid; padding:30px;}
+.main{background:#F7FBE9; width:500px; height:160px; margin:0 auto; border:1px #9DD3F0 solid; padding:30px; border-radius:5px;}
 .main a{color:#244395; text-decoration:underline;}

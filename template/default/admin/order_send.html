@@ -11,10 +11,10 @@
 <form method="post">
 <table style="width:400px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
 <tr>
-	<td align="right" class="bg_f8" width="100">物流公司：</td>
+	<td align="right" class="bg_f8" width="100">快递公司：</td>
 	<td>
 		<select name="info[order_wlname]" class="inputselect">
-		<option value="">无需物流</option>
+		<option value="">无需快递</option>
 		<!--{foreach($ini_wllist as $v):}-->
 		<option value="{$v}">{$v}</option>
 		<!--{endforeach;}-->
@@ -22,14 +22,14 @@
 	</td>
 </tr>
 <tr>
-	<td align="right" class="bg_f8">物流编号：</td>
-	<td><input type="text" name="info[order_wlid]" class="inputtext inputtext_200" /></td>
+	<td align="right" class="bg_f8">快递单号：</td>
+	<td><input type="text" name="info[order_wlid]" class="inputall input200" /></td>
 </tr>
 <tr>
 	<td class="bg_f8">&nbsp;</td>
 	<td>
 		<input type="hidden" name="pesubmit" />
-		<input type="button" value="提 交" class="tjbtn" />
+		<input type="button" value="发 货" class="tjbtn" />
 	</td>
 </tr>
 </table>

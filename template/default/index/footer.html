@@ -79,9 +79,58 @@
 		<!--{endforeach;}-->
 	</div>
 	<div class="subnav">
-		<p>Copyright <span class="num">©</span> {$cache_setting['web_copyright']['setting_value']} All Rights Reserved {$cache_setting['web_icp']['setting_value']} {$cache_setting['web_tongji']['setting_value']}</p>
-		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统" class="cgreen">phpshe1.1</a></p>
+		Copyright <span class="num">©</span> 2008-2015 {$cache_setting['web_copyright']['setting_value']} All Rights Reserved　{$cache_setting['web_icp']['setting_value']}
+		<p>咨询热线：{$cache_setting['web_phone']['setting_value']}　咨询QQ：{$cache_setting['web_qq']['setting_value']}　{$cache_setting['web_tongji']['setting_value']}</p>
+		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统v1.2" class="cgreen">phpshe1.2</a></p>
 	</div>
 </div>
+<LINK rel=stylesheet type=text/css href="{$pe['host_tpl']}/kefu1/css/common.css">
+<SCRIPT type=text/javascript src="{$pe['host_tpl']}/kefu1/js/kefu.js"></SCRIPT>
+<DIV id=floatTools class=float0831>
+	<DIV class=floatL>
+		<A  id=aFloatTools_Show class=btnOpen title=查看在线客服 onclick="kf_open()" href="javascript:void(0);">展开</A>
+		<A style="DISPLAY: none" id=aFloatTools_Hide class=btnCtn title=关闭在线客服 onclick="kf_close()" href="javascript:void(0);">收缩</A>
+	</DIV>
+	<DIV id=divFloatToolsView class=floatR>
+    <DIV class=tp></DIV>
+    <DIV class=cn>
+	<UL>
+    	<div class="KeFuItem"></div>
+        <LI class="top"  style="padding-top:0"><H3 class=titZx>QQ咨询</H3></LI>
+		<!--{$qqnum = count($web_qq)}-->
+		<!--{foreach($web_qq as $k=>$v):}-->
+        <LI <!--{if($qqnum==$k+1):}-->class=bot<!--{endif;}-->><a href="http://wpa.qq.com/msgrd?v=3&amp;uin={$v}&amp;site=qq&amp;menu=yes" target="_blank"><img border="0" title="在线客服" alt="在线客服" src="http://wpa.qq.com/pa?p=2:{$v}:41"></a></LI>
+		<!--{endforeach;}-->
+	</UL>
+    <UL class=webZx>
+        <LI class=webZx-in></LI>
+      </UL>
+	<UL>
+		<LI class="top" style="padding-top:0"><H3 class=titDh>电话咨询</H3></LI>
+		<LI><SPAN class="icoTl">{$cache_setting['web_phone']['setting_value']}</SPAN><div class="clear"></div></LI>
+		<li style="padding-bottom:5px; float:none;"><a href="{pe_url('page-11')}">更多联系方式>></a></li>
+	</UL>
+	</DIV>
+	</DIV>
+</DIV>
+<script type="text/javascript">
+function kf_open() {
+	$('#divFloatToolsView').animate({width: 'show', opacity: 'show'}, 'normal',function(){
+		$('#divFloatToolsView').show();
+		//kf_setCookie('RightFloatShown', 0, '', '/', 'www.baidu.com');
+	});
+	$('#aFloatTools_Show').attr('style','display:none');
+	$('#aFloatTools_Hide').attr('style','display:block');
+}
+function kf_close() {
+	$('#divFloatToolsView').animate({width: 'hide', opacity: 'hide'}, 'normal',function(){
+		$('#divFloatToolsView').hide();
+		//kf_setCookie('RightFloatShown', 1, '', '/', 'www.baidu.com');
+	});
+	$('#aFloatTools_Show').attr('style','display:block');
+	$('#aFloatTools_Hide').attr('style','display:none');
+}
+kf_close()
+</script>
 </body>
 </html>

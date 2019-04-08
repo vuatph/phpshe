@@ -1,0 +1,71 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content">
+	<div class="dingdan mab10">
+		<div class="chaxun">
+			<form method="get">
+			<span class="fl mat5 font14 mab10">请输入您的订单号：</span>
+			<input type="text" name="order_id" value="{$_g_order_id}" class="chaxun_input fl mal5" />
+			<div class="clear"></div>
+			<span class="fl mat5 font14 mab20">请输入您的手机号：</span>
+			<input type="text" name="user_phone" value="{$_g_user_phone}" class="chaxun_input fl mal5" />
+			<div class="clear"></div>
+			<input type="submit" class="chaxun_btn" style="margin-left:180px" value="查 询">
+			</form>
+		</div>
+		<!--{if($info['order_id']):}-->
+		<h3 style="margin-top:0">订单状态<span class="normal cred">（您的订单编号为：{$_g_order_id}）</span></h3>
+		<p class="mat5">
+			<span class="cgreen">已下单</span>[{pe_date($info['order_atime'])}] →
+		<!--货到付款-->
+		<!--{if($info['order_payway']=='cod'):}-->
+			<!--{if($info['order_state']=='notpay'):}-->
+			<span class="cred">等待卖家发货</span>
+			<!--{elseif($info['order_state']=='send'):}-->
+			<span class="cgreen">已发货</span>[{pe_date($info['order_stime'])}] →
+			<span class="cred">等待买家付款</span>
+			<!--{elseif($info['order_state']=='success'):}-->
+			<span class="cgreen">已发货</span>[{pe_date($info['order_stime'])}] →
+			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
+			<span class="cred">交易成功</span>
+			<!--{endif;}-->
+		<!--先款后货-->
+		<!--{else:}-->
+			<!--{if($info['order_state']=='notpay'):}-->
+			<span class="cred">等待买家付款</span>
+			<!--{elseif($info['order_state']=='paid'):}-->
+			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
+			<span class="cred">等待卖家发货</span>
+			<!--{elseif($info['order_state']=='send'):}-->
+			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
+			<span class="cgreen">已发货</span>[{pe_date($info['order_stime'])}] →
+			<span class="cred">等待买家确认</span>
+			<!--{elseif($info['order_state']=='success'):}-->
+			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
+			<span class="cgreen">已发货</span>[{pe_date($info['order_stime'])}] →
+			<span class="cred">交易成功</span>
+			<!--{endif;}-->
+		<!--{endif;}-->
+		</p>
+		<h3>商品名称</h3>
+		<!--{foreach($product_list as $v):}-->
+		<p><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue">{$v['product_name']}</a>　<span class="num">¥{$v['product_smoney']}</span>(×{$v['product_num']})</p>
+		<!--{endforeach;}-->
+		<h3>物流信息</h3>
+		<p class="mat5">
+			物流公司：{$info['order_wlname']}<br />
+			运单号码：{$info['order_wlid']}
+		</p>
+		<h3>实付金额</h3>
+		<p class="mat5">
+			<span class="strong num1 font14 cred">{$info['order_money']}</span>(元)
+			＝ <span class="strong num1 font14 cred">{$info['order_productmoney']}</span>(商品价格)
+			＋ <span class="strong num1 font14 cred">{$info['order_wlmoney']}</span>(运费)
+		</p>
+		<!--{elseif (isset($_g_order_id)):}-->
+		<div class="font16 cred mat10" style="text-align:center"><b>您的订单号或手机号有误，请重新输入</b></div>
+		<!--{endif;}-->
+	</div>
+</div>
+<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
+<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
+<!--{include(pe_tpl('footer.html'));}-->

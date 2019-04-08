@@ -1,4 +1,9 @@
 <?php
+/**
+ * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
+ */
+
 //网站公告
 $notice_list = $db->pe_selectall('article', array('class_id'=>1,'order by'=>'`article_atime` desc'), '*', array(10));
 //商品推荐

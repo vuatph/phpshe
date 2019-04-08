@@ -10,7 +10,7 @@
 	<form method="post" id="form">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
 	<tr>
-		<td class="bgtt" width="100">缓存名称</td>
+		<td class="bgtt" width="120">缓存名称</td>
 		<td class="bgtt">缓存说明</td>
 		<td class="bgtt" width="100">大小（KB）</td>
 		<td class="bgtt" width="30">操作</td>

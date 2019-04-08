@@ -10,14 +10,14 @@
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
 	<tr>
 		<td class="bgtt" width="50">排序</td>
-		<td class="bgtt" width="120">支付名称</td>
+		<td class="bgtt" width="150">支付名称</td>
 		<td class="bgtt">支付描述</td>
-		<td class="bgtt" width="50">启用状态</td>
-		<td class="bgtt" width="30">操作</td>
+		<td class="bgtt" width="80">启用状态</td>
+		<td class="bgtt" width="44">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
-		<td><input type="text" name="payway_order[{$v['payway_id']}]" value="{$v['payway_order']}" class="inputtext inputtext_40" /></td>
+		<td><input type="text" name="payway_order[{$v['payway_id']}]" value="{$v['payway_order']}" class="inputtext input40" /></td>
 		<td>{$v['payway_name']}</td>
 		<td class="aleft">{$v['payway_text']}</td>
 		<td><!--{if($v['payway_state']):}--><span class="cgreen">启用</span><!--{else:}--><span class="cred">禁用</span><!--{endif;}--></td>

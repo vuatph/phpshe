@@ -1,0 +1,78 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right">
+	<div class="admin_l">
+		<div class="admin_t_info">
+			<h3>系统信息</h3>
+			<div class="banben">
+				<div class="fl font14 mat6">软件版本：<a href="http://www.phpshe.com" target="_blank" class="cgreen">PHPSHE1.2免费版</a><span class="font13 mal5 corg">(证书编号：<span id="license_num">无</span>)</span></div>
+				<div class="fr sq0" id="license_logo"></div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="admin_t_info admin_t_info1 mat10">
+			<h3>商品统计</h3>
+			<ul>
+			<li><a href="admin.php?mod=product&state=1" target="_blank">上架商品</a><span class="strong cgreen num">{$tongji['product_up']}</span>件</li>
+			<li><a href="admin.php?mod=product&state=2" target="_blank">下架商品</a><span class="strong cgreen num">{$tongji['product_down']}</span>件</li>
+			<li><a href="admin.php?mod=product&state=1&filter=num|0" target="_blank">缺货商品</a><span class="strong cgreen num">{$tongji['product_empty']}</span>件</li>
+			<li style="border-bottom:0"><a href="admin.php?mod=product&state=1&filter=istuijian|1" target="_blank">推荐商品</a><span class="strong cgreen num">{$tongji['product_tuijian']}</span>件</li>
+			</ul>
+		</div>
+		<div class="admin_t_info admin_t_info1 mat10 mal10">
+			<h3>访客统计</h3>
+			<ul>
+			<li><a href="admin.php?mod=iplog" target="_blank">今日访客</a><span class="strong cgreen num">{$tongji['iplog_today']}</span>人</li>
+			<li><a href="admin.php?mod=iplog" target="_blank">昨日访客</a><span class="strong cgreen num">{$tongji['iplog_lastday']}</span>人</li>
+			<li><a href="admin.php?mod=iplog" target="_blank">累计访客</a><span class="strong cgreen num">{$tongji['iplog_all']}</span>人</li>
+			<li style="border-bottom:0"><a href="admin.php?mod=user" target="_blank">累计注册</a><span class="strong cgreen num">{$tongji['iplog_user']}</span>人</li>
+			</ul>
+		</div>
+		<div class="clear"></div>
+		<div class="admin_t_info mat10">
+			<h3>交易数据</h3>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td class="bg01" width="120"></td>
+				<td class="bg01" width="250">订单总数</td>
+				<td class="bg01">订单总额</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">今日订单</td>
+				<td class="strong num cgreen font14">{$tongji['order_today']}</td>
+				<td class="strong num cred font14">{$tongji['money_today']}</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">昨日订单</td>
+				<td class="strong num cgreen font14">{$tongji['order_lastday']}</td>
+				<td class="strong num cred font14">{$tongji['money_lastday']}</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">全部订单</td>
+				<td class="strong num cgreen font14">{$tongji['order_all']}</td>
+				<td class="strong num cred font14">{$tongji['money_all']}</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+	<div class="admin_r">
+		<div class="admin_t_info">
+			<h3>官方动态</h3>
+			<iframe src="http://www.phpshe.com/api/shop?type=news&v=1.2" frameborder="0" width="100%" height="250px" ></iframe>
+		</div>
+		<div class="admin_t_info mat10">
+			<h3>帮助中心</h3>
+			<iframe src="http://www.phpshe.com/api/shop?type=help&v=1.2" frameborder="0" width="100%" height="300px" ></iframe>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$.getJSON("http://www.phpshe.com/index.php?mod=api&act=license&callback=?", function(json){
+		if (json.result) {
+			$("#license_num").html(json.license_num);
+			$("#license_logo").removeClass("sq0").addClass("sq1");
+		}
+	})
+})
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

@@ -6,6 +6,7 @@
 $menumark = 'product';
 pe_lead('hook/category.hook.php');
 $category_treelist = category_treelist();
+$cache_rule = cache::get('rule');
 switch ($act) {
 	//#####################@ 商品增加 @#####################//
 	case 'add':
@@ -23,7 +24,6 @@ switch ($act) {
 				pe_error('商品发布失败...');
 			}
 		}
-
 		$seo = pe_seo($menutitle='发布商品', '', '', 'admin');
 		include(pe_tpl('product_add.html'));
 	break;
@@ -45,7 +45,6 @@ switch ($act) {
 			}
 		}
 		$info = $db->pe_select('product', array('product_id'=>$product_id));
-
 		$seo = pe_seo($menutitle='修改商品', '', '', 'admin');
 		include(pe_tpl('product_add.html'));
 	break;

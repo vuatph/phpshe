@@ -1,149 +1,154 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
-	<div class="now">
-		<div class="now_l"></div>
-		<div class="now_m">{$menutitle}</div>
-		<div class="now_r"></div>
-		<div class="clear"></div>
-	</div>
-	<form method="post">
-	<div class="dingdan">
-		<h3 style="margin-top:0">订单状态</h3>
-		<p class="mat5">
-			<span class="cgreen">已下单</span>[{pe_date($info['order_atime'])}] →
-			<!--{if($info['order_state']=='notpay'):}-->
-			<span class="cred">等待买家付款</span><input type="button" value="付款" href="admin.php?mod=order&act=state&state=paid&id={$info['order_id']}" onclick="return pe_cfone(this, '付款')" />
-			<!--{elseif($info['order_state']=='paid'):}-->
-			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
-			<span class="cred">等待卖家发货</span><input type="button" value="发货" href="admin.php?mod=order&act=state&state=send&id={$info['order_id']}" onclick="return pe_dialog(this, '填写物流信息', 400, 140)" />
-			<!--{elseif($info['order_state']=='send'):}-->
-			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
-			<span class="cgreen">已发货</span>[{pe_date($info['order_stime'])}] →
-			<span class="cred">等待买家确认</span>		
-			<!--{elseif($info['order_state']=='success'):}-->
-			<span class="cgreen">已付款</span>[{pe_date($info['order_ptime'])}] →
-			<span class="cgreen">已发货</span>[{pe_date($info['order_stime'])}] →
-			<span class="cred">交易成功</span>
-			<!--{endif;}-->
-		</p>
-		<h3>商品名称</h3>
-		<!--{foreach($product_list as $v):}-->
-		<p><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue">{$v['product_name']}</a>　<span class="num">¥{$v['product_smoney']}</span>(×{$v['product_num']})</p>
-		<!--{endforeach;}-->
-		<h3>物流信息</h3>
-		<p class="mat5">物流公司：
-			<!--{if($info['order_state']=='success'):}-->
-			{$info['order_wlname']}
-			<!--{elseif($info['order_state']=='send'):}-->
-			<input type="text" name="info[order_wlname]" value="{$info['order_wlname']}" class="inputtext inputtext_200"  />
+	<div class="huiyuan_main">
+		<h3 class="hy_rtt c666">订单编号： {$info['order_id']}</h3>
+		<div class="mat5 font13 zt">
+			<p class="c666"><span class="font12">{pe_date($info['order_atime'])}：</span><span class="cgreen">订单创建成功</span>，订单编号：{$info['order_id']}</p>
+			<!--货到付款-->
+			<!--{if($info['order_payway']=='cod'):}-->
+				<!--{if($info['order_state']=='notpay'):}-->
+				<p class="cred mat5" style="padding-left:113px">等待卖家发货<a href="admin.php?mod=order&act=state&state=send&id={$info['order_id']}" onclick="return pe_dialog(this, '填写快递信息')" class="shouhuo_btn mal10">发货</a></p>
+				<!--{elseif($info['order_state']=='send'):}-->
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_stime'])}：</span><span class="cgreen">卖家已经发货</span>，快递单号：{$info['order_wlid']}（{$info['order_wlname']?$info['order_wlname']:'无需快递'}）</p>
+				<p class="cred mat5" style="padding-left:113px">等待买家付款<a href="admin.php?mod=order&act=state&state=paid&id={$info['order_id']}" onclick="return pe_cfone(this, '付款')" class="pay_btn mal10">付款</a></p>
+				<!--{elseif($info['order_state']=='success'):}-->
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_stime'])}：</span><span class="cgreen">卖家已经发货</span>，快递单号：{$info['order_wlid']}（{$info['order_wlname']?$info['order_wlname']:'无需快递'}）</p>
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_ptime'])}：</span><span class="cgreen">买家付款成功</span>，支付金额：{$info['order_money']}元</p>
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_ptime'])}：</span><span class="cgreen strong">订单交易成功，欢迎下次光临！</span></p>
+				<!--{endif;}-->
+			<!--先款后货-->
 			<!--{else:}-->
-			<input type="text" disabled="disabled" class="inputtext inputtext_200"  />
-			<!--{endif;}--><br />
-           运单号码：<!--{if($info['order_state']=='success'):}-->
-			{$info['order_wlid']}
-			<!--{elseif($info['order_state']=='send'):}-->
-			<input type="text" name="info[order_wlid]" value="{$info['order_wlid']}" class="inputtext inputtext_200"  />
-			<!--{else:}-->
-			<input type="text" disabled="disabled" class="inputtext inputtext_200"  />
+				<!--{if($info['order_state']=='notpay'):}-->
+				<p class="cred mat5" style="padding-left:113px">等待买家付款<a href="admin.php?mod=order&act=state&state=paid&id={$info['order_id']}" onclick="return pe_cfone(this, '付款')" class="pay_btn mal10">付款</a></p>
+				<!--{elseif($info['order_state']=='paid'):}-->
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_ptime'])}：</span><span class="cgreen">买家付款成功</span>，支付金额：{$info['order_money']}元</p>
+				<p class="cred mat5" style="padding-left:113px">等待卖家发货<a href="admin.php?mod=order&act=state&state=send&id={$info['order_id']}" onclick="return pe_dialog(this, '填写快递信息')" class="shouhuo_btn mal10">发货</a></p>
+				<!--{elseif($info['order_state']=='send'):}-->
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_ptime'])}：</span><span class="cgreen">买家付款成功</span>，支付金额：{$info['order_money']}元</p>
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_stime'])}：</span><span class="cgreen">卖家已经发货</span>，快递单号：{$info['order_wlid']}（{$info['order_wlname']?$info['order_wlname']:'无需快递'}）</p>
+				<p class="cred mat5" style="padding-left:113px">等待买家确认</p>
+				<!--{elseif($info['order_state']=='success'):}-->
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_ptime'])}：</span><span class="cgreen">买家付款成功</span>，支付金额：{$info['order_money']}元</p>
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_stime'])}：</span><span class="cgreen">卖家已经发货</span>，运单编号：{$info['order_wlid']}（{$info['order_wlname']?$info['order_wlname']:'无需快递'}）</p>
+				<p class="c666 mat5"><span class="font12">{pe_date($info['order_stime'])}：</span><span class="cgreen strong">订单交易成功，欢迎下次光临！</span></p>
+				<!--{endif;}-->
 			<!--{endif;}-->
-		</p>
-		<h3>实付金额</h3>
-		<p class="mat5">
-			<!--{if($info['order_state']!='notpay'):}-->
-			<span class="strong num1 font14 cred">{$info['order_money']}</span>(元)
-			＝ <span class="strong num1 font14 cred">{$info['order_productmoney']}</span>(商品价格)
-			＋ <span class="strong num1 font14 cred">{$info['order_wlmoney']}</span>(运费)
-			<!--{else:}-->
-			<input type="text" name="info[order_money]" value="{$info['order_money']}" class="inputtext inputtext_100" style="background:#ddd" readonly />(元)
-			＝ <input type="text" name="info[order_productmoney]" value="{$info['order_productmoney']}" class="inputtext inputtext_100" />(商品价格)
-			＋ <input type="text" name="info[order_wlmoney]" value="{$info['order_wlmoney']}" class="inputtext inputtext_100" />(运费)
-			<!--{endif;}-->
-		</p>
-	</div>
-	<h3 style="margin:10px 0 0 5px; line-height:30px;">买家信息</h3>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
-	<tr>
-		<td class="bg_f8" align="right" width="100">会员帐号：</td>
-		<td><!--{if($info['user_id']):}-->{$info['user_name']}（ID：{$info['user_id']}）<!--{else:}-->未登录用户<!--{endif;}--></td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">收货姓名：</td>
-		<td>
-			<!--{if($info['order_state']=='success'):}-->
-			{$info['user_tname']}
-			<!--{else:}-->
-			<input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputtext inputtext_100" />
-			<!--{endif;}-->
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">手机号码：</td>
-		<td>
-			<!--{if($info['order_state']=='success'):}-->
-			{$info['user_phone']}
-			<!--{else:}-->
-			<input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputtext inputtext_200" />
-			<!--{endif;}-->
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">固定电话：</td>
-		<td>
-			<!--{if($info['order_state']=='success'):}-->
-			{$info['user_tel']}
-			<!--{else:}-->
-			<input type="text" name="info[user_tel]" value="{$info['user_tel']}" class="inputtext inputtext_200" />
-			<!--{endif;}-->
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">收货地址：</td>
-		<td>
-			<!--{if($info['order_state']=='success'):}-->
-			{$info['user_address']}
-			<!--{else:}-->
-			<input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputtext inputtext_500" />
-			<!--{endif;}-->
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">买家留言：</td>
-		<td>
-			<!--{if($info['order_state']=='success'):}-->
-			{$info['order_text']}
-			<!--{else:}-->
-			<textarea name="info[order_text]" style="width:500px;height:150px">{$info['order_text']}</textarea>
-			<!--{endif;}-->
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">付款方式：</td>
-		<td>
-			<!--{if($info['order_state']=='notpay'):}-->
-			<select name="info[order_payway]" class="inputselect">
-			<!--{foreach($ini_payway as $k=>$v):}-->
-			<option value="{$k}" <!--{if($k==$info['order_payway']):}-->selected="selected"<!--{endif;}-->>{$v}</option>
+		  <div class="clear"></div>
+		</div>
+		<form method="post">
+		<div class="hy_table" style="margin-top:10px;">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_tb_tt1">
+			<tr>
+				<td class="bg_f8 font12" width="">商品详情</td>
+				<td class="bg_f8 font12" width="120">商品单价(元)</td>
+				<td class="bg_f8 font12" width="120">购买数量</td>
+			</tr>
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-left:1px solid #ddd;">
+			<!--{foreach($product_list as $v):}-->
+			<tr>
+				<td style="text-align:left;">
+					<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
+						<a href="{pe_url('product-'.$v['product_id'])}" class="fl mar5"><img src="{pe_thumb($v['product_logo'], 60, 60)}" width="45" height="45"></a>
+						<div class="fl font12">
+							<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue dd_name">{$v['product_name']}</a>
+							<!--{if($v['prorule_name']):}-->
+							<p class="c888 mat5"><!--{foreach(unserialize($v['prorule_name']) as $vv):}-->[{$vv['name']}：{$vv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
+							<!--{endif;}-->
+							</div>
+						<div class="clear"></div>
+					</div>
+				</td>
+				<td width="110"><span class="num strong font14">{$v['product_money']}</span></td>
+				<td width="100"><span class="num font14">{$v['product_num']}</span></td>
+			</tr>
 			<!--{endforeach;}-->
-			</select>
-			<!--{else:}-->
-			{$ini_payway[$info['order_payway']]}
-			<!--{endif;}-->
-		</td>
-	</tr>
-	<!--{if($info['order_state']!='success'):}-->
-	<tr>
-		<td class="bg_f8">&nbsp;</td>
-		<td>
-			<input type="hidden" name="pesubmit" />
-			<input type="submit" value="提 交" class="tjbtn" />
-		</td>
-	</tr>
-	<!--{endif;}-->
-	</table>
-	</form>
+			</table>
+			<div class="ddxq_je font13">
+				<!--{if($info['order_state']!='notpay'):}-->
+				应付总额：<span class="strong num1 font18 cred strong" id="order_money">{$info['order_money']}</span>(元) ＝ 
+				<span class="font14 cred num strong">{$info['order_productmoney']}</span>(商品总额)
+				＋ <span class="font14 cred num strong">{$info['order_wlmoney']}</span>(运费)
+				<!--{else:}-->
+				应付总额：<span class="strong num1 font18 cred strong" id="order_money">{$info['order_money']}</span>(元) ＝ 
+				<input type="text" name="info[order_productmoney]" value="{$info['order_productmoney']}" class="inputtext input80" />(商品总额)
+				＋ <input type="text" name="info[order_wlmoney]" value="{$info['order_wlmoney']}" class="inputtext input60" />(运费)
+				<!--{endif;}-->
+			</div>
+		</div>
+		<div class="hy_table3">
+			<h3>收货信息</h3>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td style="text-align:right" width="105">会员帐号：</td>
+				<td style="text-align:left"><!--{if($info['user_id']):}-->{$info['user_name']}（ID：{$info['user_id']}）<!--{else:}--><span class="c888">未登录用户</span><!--{endif;}--></td>
+			</tr>
+			<tr>
+				<td style="text-align:right">付款方式：</td>
+				<td style="text-align:left">
+				<!--{if($info['order_state']=='notpay'):}-->
+				<select name="info[order_payway]" class="inputselect">
+				<!--{foreach($cache_payway as $k=>$v):}-->
+				<!--{if(!$v['order_state'])continues;}-->
+				<option value="{$k}" <!--{if($k==$info['order_payway']):}-->selected="selected"<!--{endif;}-->>{$v['payway_name']}</option>
+				<!--{endforeach;}-->
+				</select>
+				<!--{else:}-->
+				{$ini_payway[$info['order_payway']]}
+				<!--{endif;}-->
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">收货姓名：</td>
+				<td style="text-align:left">
+				<!--{if($info['order_state']=='success'):}-->
+				{$info['user_tname']}
+				<!--{else:}-->
+				<input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputall input150">
+				<!--{endif;}-->
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">联系电话：</td>
+				<td style="text-align:left">
+				<!--{if($info['order_state']=='success'):}-->
+				{$info['user_phone']}
+				<!--{else:}-->
+				<input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputall input150" />
+				<!--{endif;}-->
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">收货地址：</td>
+				<td style="text-align:left" colspan="3">
+				<!--{if($info['order_state']=='success'):}-->
+				{$info['user_address']}
+				<!--{else:}-->
+				<input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputall input500" />
+				<!--{endif;}-->
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:right">买家留言：</td>
+				<td style="text-align:left" colspan="3">
+				<!--{if($info['order_state']=='success'):}-->
+				{$info['order_text']}
+				<!--{else:}-->
+				<textarea name="info[order_text]" style="width:500px;height:100px">{$info['order_text']}</textarea>
+				<!--{endif;}-->
+				</td>
+			</tr>
+			</table>
+		</div>
+		<!--{if($info['order_state']!='success'):}-->
+		<div class="mat10 center"><input type="submit" name="pesubmit" value="提 交" class="tjbtn" /></div>
+		<!--{endif;}-->
+		</form>
+	</div>
+	<div class="clear"></div>
 </div>
-<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 <script type="text/javascript">
 $(function(){
 	$(":input[name='info[order_productmoney]']").add(":input[name='info[order_wlmoney]']").keyup(function(){
@@ -155,7 +160,7 @@ $(function(){
 		if (isNaN(order_wlmoney)) {
 			order_wlmoney = 0;
 		}
-		$(":input[name='info[order_money]']").val(order_productmoney + order_wlmoney);
+		$("#order_money").html(order_productmoney + order_wlmoney);
 	})
 })
 </script>

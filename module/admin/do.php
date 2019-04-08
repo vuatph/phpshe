@@ -12,8 +12,10 @@ switch ($act) {
 	//#####################@ 管理员登录 @#####################//
 	default:
 		if (isset($_p_pesubmit)) {
-			$_p_info['admin_pw'] = md5($_p_info['admin_pw']);
-			if ($info = $db->pe_select('admin', pe_dbhold($_p_info))) {
+			$sql_set['admin_name'] = $_p_admin_name;
+			$sql_set['admin_pw'] = md5($_p_admin_pw);
+			if ($info = $db->pe_select('admin', pe_dbhold($sql_set))) {
+				strtolower($_s_authcode) != strtolower($_p_authcode) && pe_error('验证码错误...');
 				$db->pe_update('admin', array('admin_id'=>$info['admin_id']), array('admin_ltime'=>time()));
 				$_SESSION['admin_idtoken'] = md5($info['admin_id'].$pe['host_root']);
 				$_SESSION['admin_id'] = $info['admin_id'];

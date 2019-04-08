@@ -24,26 +24,29 @@
 		<div class="clear"></div>
 	</div>
 	<form method="post" id="form">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat3">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
 	<tr>
 		<td class="bgtt" width="10"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'ask_id')" /></td>
 		<td class="bgtt" width="50">ID号</td>
 		<td class="bgtt">咨询详情</td>
-		<td class="bgtt" width="80">用户名</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="100">用户名</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
 		<td><input type="checkbox" name="ask_id[]" value="{$v['ask_id']}" /></td>
 		<td>{$v['ask_id']}</td>
 		<td class="aleft">
-			<p><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></p>
-			<p><span class="cgreen">咨询[{pe_date($v['ask_atime'],'Y-m-d')}]：</span><span class="c888">{$v['ask_text']}</span></p>
-			<!--{if($v['ask_replytext']):}--><p><span class="corg">回复[{pe_date($v['ask_replytime'],'Y-m-d')}]：</span><span class="c888">{$v['ask_replytext']}</span></p><!--{endif;}-->
+			<a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="fl mat3" style="border:1px solid #ddd"><img src="{pe_thumb($v['product_logo'], 60, 60)}" width="60" height="60"></a>
+			<div class="fl" style="width:530px;margin-left:15px; display:inline;">
+				<p><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue font13">{$v['product_name']}</a></p>
+				<p class="c333 mat5 font13">[{pe_date($v['ask_atime'],'Y-m-d')}]咨询：{$v['ask_text']}</p>
+				<!--{if($v['ask_replytext']):}--><p class="cred mat5 font13">[{pe_date($v['ask_replytime'],'Y-m-d')}]回复：{$v['ask_replytext']}</p><!--{endif;}-->
+			</div>
 		</td>
 		<td><a href="http://www.ip138.com/ips.asp?ip={$v['user_ip']}" target="_blank">{$v['user_name']}</a></td>
 		<td>
-			<a href="admin.php?mod=ask&act=edit&id={$v['ask_id']}&{pe_fromto()}" class="admin_edit">详情</a>
+			<a href="admin.php?mod=ask&act=edit&id={$v['ask_id']}&{pe_fromto()}" class="admin_edit mar3">回复</a>
 			<a href="admin.php?mod=ask&act=del&id={$v['ask_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>

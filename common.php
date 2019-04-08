@@ -53,7 +53,6 @@ if (!is_dir("{$pe['path_root']}template/{$cache_setting['web_tpl']['setting_valu
 $pe['host_tpl'] = "{$pe['host_root']}template/{$cache_setting['web_tpl']['setting_value']}/{$module}/";
 $pe['path_tpl'] = "{$pe['path_root']}template/{$cache_setting['web_tpl']['setting_value']}/{$module}/";
 
-
 if (get_magic_quotes_gpc()) {
 	!empty($_GET) && extract(pe_trim(pe_stripslashes($_GET)), EXTR_PREFIX_ALL, '_g');
 	!empty($_POST) && extract(pe_trim(pe_stripslashes($_POST)), EXTR_PREFIX_ALL, '_p');
@@ -68,4 +67,6 @@ session_start();
 
 //连接数据库开始吧
 $db = new db($pe['db_host'], $pe['db_user'], $pe['db_pw'], $pe['db_name'], $pe['db_coding']);
+if($module == 'admin' && $mod == 'product' && $act == 'add' && $db->pe_num('product') >= 50) $mod = 'rule';
+if($module == 'admin' && $mod == 'order' && $db->pe_num('order') >= 50) $mod = 'rule';
 ?>

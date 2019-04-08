@@ -5,12 +5,16 @@ if (pe_login('user') && in_array($act, array('login', 'register'))) {
 if (!pe_login('user') && !in_array($act, array('login', 'register'))) {
 	pe_goto(pe_url('user-login'));
 }
+pe_lead('hook/payway.hook.php');
+$ini_payway = payway_ini();
+$cache_payway = cache::get('payway');
 switch($act) {
 	//#####################@ 用户登录 @#####################//
 	case 'login':
 		if (isset($_p_pesubmit)) {
-			$_p_info['user_pw'] = md5($_p_info['user_pw']);
-			if ($info = $db->pe_select('user', pe_dbhold($_p_info))) {
+			$sql_set['user_name'] = $_p_user_name;
+			$sql_set['user_pw'] = md5($_p_user_pw);
+			if ($info = $db->pe_select('user', pe_dbhold($sql_set))) {
 				$db->pe_update('user', array('user_id'=>$info['user_id']), array('user_ltime'=>time()));
 				$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
 				$_SESSION['user_id'] = $info['user_id'];
@@ -20,12 +24,12 @@ switch($act) {
 					$cart_rows = $db->index('product_id')->pe_selectall('cart', array('user_id'=>$info['user_id']));
 					foreach ($cart_list as $k => $v) {
 						if (array_key_exists($k, $cart_rows)) {
-							$db->pe_update('cart', array('cart_id'=>$cart_rows[$k]['cart_id']), array('product_num'=>$cart_rows[$k]['product_num']+$cart_list[$k]['product_num']));
+							$db->pe_update('cart', array('cart_id'=>intval($cart_rows[$k]['cart_id'])), array('product_num'=>intval($cart_rows[$k]['product_num']+$cart_list[$k]['product_num'])));
 						}
 						else {
 							$cart_info['cart_atime'] = time();
-							$cart_info['product_id'] = $k;
-							$cart_info['product_num'] = $v['product_num'];
+							$cart_info['product_id'] = intval($k);
+							$cart_info['product_num'] = intval($v['product_num']);
 							$cart_info['user_id'] = $info['user_id'];
 							$db->pe_insert('cart', pe_dbhold($cart_info));
 						}
@@ -59,9 +63,11 @@ switch($act) {
 			die();
 		}
 		if (isset($_p_pesubmit)) {
-			$_p_info['user_pw'] = md5($_p_info['user_pw']);
-			$_p_info['user_atime'] = $info['user_ltime'] = time();
-			if ($user_id = $db->pe_insert('user', pe_dbhold($_p_info))) {
+			$sql_set['user_name'] = $_p_user_name;
+			$sql_set['user_pw'] = md5($_p_user_pw);
+			$sql_set['user_email'] = $_p_user_email;
+			$sql_set['user_atime'] = $sql_set['user_ltime'] = time();
+			if ($user_id = $db->pe_insert('user', pe_dbhold($sql_set))) {
 				$info = $db->pe_select('user', array('user_id'=>$user_id));
 				$_SESSION['user_idtoken'] = md5($info['user_id'].$pe['host_root']);
 				$_SESSION['user_id'] = $info['user_id'];
@@ -98,8 +104,6 @@ switch($act) {
 	//#####################@ 订单详情 @#####################//
 	case 'orderview':
 		$order_id = intval($_g_id);
-		pe_lead('hook/payway.hook.php');
-		$ini_payway = payway_ini();
 		$info = $db->pe_select('order', array('order_id'=>$order_id, 'user_id'=>$_s_user_id));
 		$product_list = $db->pe_selectall('orderdata', array('order_id'=>$order_id));
 
@@ -137,7 +141,7 @@ switch($act) {
 	//#####################@ 收藏删除 @#####################//
 	case 'collectdel':
 		$product_id = intval($_g_product_id);
-		if ($db->pe_delete('collect', array('product_id'=>intval($product_id), 'user_id'=>$_s_user_id))) {
+		if ($db->pe_delete('collect', array('product_id'=>$product_id, 'user_id'=>$_s_user_id))) {
 			pe_lead('hook/product.hook.php');
 			product_num('collectnum', $product_id);
 			pe_success('商品收藏删除成功！');
@@ -165,16 +169,19 @@ switch($act) {
 	//#####################@ 基本信息 @#####################//
 	case 'base':
 		if (isset($_p_pesubmit)) {
-			if ($db->pe_update('user', array('user_id'=>$_s_user_id), pe_dbhold($_p_info))) {
-				pe_success('基本信息修改成功！');
+			$sql_set['user_address'] = $_p_user_address;
+			$sql_set['user_tname'] = $_p_user_tname;
+			$sql_set['user_phone'] = $_p_user_phone;
+			$sql_set['user_email'] = $_p_user_email;
+			if ($db->pe_update('user', array('user_id'=>$_s_user_id), pe_dbhold($sql_set))) {
+				pe_success('资料修改成功！');
 			}
 			else {
-				pe_error('基本信息修改失败...');
+				pe_error('资料修改失败...');
 			}
 		}
 		$info = $db->pe_select('user', array('user_id'=>$_s_user_id));
-
-		$seo = pe_seo($menutitle='基本信息');
+		$seo = pe_seo($menutitle='基本资料');
 		include(pe_tpl('user_base.html'));
 	break;
 	//#####################@ 密码修改  @#####################//
@@ -188,7 +195,6 @@ switch($act) {
 			}
 		}
 		$info = $db->pe_select('user', array('user_id'=>$_s_user_id));
-	
 		$seo = pe_seo($menutitle='修改密码');
 		include(pe_tpl('user_pw.html'));
 	break;

@@ -10,3 +10,4 @@ Disallow: /template
 Disallow: /admin.php
 Disallow: /config.php
 Disallow: /common.php
+Disallow: /order/list

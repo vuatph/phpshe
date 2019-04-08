@@ -22,75 +22,93 @@
 		<div class="fr searbox">
 			<form method="get">
 				<input type="hidden" name="mod" value="{$_g_mod}" />
-				订单号：<input type="text" name="id" value="{$_g_id}" class="inputtext inputtext_100" />
-				收货姓名：<input type="text" name="user_tname" value="{$_g_user_tname}" class="inputtext inputtext_50" />
-				手机：<input type="text" name="user_phone" value="{$_g_user_phone}" class="inputtext inputtext_100" />
+				订单编号：<input type="text" name="id" value="{$_g_id}" class="inputtext input100" />
+				收货姓名：<input type="text" name="user_tname" value="{$_g_user_tname}" class="inputtext input100" />
+				联系方式：<input type="text" name="user_phone" value="{$_g_user_phone}" class="inputtext input100" />
 				<input type="submit" value="搜索" class="input2" />
 			</form>
 		</div>
 		<div class="clear"></div>
 	</div>
-	<form method="post" id="form">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
-	<tr>
-		<td class="bgtt" align="center" width="10"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'order_id')" /></td>
-		<td class="bgtt" align="center" width="60">订单号</td>
-		<td class="bgtt" align="center">订单名称</td>
-		<td class="bgtt" align="center" width="80">单价(数量)</td>
-		<td class="bgtt" align="center" width="100">实付金额</td>
-		<td class="bgtt" align="center" width="100">订单状态</td>
-		<td class="bgtt" align="center" width="70">操作</td>
-	</tr>
-	<!--{foreach($info_list as $v):}-->
-	<tr>
-		<td align="center"><input type="checkbox" name="order_id[]" value="{$v['order_id']}"></td>
-		<td align="center">{$v['order_id']}</td>
-		<td style="text-align:left; padding:0">
-			<!--{foreach($v['product_list'] as $kk=>$vv):}-->
-			<p class="dingdan_list" <!--{if($kk<count($v['product_list'])-1):}-->style="border-bottom:1px #ddd solid;"<!--{endif;}-->><a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="c555 dd_name">{$vv['product_name']}</a></p>
-			<!--{endforeach;}-->
-		</td>
-		<td>
-			<!--{foreach($v['product_list'] as $vv):}-->
-			<p class="dingdan_list"><span class="num">¥{$vv['product_smoney']}</span>(×{$vv['product_num']})</p>
-			<!--{endforeach;}-->
-		</td>
-		<td align="center">
-			<p class="cred num">¥{$v['order_money']}</p>
-			<p class="c888"><!--{if($v['order_wlmoney']==0):}-->(卖家包邮)<!--{else:}-->(含运费{$v['order_wlmoney']}元)<!--{endif;}--></p>
-		</td>
-		<td align="center">
-			<!--{if($v['order_state']=='notpay'):}-->
-			<p class="cred">等待买家付款<input type="button" value="付款" href="admin.php?mod=order&act=state&state=paid&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')" /></p>
-			<!--{elseif($v['order_state']=='paid'):}-->
-			<p class="cred">等待卖家发货<input type="button" value="发货" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="pe_dialog(this, '填写物流信息')" /></p>
-			<!--{elseif($v['order_state']=='send'):}-->
-			<p class="cred">等待买家确认</p>			
-			<!--{elseif($v['order_state']=='success'):}-->
-			<p class="cgreen">交易成功</p>
-			<!--{endif;}-->
-			<p class="c888">{$ini_payway[$v['order_payway']]}</p>
-		</td>
-		<td align="center">
-			<!--{if($v['order_state']=='success'):}-->
-			<a href="admin.php?mod=order&act=edit&id={$v['order_id']}" class="cblue">详情</a>
+	<div class="hy_table">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_tb_tt">
+		<tr>
+			<td class="bg_f8" width="">商品详情</td>
+			<td class="bg_f8" width="120">实付款(元)</td>
+			<td class="bg_f8" width="120">交易操作</td>
+			<td class="bg_f8" width="120" style="border-right:0;">订单详情</td>
+		</tr>
+		</table>
+		<!--{foreach($info_list as $v):}-->
+		<div class="hy_table_order c666">
+			<span class="fl">订单编号：{$v['order_id']}</span>
+			<span class="fr">下单时间：{pe_date($v['order_atime'])}</span>
+			<div class="clear"></div>
+		</div>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #D4E7FF;">
+		<tr>
+			<td style="text-align:left;">
+				<!--{foreach($v['product_list'] as $kk => $vv):}-->
+				<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
+					<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5"><img src="{pe_thumb($vv['product_logo'], 60, 60)}" width="45" height="45"></a>
+					<div class="fl font12">
+						<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{$vv['product_name']}</a>
+						<!--{if($vv['prorule_name']):}-->
+						<p class="c888 mat5"><!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
+						<!--{endif;}-->
+						</div>
+					<span class="fr font12"><span class="num">¥{$vv['product_money']}</span>(×{$vv['product_num']})</span>
+					<div class="clear"></div>
+				</div>
+				<!--{endforeach;}-->
+			</td>
+			<td width="100">
+				<p class="cred num font14 strong">{$v['order_money']}</p>
+				<p class="c888 font12"><!--{if($v['order_wlmoney']==0):}-->(卖家包邮)<!--{else:}-->(含运费{$v['order_wlmoney']}元)<!--{endif;}--></p>
+			</td>
+			<td width="100">
+			<!--货到付款-->
+			<!--{if($v['order_payway']=='cod'):}-->
+				<!--{if($v['order_state']=='notpay'):}-->
+				<p class="cgreen font13">订单创建成功</p>
+				<p><a class="shouhuo_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_dialog(this, '填写快递信息')">发货</a></p>
+				<!--{elseif($v['order_state']=='send'):}-->
+				<p class="cgreen font13">卖家已经发货</p>
+				<p><a class="pay_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')">付款</a></p>
+				<!--{elseif($v['order_state']=='success'):}-->
+				<p class="cgreen font13">交易成功</p>
+				<!--{endif;}-->
+			<!--先款后货-->
 			<!--{else:}-->
-			<a href="admin.php?mod=order&act=edit&id={$v['order_id']}&{pe_fromto()}" class="admin_edit">修改</a>
-			<a href="admin.php?mod=order&act=del&id={$v['order_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+				<!--{if($v['order_state']=='notpay'):}-->
+				<p class="cgreen font13">订单创建成功</p>
+				<p><a class="pay_btn" href="admin.php?mod=order&act=state&state=paid&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')">付款</a></p>
+				<!--{elseif($v['order_state']=='paid'):}-->
+				<p class="cgreen font13">买家付款成功</p>
+				<p><a class="shouhuo_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_dialog(this, '填写快递信息')">发货</a></p>
+				<!--{elseif($v['order_state']=='send'):}-->
+				<p class="cgreen font13">卖家已经发货</p>
+				<p class="cred font13">支付宝还未确认</p>
+				<!--{elseif($v['order_state']=='success'):}-->
+				<p class="cgreen font13">交易成功</p>
+				<!--{endif;}-->
 			<!--{endif;}-->
-		</td>	
-	</tr>
-	<!--{endforeach;}-->
-	<tr>
-		<td class="bgtt"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'order_id')" /></td>
-		<td class="bgtt" colspan="6">
-			<span class="fl"><button href="admin.php?mod=order&act=del" onclick="return pe_cfall(this, 'order_id', 'form', '批量删除')">批量删除</button></span>
-			<span class="fenye">{$db->page->html}</span>
-		</td>
-	</tr>
-	</table>
-	</form>
+				<p class="c888 font12 mat3">{$ini_payway[$v['order_payway']]}</p>
+			</td>
+			<td width="100">
+				<a href="admin.php?mod=order&act=edit&id={$v['order_id']}" target="_blank" class="font13">订单详情</a>
+				<!--{if($v['order_state']=='notpay'):}-->
+				<p class="mat3"><a href="admin.php?mod=order&act=del&id={$v['order_id']}" onclick="return pe_cfone(this, '删除订单')" class="cblue font12">删除订单</a></p>
+				<!--{endif;}-->
+			</td>
+		</tr>
+		</table>
+		<!--{endforeach;}-->
+		<div class="hy_pay">
+			<div class="fenye">{$db->page->html}</div>
+		</div>
+	</div>
 </div>
-<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
+<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 <!--{include(pe_tpl('footer.html'));}-->

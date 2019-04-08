@@ -1,8 +1,33 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
-	<div class="liucheng"><img src="{$pe['host_tpl']}images/liucheng2.gif" /></div>
+	<div class="order_cg">
+		<p>
+		<!--{if(stripos($_SERVER['HTTP_REFERER'], 'mod=order&act=add')===false):}-->
+		请您及时付款，以便订单尽快处理！
+		<!--{elseif($order['order_payway']=='cod'):}-->
+		您已成功提交订单，等待管理员审核发货！
+		<!--{else:}-->
+		您已成功提交订单，请及时付款！
+		<!--{endif;}-->
+		</p>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您的订单编号：<span class="cblue mar20">{$order['order_id']}</span>
+		应付金额：<span class="cred font16 mar20 strong num">{$order['order_money']}元</span>
+		付款方式：<span class="cred font14 mar20">{$cache_payway[$order['order_payway']]['payway_name']}</span>
+		<!--{if($order['order_payway']=='alipay'):}-->
+		<form method="post"><input type="submit" name="pesubmit" value="去付款" class="btn_05" /></form>
+		<!--{elseif($order['order_payway']=='bank'):}-->
+		<div class="shouhuo_info">{nl2br($cache_payway[$order['order_payway']]['payway_config']['bank_text'])}</div>
+		<!--{endif;}-->
+	</div>
+<!--	<div class="liucheng" style="margin-top:15px">请选择付款方式</div>
 	<div class="shouhuo_info">
-		<h3 class="hy_rtt mat10">选择支付方式</h3>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		  <tr>
+			<td width="20"><input type="radio"></td>
+			<td><img src="{$pe['host_tpl']}images/zf_02.jpg" /></td>
+		  </tr>
+		</table>
+		<input type="submit" value="去付款" class="btn_05" />
 		<div class="hy_table">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<!--{foreach($cache_payway as $k=>$v):}-->
@@ -13,17 +38,22 @@
 				<td width="100">
 				<!--{if($v['payway_mark']=='bank'):}-->
 				<input type="button" value="支付信息" onclick='alert("订单金额：{$order['order_money']}元\n\n{$cache_payway['bank']['payway_config']['bank_text']}")' />
+				<!--{elseif($v['payway_mark']=='cod'):}-->
+				<form method="post">
+				<input type="hidden" name="info[order_payway]" value="{$k}" />
+				<input type="submit" name="pesubmit" value="通知发货" />
+				</form>
 				<!--{else:}-->
 				<form method="post" target="_blank">
 				<input type="hidden" name="info[order_payway]" value="{$k}" />
-				<input type="submit" name="pesubmit" value="立即支付" />
+				<input type="submit" name="pesubmit" value="在线支付" />
 				</form>
 				<!--{endif;}-->
 				</td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>
-		</div>
+		</div>-->
 	</div>
 </div>
 <script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>

@@ -1,6 +1,6 @@
 <?php
 function cache_write($cache_type = 'all') {
-	global $db;
+	global $db,$pe;
 	switch ($cache_type) {
 		case 'category':
 			cache::write('category', $db->index('category_id')->pe_selectall('category', array('order by'=>'`category_order` asc, `category_id` asc')));

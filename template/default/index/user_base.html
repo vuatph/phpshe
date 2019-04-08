@@ -3,7 +3,7 @@
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
 		<h3 class="hy_rtt">{$menutitle}</h3>
-		<div class="hy_table">
+		<div class="hy_table hy_table2">
 		<form method="post" id="form">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr>
@@ -12,23 +12,19 @@
 		</tr>
 		<tr>
 			<td class="bg_f8" style="text-align:right;">收货地址：</td>
-			<td style="text-align:left;"><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputtext input400" /></td>
+			<td style="text-align:left;"><input type="text" name="user_address" value="{$info['user_address']}" class="inputall input400" /></td>
 		</tr>
 		<tr>
 			<td class="bg_f8" style="text-align:right;">收货姓名：</td>
-			<td style="text-align:left;"><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputtext input150" /><span id="user_tname_show"></span></td>
+			<td style="text-align:left;"><input type="text" name="user_tname" value="{$info['user_tname']}" class="inputall input200" /><span id="user_tname_show"></span></td>
 		</tr>
 		<tr>
-			<td class="bg_f8" style="text-align:right;">手机号码：</td>
-			<td style="text-align:left;"><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputtext input150" /><span id="user_phone_show"></span></td>
-		</tr>
-		<tr>
-			<td class="bg_f8" style="text-align:right;">固定电话：</td>
-			<td style="text-align:left;"><input type="text" name="info[user_tel]" value="{$info['user_tel']}" class="inputtext input150" /><span id="user_phone_show"></span></td>
+			<td class="bg_f8" style="text-align:right;">联系电话：</td>
+			<td style="text-align:left;"><input type="text" name="user_phone" value="{$info['user_phone']}" class="inputall input200" /><span id="user_phone_show"></span></td>
 		</tr>
 		<tr>
 			<td class="bg_f8" style="text-align:right;">常用邮箱：</td>
-			<td style="text-align:left;"><input type="text" name="info[user_email]" value="{$info['user_email']}" class="inputtext input200" /><span id="user_email_show"></span></td>
+			<td style="text-align:left;"><input type="text" name="user_email" value="{$info['user_email']}" class="inputall input200" /><span id="user_email_show"></span></td>
 		</tr>
 		<tr>
 			<td class="bg_f8" style="text-align:right;">注册日期：</td>
@@ -49,9 +45,9 @@
 <script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
 var form_info = [
-	{"name":"info[user_tname]", "mod":"match", "act":"blur", "arg":"zh", "show_id":"user_tname_show","show_error":"收货人姓名必须为汉字", "must":false},
-	{"name":"info[user_phone]", "mod":"match", "act":"blur", "arg":"phone", "show_id":"user_phone_show","show_error":"手机号格式错误", "must":false},
-	{"name":"info[user_email]", "mod":"match", "act":"blur", "arg":"email", "show_id":"user_email_show","show_error":"邮箱格式错误", "must":false}
+	{"name":"user_tname", "mod":"match", "act":"blur", "arg":"zh", "show_id":"user_tname_show","show_error":"姓名必须为汉字", "must":false},
+	{"name":"user_phone", "mod":"match", "act":"blur", "arg":"phone", "show_id":"user_phone_show","show_error":"电话格式错误", "must":false},
+	{"name":"user_email", "mod":"match", "act":"blur", "arg":"email", "show_id":"user_email_show","show_error":"邮箱格式错误", "must":false}
 ]
 $(":button").pe_submit(form_info, 'form');
 </script>

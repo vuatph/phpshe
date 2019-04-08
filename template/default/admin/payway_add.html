@@ -14,7 +14,7 @@
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">支付描述：</td>
-		<td><input type="text" name="info[payway_text]" value="{$info['payway_text']}" class="inputtext inputtext_600" /></td>
+		<td><input type="text" name="info[payway_text]" value="{$info['payway_text']}" class="inputall input600" /></td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">是否启用：</td>
@@ -39,7 +39,7 @@
 			<!--{elseif($v['form_type']=='textarea'):}-->
 			<textarea name="config[{$k}]" style="width:600px;height:150px;">{$info['payway_config'][$k]}</textarea>
 			<!--{else:}-->
-			<input type="text" name="config[{$k}]" value="{$info['payway_config'][$k]}" class="inputtext inputtext_300" />
+			<input type="text" name="config[{$k}]" value="{$info['payway_config'][$k]}" class="inputall input300" />
 			<!--{endif;}-->
 		</td>
 	</tr>

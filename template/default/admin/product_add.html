@@ -13,15 +13,15 @@
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
 	<tr>
 		<td width="100" class="bg_f8" align="right">商品名称：</td>
-		<td width="530"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputtext inputtext_500" maxlength="36" /></td>
-		<td rowspan="8" valign="top">
+		<td colspan="3"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input500" maxlength="36" /></td>
+		<td rowspan="7" valign="top" width="80">
 			<img src="{pe_thumb($info['product_logo'])}" width="160" height="170" style="border:1px solid #ddd; display:block;" />
-			<p class="mat5"><input type="file" name="product_logo" size="12" /></p>
+			<p class="mat5"><input type="file" name="product_logo" size="12" style="width:160px;" /></p>
 		</td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">商品分类：</td>
-		<td>
+		<td colspan="3">
 			<select name="info[category_id]" class="inputselect">
 			<!--{foreach($category_treelist as $v):}-->
 			<option value="{$v['category_id']}" <!--{if($v['category_id']==$info['category_id']):}-->selected="selected"<!--{endif;}-->>{$v['category_showname']}</option>
@@ -30,36 +30,40 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="bg_f8" align="right">市场价格：</td>
-		<td><input type="text" name="info[product_mmoney]" value="{$info['product_mmoney']}" class="inputtext inputtext_100" /> <span class="c888">元</span></td>
-	</tr>
-	<tr>
 		<td class="bg_f8" align="right">本店价格：</td>
-		<td><input type="text" name="info[product_smoney]" value="{$info['product_smoney']}" class="inputtext inputtext_100" /> <span class="c888">元</span></td>
+		<td width="250"><input type="text" name="info[product_money]" value="{$info['product_money']}" class="inputall input100" /> <span class="c888">元</span></td>
+		<td width="100" class="bg_f8" align="right">运　　费：</td>
+		<td><input type="text" name="info[product_wlmoney]" value="{$info['product_wlmoney']}" class="inputall input100" /> <span class="c888">元（注：0元为卖家包邮）</span></td>
 	</tr>
 	<tr>
-		<td class="bg_f8" align="right">运　　费：</td>
-		<td><input type="text" name="info[product_wlmoney]" value="{$info['product_wlmoney']}" class="inputtext inputtext_100" /> <span class="c888">元（注：0元为卖家包邮）</span></td>
+		<td class="bg_f8" align="right">市场售价：</td>
+		<td colspan="3"><input type="text" name="info[product_smoney]" value="{$info['product_smoney']}" class="inputall input100" /> <span class="c888">元</span></td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">商品货号：</td>
-		<td><input type="text" name="info[product_mark]" value="{$info['product_mark']}" class="inputtext inputtext_100" /></td>
+		<td colspan="3"><input type="text" name="info[product_mark]" value="{$info['product_mark']}" class="inputall input100" /></td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">库存总量：</td>
-		<td><input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputtext inputtext_100" /></td>
+		<td colspan="3"><input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputall input100" /></td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">发布日期：</td>
-		<td><input type="text" name="info[product_atime]" value="{pe_date($info['product_atime'] ? $info['product_atime'] : time())}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate" /></td>
-	</tr>
-	<tr>
-		<td colspan="3"><textarea name="info[product_text]" id="editortext" style="width:100%;height:600px">{htmlspecialchars($info['product_text'])}</textarea></td>
+		<td colspan="3"><input type="text" name="info[product_atime]" value="{pe_date($info['product_atime'] ? $info['product_atime'] : time())}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate" /></td>
 	</tr>
 	</table>
-	<div class="mat10 center"><input type="submit" name="pesubmit" value="提 交" class="tjbtn" /></div>
+	<div class="mat5"><textarea name="info[product_text]" id="editortext" style="width:950px;height:600px">{htmlspecialchars($info['product_text'])}</textarea></div>
+	<div class="mat10 center">
+		<input type="hidden" name="pesubmit" />
+		<input type="button" value="提 交" class="tjbtn" />
+	</div>
 	</form>
 </div>
+<style type="text/css">
+a.js_add{display:block; float:left; width:120px; height:30px; line-height:30px; text-align:center;background:#76A500; color:#f5f5f5; border-radius:2px; font-family:'宋体'; font-size:14px; font-weight:bold}
+a:hover.js_add,a:hover.js_del{background-color:#cccc00;}
+a.js_del{width:42px; padding:5px 10px; text-align:center;background:#FF9900; color:#f5f5f5; border-radius:2px; font-family:'宋体'; font-size:12px;}
+</style>
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/editor/kindeditor.js"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/editor/lang/zh_CN.js"></script>
@@ -67,8 +71,108 @@
 var editor;
 KindEditor.ready(function(K) {
 	editor = K.create('#editortext', {
-		allowFlashUpload :false
+		allowFlashUpload :false,
+		afterBlur: function(){
+			this.sync();
+		}
 	});
 });
+$("label").click(function(){
+	if ($(this).find(":input").is(":checked")) {
+		$(this).css("background","#faf18f");
+	}
+	else {
+		$(this).css("background","#fff")
+	}
+	prorule_html_show();
+})
+$(":checkbox").each(function(){
+	if ($(this).is(":checked")) {
+		$(this).parent("label").css("background","#faf18f");
+	}
+})
+function prorule_html_show() {
+	var i = 0;
+	$(".rule_id").each(function(){
+		var rule_id = $(this).attr("rule_id");
+		if ($(this).find(":input").is(":checked")) {
+			i++;
+			$("#"+rule_id).show().find("input").removeAttr("disabled");
+			$(":input[name='"+rule_id+"[]']").parent("td").show().find("input").removeAttr("disabled");
+		}
+		else {
+			$("#"+rule_id).hide().find("input").attr("disabled", "disabled");
+			$(":input[name='"+rule_id+"[]']").parent("td").hide().find("input").attr("disabled", "disabled");
+		}
+	})
+	if (i > 0) {
+		$(".table_td").show();
+	}
+	else {
+		$(".table_td").hide();
+	}
+}
+$(".js_add").click(function(){
+	//alert($(this).parents("tr").html());
+	var tr_clone = $("#prorule_html tr:last").clone(false);
+	tr_clone.show();
+	$("#prorule_html").append(tr_clone);
+})
+$(".js_del").live("click", function(){
+	$(this).parent().parent("tr").remove();
+})
+$(function(){
+	prorule_html_show();
+	$(":button").click(function(){
+		var kong_num = rule_num = 0;
+		if ($(":input[name='rule_idarr[]']:checked").length > 0) {
+			$("#prorule_html").find(":input").each(function(){
+				if ($(this).attr("disabled") == "disabled" || $(this).is(":hidden")) return true;
+				if ($(this).val() == '') {
+					kong_num++;
+				}
+				else {
+					rule_num++;
+				}
+			})
+			if (rule_num == 0) {
+				alert('您勾选的规格名称，但未增加规格属性...');
+				return;
+			}
+			if (kong_num > 0) {
+				alert('规格属性尚未填写完全');
+				return;
+			}
+		}
+		$("form").submit();
+	})
+})
+function move_left(obj) {
+    var current = $(obj).parent();
+    var prev = current.prevAll(":visible").first();
+	var current_other = $(":input[name='"+current.attr("id")+"[]']").parent();
+   	var prev_other;
+	if (current.index()>0) {
+		current.insertBefore(prev);
+		current_other.each(function(){
+			prev_other = $(this).prevAll(":visible").first();
+			$(this).insertBefore(prev_other);
+		})
+	}
+}  
+function move_right(obj) {
+    var current = $(obj).parent();
+    var next = current.nextAll(":visible").first();
+	var current_other = $(":input[name='"+current.attr("id")+"[]']").parent();
+    var prev_other;
+	var num = $(obj).parent().parent().find("td").length;
+    if (current.index()<num-4) {
+		current.insertAfter(next);
+		current_other.each(function(){
+			prev_other = $(this).nextAll(":visible").first();
+			$(this).insertAfter(prev_other);
+		})
+	}
+}
 </script>
 <!--{include(pe_tpl('footer.html'));}-->

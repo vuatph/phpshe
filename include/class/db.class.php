@@ -29,7 +29,9 @@ class db {
   	public function query($sql)
   	{
   		$this->sql[] = $sql;
-		return mysql_query($sql, $this->dbconn);
+		$result = mysql_query($sql, $this->dbconn);
+		if ($sqlerror = mysql_error($this->dbconn)) $this->sql[] = $sqlerror;
+		return $result;
   	}
 	public function fetch_assoc($result = null)
 	{
@@ -182,6 +184,7 @@ class db {
 	{
 		if (is_array($where)) {
 			foreach ($where as $k => $v) {
+				$k = str_ireplace('`', '', $k);
 				if (is_array($v)) {
 					$where_arr[] = "`{$k}` in('".implode("','", $v)."')";			
 				}
@@ -201,6 +204,7 @@ class db {
 	{
 		if (is_array($set)) {
 			foreach ($set as $k => $v) {
+				$k = str_ireplace('`', '', $k);
 				$set_arr[] = "`{$k}` = '{$v}'";
 			}
 			$sqlset = 'set '.implode($set_arr, ' , ');

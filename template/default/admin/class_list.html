@@ -12,18 +12,18 @@
 	<form method="post" id="form">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
 	<tr>
-		<td class="bgtt" width="50">ID号</td>
-		<td class="bgtt" width="50">排序</td>
+		<td class="bgtt" width="60">ID号</td>
+		<td class="bgtt" width="60">排序</td>
 		<td class="bgtt">分类名称</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
 		<td>{$v['class_id']}</td>
-		<td><input type="text" name="class_order[{$v['class_id']}]" value="{$v['class_order']}" class="inputtext inputtext_40" /></td>
+		<td><input type="text" name="class_order[{$v['class_id']}]" value="{$v['class_order']}" class="inputtext input40" /></td>
 		<td>{$v['class_name']}</td>
 		<td>
-			<a href="admin.php?mod=class&act=edit&id={$v['class_id']}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=class&act=edit&id={$v['class_id']}" class="admin_edit mar3">修改</a>
 			<a href="admin.php?mod=class&act=del&id={$v['class_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
+ */
+
 $page_id = intval($act);
 $info = $db->pe_select('page', array('page_id'=>$page_id));
 

@@ -44,5 +44,5 @@ $db->query("ALTER TABLE `".dbpre."cart` DEFAULT CHARACTER SET utf8 COLLATE utf8_
 //更新collect表
 $db->query("ALTER TABLE `".dbpre."collect` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
 cache_write();
-pe_success('数据库更新完成！');
+die("PHPSHE1.0 -> 1.1版本数据库升级完成，总计耗时0.1秒");
 ?>

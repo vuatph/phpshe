@@ -12,24 +12,24 @@
 	<form method="post" id="form">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
 	<tr>
-		<td class="bgtt" width="50">ID号</td>
-		<td class="bgtt" width="50">排序</td>
+		<td class="bgtt" width="60">ID号</td>
+		<td class="bgtt" width="70">排序</td>
 		<td class="bgtt">分类名称</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
 		<td>{$v['category_id']}</td>
-		<td><input type="text" name="category_order[{$v['category_id']}]" value="{$v['category_order']}" class="inputtext inputtext_40" /></td>
+		<td><input type="text" name="category_order[{$v['category_id']}]" value="{$v['category_order']}" class="inputtext input40" /></td>
 		<td class="aleft">{$v['category_showname']}</td>
 		<td>
-			<a href="admin.php?mod=category&act=edit&id={$v['category_id']}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=category&act=edit&id={$v['category_id']}" class="admin_edit mar3">修改</a>
 			<a href="admin.php?mod=category&act=del&id={$v['category_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>
 	<!--{endforeach;}-->
 	<tr>
-		<td class="bgtt aleft" colspan="4"><button href="admin.php?mod=category&act=order" onclick="pe_doall(this,'form')">批量排序</button></td>
+		<td class="bgtt aleft" colspan="5"><button href="admin.php?mod=category&act=order" onclick="pe_doall(this,'form')">批量排序</button></td>
 	</tr>
 	</table>
 	</form>

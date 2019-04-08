@@ -7,11 +7,13 @@ $menumark = 'order';
 pe_lead('hook/payway.hook.php');
 $ini_payway = payway_ini();
 $ini_wllist = array('顺丰快递','申通快递','圆通快递','韵达快递','中通快递','EMS快递');
+$cache_payway = cache::get('payway');
 switch ($act) {
 	//#####################@ 订单修改 @#####################//
 	case 'edit':
 		$order_id = pe_dbhold($_g_id);
 		if (isset($_p_pesubmit)) {
+			$_p_info['order_money'] = $_p_info['order_productmoney'] + $_p_info['order_wlmoney'];
 			if ($db->pe_update('order', array('order_id'=>$order_id), pe_dbhold($_p_info))) {
 				pe_success('订单修改成功!');
 			}
@@ -45,7 +47,10 @@ switch ($act) {
 		$order_id = pe_dbhold($_g_id);
 		switch ($_g_state) {
 			case 'paid':
-				if ($db->pe_update('order', array('order_id'=>$order_id), array('order_state'=>'paid', 'order_ptime'=>time()))) {
+				$order = $db->pe_select('order', array('order_id'=>$order_id));
+				$_p_info['order_state'] = $order['order_payway'] == 'cod' ? 'success': 'paid';
+				$_p_info['order_ptime'] = time();
+				if ($db->pe_update('order', array('order_id'=>$order_id), $_p_info)) {
 					pe_success('订单付款成功!');
 				}
 				else {
@@ -55,24 +60,26 @@ switch ($act) {
 			case 'send':
 				if (isset($_p_pesubmit)) {
 					$order = $db->pe_select('order', array('order_id'=>$order_id));
-					$order['order_wlname'] = $_p_info['order_wlname'];
-					$order['order_wlid'] = $_p_info['order_wlid'];
-					$_p_info['order_state'] = 'send';	
+					//$order['order_wlname'] = $_p_info['order_wlname'];
+					//$order['order_wlid'] = $_p_info['order_wlid'];
 					$_p_info['order_stime'] = time();
+					//货到付款
+					if ($order['order_payway'] == 'cod') {
+						$_p_info['order_state'] = 'send';
+					}
 					//担保交易
-					if ($order['order_payway'] == 'alipay_db') {
+					elseif ($order['order_payway'] == 'alipay_db') {
 						include("{$pe['path_root']}include/plugin/payway/alipay/order_send.php");
-						$result = $db->pe_update('order', array('order_id'=>$order_id), $_p_info);
+						$_p_info['order_state'] = 'send';
 					}
 					//即时到帐
 					else {
 						$_p_info['order_state'] = 'success';//即时到帐就不让用户确认了
-						$result = $db->pe_update('order', array('order_id'=>$order_id), $_p_info);
 					}
-					if ($result) {
+					if ($db->pe_update('order', array('order_id'=>$order_id), $_p_info)) {
 						//更新商品售出数
 						pe_lead('hook/product.hook.php');
-						product_num('sellnum', $_g_id);
+						product_num('sellnum', $order_id);
 						pe_success('商品发货成功!', '', 'dialog');
 					}
 					else {
@@ -90,7 +97,7 @@ switch ($act) {
 		$_g_user_tname && $sqlwhere .= " and `user_tname` = '{$_g_user_tname}'";
 		$_g_user_phone && $sqlwhere .= " and `user_phone` = '{$_g_user_phone}'";
 		$sqlwhere .= " order by `order_id` desc";
-		$info_list = $db->pe_selectall('order', $sqlwhere, '*', array(20, $_g_page));
+		$info_list = $db->pe_selectall('order', $sqlwhere, '*', array(10, $_g_page));
 		foreach ($info_list as $k => $v) {
 			$info_list[$k]['product_list'] = $db->pe_selectall('orderdata', array('order_id'=>$v['order_id']));
 		}

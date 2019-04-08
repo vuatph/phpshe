@@ -16,16 +16,16 @@
 		<td class="bgtt" width="50">排序</td>
 		<td class="bgtt" width="200">链接名称</td>
 		<td class="bgtt">链接地址</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
 		<td>{$v['link_id']}<input type="hidden" name="link_id[]" value="{$v['link_id']}" /></td>
-		<td><input type="text" name="link_order[{$v['link_id']}]" value="{$v['link_order']}" class="inputtext inputtext_40" /></td>
+		<td><input type="text" name="link_order[{$v['link_id']}]" value="{$v['link_order']}" class="inputtext input40" /></td>
 		<td>{$v['link_name']}</td>
 		<td><a href="{$v['link_url']}" target="_blank">{$v['link_url']}</a></td>
 		<td>
-			<a href="admin.php?mod=link&act=edit&id={$v['link_id']}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=link&act=edit&id={$v['link_id']}" class="admin_edit mar3">修改</a>
 			<a href="admin.php?mod=link&act=del&id={$v['link_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>

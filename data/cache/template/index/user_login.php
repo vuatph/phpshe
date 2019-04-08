@@ -1,23 +1,23 @@
 <?php include(pe_tpl('header.html'));?>
 <div class="width980">
 	<div class="loginbox">
-	   <div class="logintt"><p></p></div>
+	   <div class="logintt"><p>用户登录</p></div>
 	   <div class="fl login_l">
 			<form method="post" id="form">
 		    <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
 				<td width="60">用户名:</td>
-                <td><input type="text" name="info[user_name]" class="input1" /><span id="user_name_show"></span></td>
+                <td><input type="text" name="user_name" class="input1" /><span id="user_name_show"></span></td>
             </tr>
 			<tr>
 				<td>密　码:</td>
-                <td><input type="password" name="info[user_pw]" class="input1" /><span id="user_pw_show"></span></td>
+                <td><input type="password" name="user_pw" class="input1" /><span id="user_pw_show"></span></td>
 			</tr>
 			<tr>
 				<td><?php echo $pe_csrf_set ?></td>
                 <td>
 					<input type="hidden" name="pesubmit" />
-					<input type="button" class="loginbtn" value=" " />
+					<input type="button" class="btn_05" value="登 录" style="margin:0" />
 				</td>
 			</tr>
             </table>
@@ -25,7 +25,7 @@
 		</div>
 		<div class="fl login_zc">
 			<p>如果您尚未注册，请先注册</p>
-			<p class="login_lx"><a href="<?php echo pe_url('user-register',pe_fromto()) ?>" title="注册"></a></p>
+			<p class="login_lx"><a href="<?php echo pe_url('user-register',pe_fromto()) ?>" title="注册">注册</a></p>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -33,8 +33,8 @@
 <script type="text/javascript" src="<?php echo $pe['host_root'] ?>include/js/formcheck.js"></script>
 <script type="text/javascript">
 var form_info = [
-	{"name":"info[user_name]", "mod":"str", "act":"blur", "arg":"5|15", "show_id":"user_name_show","show_error":"用户名为5-15位字符", "must":true},
-	{"name":"info[user_pw]", "mod":"str", "act":"blur", "arg":"6|16", "show_id":"user_pw_show","show_error":"密码为6-16位字符", "must":true}
+	{"name":"user_name", "mod":"str", "act":"blur", "arg":"5|15", "show_id":"user_name_show","show_error":"用户名为5-15位字符", "must":true},
+	{"name":"user_pw", "mod":"str", "act":"blur", "arg":"6|20", "show_id":"user_pw_show","show_error":"密码为6-20位字符", "must":true}
 ]
 $(":button").pe_submit(form_info, 'form');
 </script>

@@ -47,11 +47,11 @@ switch ($act) {
 		$info_list['template']['cache_size'] = round(pe_dirsize("{$pe['path_root']}data/cache/template")/1024, 1);
 
 		$info_list['attachment']['cache_name'] = '附件信息';
-		$info_list['attachment']['cache_text'] = '附件缓存过大时，可更新此项。';
+		$info_list['attachment']['cache_text'] = '附件缓存占用过多空间时，可更新此项。';
 		$info_list['attachment']['cache_size'] = round(pe_dirsize("{$pe['path_root']}data/cache/attachment")/1024, 1);
 
 		$info_list['thumb']['cache_name'] = '缩略图信息';
-		$info_list['thumb']['cache_text'] = '缩略图缓存过大时，可更新此项。';
+		$info_list['thumb']['cache_text'] = '缩略图缓存占用过多空间时，可更新此项。';
 		$info_list['thumb']['cache_size'] = round(pe_dirsize("{$pe['path_root']}data/cache/thumb")/1024, 1);
 
 		$seo = pe_seo($menutitle='缓存管理', '', '', 'admin');

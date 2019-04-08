@@ -10,7 +10,7 @@ switch ($act) {
 			$info['user_id'] = $_s_user_id;
 			$info['user_name'] = $_s_user_name;
 			$info['user_ip'] = pe_ip();
-			if ($db->pe_insert('ask', $info)) {
+			if ($db->pe_insert('ask', pe_dbhold($info))) {
 				product_num('asknum', $info['product_id']);
 				$result = true;
 				$info['ask_atime'] = pe_date($info['ask_atime']);
@@ -40,8 +40,7 @@ html;
 			$info['user_id'] = $_s_user_id;
 			$info['user_name'] = $_s_user_name;
 			$info['user_ip'] = pe_ip();
-
-			if ($db->pe_insert('comment', $info)) {
+			if ($db->pe_insert('comment', pe_dbhold($info))) {
 				product_num("commentnum", $info['product_id']);
 				$result = true;
 				$info['comment_atime'] = pe_date($info['comment_atime']);
@@ -64,12 +63,12 @@ html;
 	case 'collectadd':
 		$info['product_id'] = intval($_g_id);
 		$info['user_id'] = $_s_user_id;
-		if ($db->pe_num('collect', $info)) {
+		if ($db->pe_num('collect', pe_dbhold($info))) {
 			$show = '您已经收藏过该商品了，请不要重复收藏噢...';
 		}
 		else {
 			$info['collect_atime'] = time();
-			if ($db->pe_insert('collect', $info)) {
+			if ($db->pe_insert('collect', pe_dbhold($info))) {
 				product_num('collectnum', $info['product_id']);
 				$show = '商品收藏成功！';
 			}
@@ -89,16 +88,16 @@ html;
 		if ($category_id) {
 			$sqlwhere .= is_array($category_cidarr = category_cidarr($category_id)) ? " and `category_id` in('".implode("','", $category_cidarr)."')" : " and `category_id` = '{$category_id}'";
 		}
-
 		$_g_keyword && $sqlwhere .= " and `product_name` like '%".pe_dbhold($_g_keyword)."%'";
-		if ($_g_orderby) {
+		$orderby_arr = array('clicknum_desc', 'clicknum_asc', 'sellnum_desc', 'sellnum_asc', 'money_desc', 'money_asc');
+		if (in_array($_g_orderby, $orderby_arr)) {
 			$orderby = explode('_', $_g_orderby);
 			$sqlwhere .= " order by `product_{$orderby[0]}` {$orderby[1]}";
 		}
 		else {
 			$sqlwhere .= " order by `product_id` desc";
 		}
-		$info_list = $db->pe_selectall('product', $sqlwhere, '*', array(16, $_g_page));
+		$info_list = $db->pe_selectall('product', $sqlwhere, '*', array(60, $_g_page));
 		//热卖排行
 		$product_hotlist = product_hotlist();
 		//当前路径

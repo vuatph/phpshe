@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @copyright   2008-2014 简好技术 <http://www.phpshe.com>
+ * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
+ */
 switch ($act) {
 	//#####################@ 文章列表 @#####################//
 	case 'list':

@@ -3,7 +3,7 @@
 	<div class="now">您现在的位置：<a href="<?php echo $pe['host_root'] ?>">首页</a> <?php echo $nowpath ?></div>
 	<div class="danye_left">
 		<div class="danye_help">
-			<div class="danye_tt">资讯中心</div>
+			<div class="danye_tt"  style="background:#00A8E8; color:#fff;">资讯中心</div>
 			<div class="danye_list">
 				<ul>
 				<?php foreach((array)$cache_class as $v):?>
@@ -13,7 +13,6 @@
 			</div>
 		</div>
 		<div class="danye_help mat8">
-			<div class="danye_tt">帮助中心</div>
 			<div class="danye_list">
 				<h3>用户指南</h3>
 				<ul>
@@ -44,9 +43,10 @@
 	</div>
 	<div class="danye_right">
 		<?php if($mod=='page'):?>
-		<h3 class="cred"><?php echo $info['page_name'] ?></h3>
+		<div class="page_tt"><?php echo $info['page_name'] ?></div>
 		<div class="danye_main"><?php echo $info['page_text'] ?></div>
 		<?php elseif($mod=='article' && $act=='list'):?>
+		<div class="page_tt">网站公告</div>
 		<ul class="wenzhang_list">
 			<?php foreach($info_list as $v):?>
 			<li><a href="<?php echo pe_url('article-'.$v['article_id']) ?>" title="<?php echo $v['article_name'] ?>"><?php echo $v['article_name'] ?></a><span class="fl c888">(浏览量：<?php echo $v['article_clicknum'] ?>)</span> <span class="fr"><?php echo pe_date($v['article_atime']) ?></span><div class="clear"></div></li>
@@ -54,8 +54,9 @@
 		</ul>
 		<div class="fenye mat8"><?php echo $db->page->html ?></div>
 		<?php elseif($mod=='article'):?>
-		<h3 class="cred"><?php echo $info['article_name'] ?></h3>
-		<p class="c888 mat5" style="text-align:center;">发布日期：<?php echo pe_date($info['article_atime']) ?>　浏览量：<?php echo $info['article_clicknum'] ?></p>
+		<div class="page_tt">资讯中心</div>
+		<h3 class="mat20 font16" style="text-align:center;"><?php echo $info['article_name'] ?></h3>
+		<p class="c888 mat10 mab20" style="text-align:center;">发布日期：<?php echo pe_date($info['article_atime']) ?>　浏览量：<?php echo $info['article_clicknum'] ?></p>
 		<div class="danye_main"><?php echo $info['article_text'] ?></div>
 		<?php endif;?>
 	</div>

@@ -11,14 +11,14 @@
 	</div>
 	<div class="search">
 		<div class="fl qiehuan">
-			<a href="admin.php?mod=product&state=1" <!--{if($_g_state==1):}-->class="sel"<!--{endif;}-->>上架商品</a>
-			| <a href="admin.php?mod=product&state=2" <!--{if($_g_state==2):}-->class="sel"<!--{endif;}-->>下架商品</a>
+			<a href="admin.php?mod=product&state=1" <!--{if($_g_state==1):}-->class="sel"<!--{endif;}-->>出售中商品</a>
+			| <a href="admin.php?mod=product&state=2" <!--{if($_g_state==2):}-->class="sel"<!--{endif;}-->>下架的商品</a>
 		</div>
 		<div class="fr searbox">
 			<form method="get">
 				<input type="hidden" name="mod" value="{$_g_mod}" />
 				<input type="hidden" name="state" value="{$_g_state}" />
-				商品名称：<input type="text" name="name" value="{$_g_name}" class="inputtext inputtext_150" />
+				商品名称：<input type="text" name="name" value="{$_g_name}" class="inputtext" />
 				<select name="category_id" class="inputselect">
 				<option value="" href="{pe_updateurl('category_id', '')}">全部分类</option>
 				<!--{foreach($category_treelist as $v):}-->
@@ -43,33 +43,31 @@
 		<div class="clear"></div>
 	</div>
 	<form method="post" id="form">
-	<table border="0" cellspacing="0" cellpadding="0" class="list mat5">
+	<table border="0" cellspacing="0" cellpadding="0" class="list">
 	<tr>
 		<td class="bgtt" width="10"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'product_id')" /></td>
 		<td class="bgtt" width="50">ID号</td>
-		<td class="bgtt">商品名称</td>
-		<td class="bgtt" width="100">商品分类</td>
-		<td class="bgtt" width="60">单价</td>
-		<td class="bgtt" width="30">浏</td>
-		<td class="bgtt" width="30">销</td>
-		<td class="bgtt" width="30">库</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="">商品名称</td>
+		<td class="bgtt" width="80">商品分类</td>
+		<td class="bgtt" width="80">单价(元)</td>
+		<td class="bgtt" width="80">售出/库存</td>
+		<td class="bgtt" width="50">浏览</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
 		<td><input type="checkbox" name="product_id[]" value="{$v['product_id']}" /></td>
 		<td>{$v['product_id']}</td>
 		<td class="aleft">
-			<!--{if($v['product_logo']):}--><span class="cred">[图]</span><!--{endif;}--><!--{if($v['product_istuijian']):}--><span class="cgreen">[荐]</span><!--{endif;}-->
-			<a href="{pe_url('product-'.$v['product_id'])}" target="_blank">{$v['product_name']}</a>
+			<span class="fl mar5" style="border:1px solid #ddd"><img src="{pe_thumb($v['product_logo'], 60, 60)}" width="45" height="45"></span>
+			<a class="cblue" href="{pe_url('product-'.$v['product_id'])}" target="_blank">{$v['product_name']}</a><!--{if($v['product_istuijian']):}--><span class="cred">[荐]</span><!--{endif;}-->
 		</td>
-		<td>{$cache_category[$v['category_id']]['category_name']}</td>
-		<td><span class="num">¥{$v['product_smoney']}</span></td>
+		<td class="font13">{$cache_category[$v['category_id']]['category_name']}</td>
+		<td><span class="num font16 cred strong">{$v['product_money']}</span></td>
+		<td><span class="font14 corg num strong">{$v['product_sellnum']}</span>/{$v['product_num']}</td>
 		<td>{$v['product_clicknum']}</td>
-		<td>{$v['product_sellnum']}</td>
-		<td>{$v['product_num']}</td>
 		<td>
-			<a href="admin.php?mod=product&act=edit&id={$v['product_id']}&{pe_fromto()}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=product&act=edit&id={$v['product_id']}&{pe_fromto()}" class="admin_edit mar3">修改</a>
 			<a href="admin.php?mod=product&act=del&id={$v['product_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>

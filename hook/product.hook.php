@@ -12,35 +12,50 @@ function product_selllist($num) {
 //商品统计更新
 function product_num($type, $id) {
 	global $db;
-	$id = intval($id);
 	switch ($type) {
 		case 'addnum':
 		case 'delnum':
-			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>$id));
+			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>pe_dbhold($id)));
 			if ($type == 'addnum') {
 				foreach ($orderdata_list as $v) {
-					$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`+{$v['product_num']}");
+					if ($v['prorule_id']) {
+						if ($db->pe_num('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']))) {
+							$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`+{$v['product_num']}");
+							$db->pe_update('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']), "`product_num`=`product_num`+{$v['product_num']}");
+						}
+					}
+					else {
+						$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`+{$v['product_num']}");
+					}
 				}
 			}
 			else {
 				foreach ($orderdata_list as $v) {
-					$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`-{$v['product_num']}");
+					if ($v['prorule_id']) {
+						if ($db->pe_num('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']))) {
+							$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`-{$v['product_num']}");
+							$db->pe_update('prorule', array('product_id'=>$v['product_id'], 'prorule_id'=>$v['prorule_id']), "`product_num`=`product_num`-{$v['product_num']}");
+						}
+					}
+					else {
+						$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`-{$v['product_num']}");
+					}
 				}
 			}
 		break;
 		case 'sellnum':
-			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>$id));
+			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>intval($id)));
 			foreach ($orderdata_list as $v) {
-				$db->pe_update('product', array('product_id' => $v['product_id']), "`product_sellnum` = `product_sellnum` + {$v['product_num']}");
+				$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_sellnum` = `product_sellnum` + {$v['product_num']}");
 			}
 		break;
 		case 'clicknum':
-			$db->pe_update('product', array('product_id' => $id), "`product_clicknum` = `product_clicknum` + 1");
+			$db->pe_update('product', array('product_id'=>intval($id)), "`product_clicknum` = `product_clicknum` + 1");
 		break;
 		default:
 			if (in_array($type, array('collectnum', 'asknum', 'commentnum'))) {
-				$num = $db->pe_num(substr($type, 0, -3), array('product_id' => $id));
-				return $db->pe_update('product', array('product_id' => $id), array("product_{$type}" => $num));
+				$num = $db->pe_num(substr($type, 0, -3), array('product_id'=>intval($id)));
+				return $db->pe_update('product', array('product_id'=>intval($id)), array("product_{$type}"=>$num));
 			}
 		break;
 	}

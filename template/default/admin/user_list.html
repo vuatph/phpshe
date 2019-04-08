@@ -11,24 +11,30 @@
 			<form method="get">
 				<input type="hidden" name="mod" value="{$_g_mod}" />
 				用户名：<input type="text" name="name" value="{$_g_name}" class="inputtext inputtext_150" />
-				手机号码：<input type="text" name="phone" value="{$_g_phone}" class="inputtext inputtext_150" />
+				联系电话：<input type="text" name="phone" value="{$_g_phone}" class="inputtext inputtext_150" />
 				常用邮箱：<input type="text" name="email" value="{$_g_email}" class="inputtext inputtext_150" />
+				<select name="orderby" class="inputselect">
+				<option value="" href="{pe_updateurl('orderby', '')}">默认排序</option>
+				<!--{foreach(array('ltime'=>'最近登录') as $k=>$v):}-->
+				<option value="{$k}" href="{pe_updateurl('orderby', $k)}" <!--{if($_g_orderby==$k):}-->selected="selected"<!--{endif;}-->>{$v}</option>
+				<!--{endforeach;}-->
+				</select>
 				<input type="submit" value="搜索" class="input2" />
 			</form>
 		</div>
 		<div class="clear"></div>
 	</div>
 	<form method="post" id="form">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
 	<tr>
 		<td class="bgtt" width="10"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'user_id')" /></td>
 		<td class="bgtt" width="50">ID号</td>
 		<td class="bgtt">用户名</td>
-		<td class="bgtt" width="100">手机号码</td>
-		<td class="bgtt" width="150">常用邮箱</td>
-		<td class="bgtt" width="100">上次登录</td>
-		<td class="bgtt" width="60">注册日期</td>
-		<td class="bgtt" width="70">操作</td>
+		<td class="bgtt" width="120">联系电话</td>
+		<td class="bgtt" width="180">常用邮箱</td>
+		<td class="bgtt" width="80">注册日期</td>
+		<td class="bgtt" width="120">上次登录</td>
+		<td class="bgtt" width="88">操作</td>
 	</tr>
 	<!--{foreach($info_list as $v):}-->
 	<tr>
@@ -37,10 +43,10 @@
 		<td>{$v['user_name']}</td>
 		<td>{$v['user_phone']}</td>
 		<td>{$v['user_email']}</td>
-		<td>{pe_date($v['user_ltime'])}</td>
-		<td>{pe_date($v['user_atime'], 'Y-m-d')}</td>
+		<td><span <!--{if(pe_date($v['user_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['user_atime'], 'Y-m-d')}</span></td>
+		<td><span <!--{if(pe_date($v['user_ltime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_dayago($v['user_ltime'])}</span></td>
 		<td>
-			<a href="admin.php?mod=user&act=edit&id={$v['user_id']}&{pe_fromto()}" class="admin_edit">修改</a>
+			<a href="admin.php?mod=user&act=edit&id={$v['user_id']}&{pe_fromto()}" class="admin_edit mar3">修改</a>
 			<a href="admin.php?mod=user&act=del&id={$v['user_id']}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
 		</td>
 	</tr>
@@ -55,4 +61,11 @@
 	</table>
 	</form>
 </div>
+<script type="text/javascript">
+$(function(){
+	$("select").change(function(){
+		window.location.href = 'admin.php' + $(this).find("option:selected").attr("href");
+	})
+})
+</script>
 <!--{include(pe_tpl('footer.html'));}-->

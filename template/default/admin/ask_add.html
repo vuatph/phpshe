@@ -10,19 +10,19 @@
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
 	<tr>
 		<td class="bg_f8" align="right" width="100">商品名称：</td>
-		<td><a href="{pe_url('product-'.$info['product_id'])}" target="_blank" class="cblue">{$info['product_name']}</a></td>
+		<td class="font14"><a href="{pe_url('product-'.$info['product_id'])}" target="_blank" class="cblue">{$info['product_name']}</a></td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">用 户 名：</td>
-		<td><a href="http://www.ip138.com/ips.asp?ip={$info['user_ip']}" target="_blank">{$info['user_name']}</a></td>
+		<td class="font14"><a href="http://www.ip138.com/ips.asp?ip={$info['user_ip']}" target="_blank">{$info['user_name']}</a></td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">咨询时间：</td>
-		<td>{pe_date($info['ask_atime'])}</td>
+		<td class="font14">{pe_date($info['ask_atime'])}</td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">咨询内容：</td>
-		<td>{$info['ask_text']}</td>
+		<td class="font14">{$info['ask_text']}</td>
 	</tr>
 	<tr>
 		<td class="bg_f8" align="right">管理回复：</td>

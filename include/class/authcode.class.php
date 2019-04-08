@@ -45,7 +45,7 @@ class authcode {
 	{
 		$this->checkimage = @imagecreate($this->width, $this->height);
 		$back = imagecolorallocate($this->checkimage,255,255,255);
-		$border = imagecolorallocate($this->checkimage,0,0,0);  
+		//$border = imagecolorallocate($this->checkimage,0,0,0);  
 		imagefilledrectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$back); // 白色底
 		imagerectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$border);   // 黑色边框
 	}

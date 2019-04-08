@@ -221,10 +221,15 @@ function pe_dirdel($dir_path)
 //文件夹列表
 function pe_dirlist($dir_path) {
 	$dir_arr = glob($dir_path);
-	foreach ($dir_arr as $k => $v) {
-		$tpl_arr[$k] = trim(strrchr(trim($v, '/'), '/'), '/');
+	if (is_array($dir_arr)) {
+		foreach ($dir_arr as $k => $v) {
+			$tpl_arr[$k] = trim(strrchr(trim($v, '/'), '/'), '/');
+		}
+		return $tpl_arr;
 	}
-	return $tpl_arr;
+	else {
+		return array();
+	}
 }
 //获取文件名
 function pe_filename($path, $type = '')
@@ -356,6 +361,22 @@ function pe_ip()
 function pe_date($time, $type = 'Y-m-d H:i')
 {
 	return $time ? date($type, $time) : '';
+}
+//多久以前
+function pe_dayago($dmtime) {
+	if (!$dmtime) return '≠';
+	if ((time()-$dmtime) > 86400) {
+		return intval((time()-$dmtime)/86400).'天前';
+	}
+	elseif ((time()-$dmtime) > 3600) {
+		return intval((time()-$dmtime)/3600).'小时前';
+	}
+	elseif ((time()-$dmtime) > 60) {
+		return intval((time()-$dmtime)/60).'分钟前';
+	}
+	elseif ((time()-$dmtime) > 0) {
+		return (time()-$dmtime).'秒前';
+	}
 }
 //url处理函数
 function pe_updateurl($k, $v='')
