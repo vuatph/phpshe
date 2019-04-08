@@ -47,11 +47,13 @@ include($pe['path_root'].'/include/class/cache.class.php');
 include($pe['path_root'].'/include/function/global.func.php');
 
 $cache_setting = cache::get('setting');
+$module_tpl = $cache_setting['web_tpl']['setting_value'];
 if (!is_dir("{$pe['path_root']}template/{$cache_setting['web_tpl']['setting_value']}/{$module}/")) {
-	$cache_setting['web_tpl']['setting_value'] = 'default';
+	$module_tpl = 'default';
 }
-$pe['host_tpl'] = "{$pe['host_root']}template/{$cache_setting['web_tpl']['setting_value']}/{$module}/";
-$pe['path_tpl'] = "{$pe['path_root']}template/{$cache_setting['web_tpl']['setting_value']}/{$module}/";
+$pe['host_tpl'] = "{$pe['host_root']}template/{$module_tpl}/{$module}/";
+$pe['path_tpl'] = "{$pe['path_root']}template/{$module_tpl}/{$module}/";
+
 
 if (get_magic_quotes_gpc()) {
 	!empty($_GET) && extract(pe_trim(pe_stripslashes($_GET)), EXTR_PREFIX_ALL, '_g');

@@ -5,6 +5,7 @@
 <title><?php echo $seo['title'] ?></title>
 <meta name="keywords" content="<?php echo $seo['keywords'] ?>" />
 <meta name="description" content="<?php echo $seo['description'] ?>" />
+<link rel="shortcut icon" type="image/ico" href="<?php echo $pe['host_root'] ?>favicon.ico">
 <link type="text/css" rel="stylesheet" href="<?php echo $pe['host_tpl'] ?>css/style.css" />
 <script type="text/javascript" src="<?php echo $pe['host_root'] ?>include/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo $pe['host_root'] ?>include/js/global.js"></script>
@@ -42,23 +43,29 @@
 	<div class="width980">
 		<div class="header">
 			<div class="fl logo"><a href="<?php echo $pe['host_root'] ?>" title="<?php echo $cache_setting['web_name']['setting_value'] ?>"><img src="<?php echo pe_thumb($cache_setting['web_logo']['setting_value']) ?>" alt="<?php echo $cache_setting['web_name']['setting_value'] ?>" /></a></div>
-			<div class="sear fl">				
+			<p class="top_tel fr">咨询热线：<?php echo $cache_setting['web_phone']['setting_value'] ?></p>
+			<div class="sear fr">				
 				<form method="get" action="<?php echo pe_url('product-list') ?>">
-				<div class="inputbg fl"><input type="text" name="keyword" value="<?php echo $_g_keyword ?>" class="fl searinput c666" /></div>
-				<input type="submit" class="fl sear_btn" onclick="this.form.submit();return false;" value="搜索" />
+				<div class="inputbg fl"><input type="text" name="keyword" value="<?php echo htmlspecialchars($_g_keyword) ?>" class="fl searinput c666" /></div>
+				<input type="submit" class="fl sear_btn" onclick="this.form.submit();return false;" value=" " />
 				</form>
 			</div>
-			<p class="top_tel fr">咨询热线：<?php echo $cache_setting['web_phone']['setting_value'] ?></p>
 		</div>
 	</div>
 	<div class="clear"></div>
 	<div class="nav">
+		<div class="width980">
 		<ul>
 			<li class="sel"><a href="<?php echo $pe['host_root'] ?>" title="首页">首页</a></li>
-			<?php foreach((array)$cache_category_arr[0] as $v):?>
-			<li><a href="<?php echo pe_url('product-list-'.$v['category_id']) ?>"><?php echo $v['category_name'] ?></a></li>
+			<?php foreach((array)$cache_menu as $v):?>
+			<?php if($v['menu_type'] == 'sys'):?>
+			<li><a href="<?php echo pe_url($v['menu_url']) ?>" title="<?php echo $v['menu_name'] ?>"><?php echo $v['menu_name'] ?></a></li>
+			<?php else:?>
+			<li><a href="<?php echo $v['menu_url'] ?>" title="<?php echo $v['menu_name'] ?>" target="_blank"><?php echo $v['menu_name'] ?></a></li>
+			<?php endif;?>
 			<?php endforeach;?>
 		</ul>
+		</div>
 	</div>
 	<div class="clear"></div>
 </div>

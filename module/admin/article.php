@@ -5,6 +5,7 @@
  */
 $menumark = 'article';
 $cache_class = cache::get('class');
+$cache_class_arr = cache::get('class_arr');
 switch ($act) {
 	//#####################@ 文章增加 @#####################//
 	case 'add':

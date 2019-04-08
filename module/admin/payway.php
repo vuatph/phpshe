@@ -25,6 +25,13 @@ $alipay['alipay_key']['form_type']='text';
 $bank['bank_text']['name'] = '收款信息';
 $bank['bank_text']['form_type']='textarea';
 
+//网银在线付款模版
+$ebank['ebank_id']['name'] = '商户号';
+$ebank['ebank_id']['form_type']='text';
+
+$ebank['ebank_md5']['name'] = 'MD5私钥';
+$ebank['ebank_md5']['form_type']='text';
+
 pe_lead('hook/cache.hook.php');
 switch ($act) {
 	//#####################@ 支付修改 @#####################//

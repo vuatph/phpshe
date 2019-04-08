@@ -143,20 +143,20 @@ function pe_result() {
 		if ($_SESSION['msg_result'] == 'success') {
 print<<<html
 	<style type="text/css">
-	#msgshow{top:250px; left:40%; position:absolute;}
+	#msgshow{top:220px; left:45%; position:absolute;font-family:'Arial'}
 	#msgshow_l{background:url({$pe['host_root']}include/image/dui_l.gif) no-repeat; width:38px; height:50px; float:left;}
 	#msgshow_r{background:url({$pe['host_root']}include/image/dui_r.gif) no-repeat; width:7px; height:50px; float:left;}
-	#msgshow_m{background:url({$pe['host_root']}include/image/dui_m.gif) repeat-x; height:33px; float:left; padding:17px 8px 0 5px; font-size:14px; font-weight:bold; color:#53663A; display:inline-block; min-width:200px; _width:200px;}
+	#msgshow_m{background:url({$pe['host_root']}include/image/dui_m.gif) repeat-x; height:34px; float:left; padding:16px 10px 0 10px; font-size:14px; font-weight:bold; color:#598f13; display:inline-block; min-width:130px; _width:130px;}
 	</style>
 html;
 		}
 		else {
 print<<<html
 	<style type="text/css">
-	#msgshow{top:250px; left:40%; position:absolute;}
+	#msgshow{top:220px; left:45%; position:absolute;font-family:'Arial'}
 	#msgshow_l{background:url({$pe['host_root']}include/image/cuo_l.gif) no-repeat; width:38px; height:50px; float:left;}
 	#msgshow_r{background:url({$pe['host_root']}include/image/cuo_r.gif) no-repeat; width:7px; height:50px; float:left;}
-	#msgshow_m{background:url({$pe['host_root']}include/image/cuo_m.gif) repeat-x; height:33px; float:left; padding:17px 8px 0 4px; font-size:14px; font-weight:bold; color:#5E2C2C; display:inline-block; min-width:200px; _width:200px;}
+	#msgshow_m{background:url({$pe['host_root']}include/image/cuo_m.gif) repeat-x; height:34px; float:left; padding:16px 10px 0 10px; font-size:14px; font-weight:bold; color:#b62c23; display:inline-block; min-width:130px; _width:130px;}
 	</style>
 html;
 		}
@@ -436,6 +436,80 @@ function pe_csrf_match() {
 		pe_error('请勿csrf或重复提交数据');
 	}
 	unset($_COOKIE['csrf_token'], $_POST['csrf_token']);
+}
+
+function pe_token_set() {
+	$pe_token = md5("{$_SERVER['REMOTE_ADDR']}koyshe+andrea=phpshe".time().rand(1,100));
+	setcookie("pe_token", $pe_token);
+	if ($type == 'html') {
+		return "<input type='hidden' name='pe_token' value='{$pe_token}' />";
+	}
+	else {
+		return $pe_token;	
+	}
+}
+function pe_token_match() {
+	global $pe;
+	$referer = parse_url($_SERVER['HTTP_REFERER']);
+	if (@stripos($pe['host_root'], $referer['host']) === false or $_REQUEST['pe_token'] != $_COOKIE['pe_token'] or $_REQUEST['pe_token'] == '' or $_COOKIE['pe_token'] == '') {
+		unset($_COOKIE['pe_token'], $_REQUEST['pe_token']);
+		pe_error('请勿csrf或重复提交数据');
+	}
+	unset($_COOKIE['pe_token'], $_REQUEST['pe_token']);
+}
+
+
+function pe_dbxss($val) {
+   // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
+   // this prevents some character re-spacing such as <java\0script>
+   // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
+   $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
+
+   // straight replacements, the user should never need these since they're normal characters
+   // this prevents like <IMG SRC=@avascript:alert('XSS')>
+   $search = 'abcdefghijklmnopqrstuvwxyz';
+   $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   $search .= '1234567890!@#$%^&*()';
+   $search .= '~`";:?+/={}[]-_|\'\\';
+   for ($i = 0; $i < strlen($search); $i++) {
+      // ;? matches the ;, which is optional
+      // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
+      // @ @ search for the hex values
+      $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); // with a ;
+      // @ @ 0{0,7} matches '0' zero to seven times
+      $val = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ;
+   }
+
+   // now the only remaining whitespace attacks are \t, \n, and \r
+   $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
+   $ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
+   $ra = array_merge($ra1, $ra2);
+
+   $found = true; // keep replacing as long as the previous round replaced something
+   while ($found == true) {
+      $val_before = $val;
+      for ($i = 0; $i < sizeof($ra); $i++) {
+         $pattern = '/';
+         for ($j = 0; $j < strlen($ra[$i]); $j++) {
+            if ($j > 0) {
+               $pattern .= '(';
+               $pattern .= '(&#[xX]0{0,8}([9ab]);)';
+               $pattern .= '|';
+               $pattern .= '|(&#0{0,8}([9|10|13]);)';
+               $pattern .= ')*';
+            }
+            $pattern .= $ra[$i][$j];
+         }
+         $pattern .= '/i';
+         $replacement = substr($ra[$i], 0, 2).'@phpshe@'.substr($ra[$i], 2); // add in <> to nerf the tag
+         $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags
+         if ($val_before == $val) {
+            // no replacements were made, so exit the loop
+            $found = false;
+         }
+      }
+   }
+   return $val;
 }
 //#####################@ 用户权限函数 @#####################//
 function pe_login($utype){

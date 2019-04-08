@@ -1,11 +1,12 @@
 <?php
-if (pe_login('user') && in_array($act, array('login', 'register'))) {
+if (pe_login('user') && in_array($act, array('login', 'register', 'getpw'))) {
 	pe_goto("{$pe['host_root']}index.php?mod=user&act=order");
 }
-if (!pe_login('user') && !in_array($act, array('login', 'register'))) {
+if (!pe_login('user') && !in_array($act, array('login', 'register', 'getpw'))) {
 	pe_goto(pe_url('user-login'));
 }
 pe_lead('hook/payway.hook.php');
+pe_lead('hook/product.hook.php');
 $ini_payway = payway_ini();
 $cache_payway = cache::get('payway');
 switch($act) {
@@ -49,6 +50,40 @@ switch($act) {
 	case 'logout':
 		unset($_SESSION['user_idtoken'], $_SESSION['user_id'], $_SESSION['user_name']);
 		pe_success('用户退出成功！', $pe['host_root']);
+	break;
+	//#####################@ 找回密码 @#####################//
+	case 'getpw':
+		if ($_g_type == 'checkname') {
+			$result = $db->pe_num('user', array('user_name'=>pe_dbhold($_g_user_name))) > 0 ? true : false;
+			echo json_encode(array('result'=>$result));
+			die();
+		}
+		if ($_g_type == 'checkemail') {
+			$result = $db->pe_num('user', array('user_email'=>pe_dbhold($_g_user_email))) > 0 ? true : false;
+			echo json_encode(array('result'=>$result));
+			die();
+		}
+		if (isset($_p_pesubmit)) {
+			pe_lead('hook/qunfa.hook.php');
+			if (!$_p_user_name) pe_error('用户名必须填写...');
+			if (!$_p_user_email) pe_error('邮箱必须填写...');
+			$sql_set['user_name'] = $_p_user_name;
+			$sql_set['user_email'] = $_p_user_email;
+			$info = $db->pe_select('user', pe_dbhold($sql_set));
+			if (!$info['user_id'])pe_error('不存在的用户名或邮箱...');
+			$linshi_pw = substr(md5($pe['host_root'].$info['user_pw'].time()), 5, 8);
+			$email['qunfa_name'] = "您好：{$info['user_name']}，您的密码找回信息！";
+			$email['qunfa_text'] = "您好：{$info['user_name']}，您的临时登录密码是“{$linshi_pw}”，请尽快登录网站修改密码！";
+			qunfa_emaildiy($email, $info['user_id']);
+			if ($db->pe_update('user', array('user_id'=>$info['user_id']), array('user_pw'=>md5($linshi_pw)))) {
+				pe_success('您的临时登录密码已发送至注册邮箱，请注意查收！');
+			}
+			else {
+				pe_error('取回密码失败...');
+			}
+		}
+		$seo = pe_seo($menutitle='找回密码');
+ 		include(pe_tpl('user_getpw.html'));
 	break;
 	//#####################@ 用户注册 @#####################//
 	case 'register':

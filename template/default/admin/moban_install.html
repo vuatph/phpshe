@@ -1,0 +1,53 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right">
+	<div id="jindu_1" style="display:none">模板下载中...<br /><img src="{$pe['host_root']}include/image/jindu.gif" /></div>
+	<div id="jindu_2" style="display:none">模板安装中...<br /><img src="{$pe['host_root']}include/image/jindu.gif" /></div>
+	<div id="jindu_3" style="display:none">模板安装成功...</div>
+	<!--{if($act=='install'):}-->
+	<div class="tip mab10"><img src="{$pe['host_root']}include/image/load_mini.gif" class="fl" /><span class="fl strong font14 cred mat10 mal10">模板安装中，请稍后...</span><div class="clear"></div></div>
+	<!--{endif;}-->
+	<div class="admin_t_info">
+		<h3>模板管理<a href="javascript:;" id="abc">在线安装</a></h3>
+		<div class="banben">
+			<iframe width="100%" id="bb" height="955px" frameborder="0" src="http://www.phpshe.com/api/moban"></iframe>
+		</div>
+	</div>
+	<div class="admin_t_info mat10">
+		<h3>在线安装</h3>
+		<div class="banben">
+			<iframe width="100%" height="955px" frameborder="0" src="http://www.phpshe.com/api/moban"></iframe>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$.getJSON("http://www.phpshe.com/index.php?mod=api&act=moban_url&callback=?", function(json){
+		alert(json.html);
+	})	
+
+var result = false;
+$.ajaxSettings.async = false;
+if ("{$act}" == 'install') {
+
+
+}
+	$.getJSON("{$pe['host_root']}/admin.php", {"mod":"moban", "act":"down"}, function(json){
+		result = json.result;
+	})
+	if (result == false) {
+		alert('模板下载失败...');
+	}
+	$("#jindu_1").hide();
+	$("#jindu_2").show();
+	$.getJSON("{$pe['host_root']}/admin.php?mod=moban&act=unzip&callback=?", function(json){
+		result = json.result;
+	})
+	if (result == false) {
+		alert('模板安装失败...');
+	}	
+	$("#jindu_2").hide();
+	$("#jindu_3").show();
+})
+})
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

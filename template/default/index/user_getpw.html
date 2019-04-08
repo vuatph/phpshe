@@ -1,0 +1,41 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="width980">
+	<div class="loginbox">
+	   <div class="logintt"><p>找回密码</p></div>
+	   <div class="fl login_l">
+			<form method="post" id="form">
+		    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+				<td width="80">用 户 名:</td>
+                <td><input type="text" name="user_name" class="input1" /><span id="user_name_show"></span></td>
+            </tr>
+			<tr>
+				<td>注册邮箱:</td>
+                <td><input type="text" name="user_email" class="input1" /><span id="user_email_show"></span></td>
+			</tr>
+			<tr>
+				<td>{$pe_csrf_set}</td>
+                <td>
+					<input type="hidden" name="pesubmit" />
+					<input type="button" class="btn_05" value="提 交" style="margin:0" />
+				</td>
+			</tr>
+            </table>
+			</form>
+		</div>
+		<div class="fl login_zc">
+			<p>已有注册账号？请直接登录</p>
+			<p class="login_lx"><a href="{pe_url('user-login',pe_fromto())}" title="登录">登录</a></p>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
+<script type="text/javascript">
+var form_info = [
+	{"name":"user_name", "mod":"str", "act":"blur", "arg":"5|15", "show_id":"user_name_show","show_error":"用户名为5-15位字符", "must":true},
+	{"name":"user_pw", "mod":"str", "act":"blur", "arg":"6|20", "show_id":"user_pw_show","show_error":"密码为6-20位字符", "must":true}
+]
+$(":button").pe_submit(form_info, 'form');
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

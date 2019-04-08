@@ -1,0 +1,95 @@
+<?php include(pe_tpl('header.html'));?>
+<div class="right" style="padding:10px">
+	<div class="h3_tt">系统信息</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+	<tr>
+		<td style="border-top:0" class="bg_f8" align="right" width="180">软件版本：</td>
+		<td style="border-top:0" width="370"><a href="http://www.phpshe.com/phpshe" target="_blank" class="cgreen">PHPSHE1.3免费版</a><span class="font13 mal5 corg">(授权编号：<span id="license_num">未授权</span>)</span></td>
+		<td style="border-top:0;padding:15px 20px 0" rowspan="4" valign="top">
+			PHPSHE授权用户可在简好科技官网<a href="http://www.phpshe.com/license" target="_blank" class="cblue">《商业授权中心》</a>查询相关的授权信息，如果与您的信息不符，请及时与我们联系。简好科技未授权任何公司或个人代理销售，请注意鉴别。<br /><br /><br />
+			<span class="fl">咨询QQ：</span>
+			<a href="http://wpa.qq.com/msgrd?v=3&uin=76265959&site=qq&menu=yes" class="fl mat3" target="_blank"><img border="0" src="http://www.phpshe.com/template/default/index/images/qq.png" alt="咨询客服" title="咨询客服"/></a>
+			<span class="fl" style="margin-left:50px">咨询电话：0398-2366998/15839823500</span>
+			<div class="clear"></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="bg_f8" align="right">服务器环境：</td>
+		<td><?php echo $php_os ?> / <?php echo $php_apache ?></td>
+	</tr>
+	<tr>
+		<td class="bg_f8" align="right">PHP 版本：</td>
+		<td><?php echo $php_version ?></td>
+	</tr>
+	<tr>
+		<td class="bg_f8" align="right">MySQL版本：</td>
+		<td><?php echo $php_mysql ?></td>
+	</tr>
+	</table>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="mat10">
+	<tr>
+		<td valign="top" width="595">
+			<div class="admin_t_info" style="border:0; margin-right:10px;">
+				<div class="h3_tt">订单统计</div>
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td style="border-top:0" class="bgtt" width="120"></td>
+					<td style="border-top:0" class="bgtt" width="250">订单总数</td>
+					<td style="border-top:0" class="bgtt">订单总金额</td>
+				</tr>
+				<tr>
+					<td style="text-align:right">今日订单</td>
+					<td class="strong num cgreen font14"><?php echo $tongji['order_today'] ?></td>
+					<td class="strong num cred font14"><?php echo $tongji['money_today'] ?></td>
+				</tr>
+				<tr>
+					<td style="text-align:right">昨日订单</td>
+					<td class="strong num cgreen font14"><?php echo $tongji['order_lastday'] ?></td>
+					<td class="strong num cred font14"><?php echo $tongji['money_lastday'] ?></td>
+				</tr>
+				<tr>
+					<td style="text-align:right">全部订单</td>
+					<td class="strong num cgreen font14"><?php echo $tongji['order_all'] ?></td>
+					<td class="strong num cred font14"><?php echo $tongji['money_all'] ?></td>
+				</tr>
+				</table>
+			</div>
+		</td>
+		<td>
+			<div class="admin_t_info" style="margin-top:-1px">
+				<h3>官方动态</h3>
+				<iframe src="http://www.phpshe.com/api/shop?type=news&v=1.3" frameborder="0" width="100%" height="187px" ></iframe>
+			</div>
+		</td>
+	</tr>
+	</table>
+	<div class="h3_tt mat10">信息统计</div>
+	<table  width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang" >
+	<tr>
+		<td style="border-top:0" class="bg_f8" align="right" width="180">今日访客：</td>
+		<td style="border-top:0" width="370"><span class="strong cgreen num"><?php echo $tongji['iplog_today'] ?></span> 人</td>
+		<td style="border-top:0" class="bg_f8" width="180" align="right"><a href="admin.php?mod=product&state=1" target="_blank">上架商品：</a></td>
+		<td style="border-top:0"><span class="strong cgreen num"><?php echo $tongji['product_up'] ?></span> 件</td>
+	</tr>
+	<tr>
+		<td class="bg_f8" align="right">昨日访客：</td>
+		<td><span class="strong cgreen num"><?php echo $tongji['iplog_lastday'] ?></span> 人</td>
+		<td class="bg_f8" align="right"><a href="admin.php?mod=product&state=2" target="_blank">下架商品：</a></td>
+		<td><span class="strong cgreen num"><?php echo $tongji['product_down'] ?></span> 件</td>
+	</tr>
+	<tr>
+		<td class="bg_f8" align="right">累计访客：</td>
+		<td><span class="strong cgreen num"><?php echo $tongji['iplog_all'] ?></span> 人</td>
+		<td class="bg_f8" align="right"><a href="admin.php?mod=product&state=1&filter=num|0" target="_blank">缺货商品：</a></td>
+		<td><span class="strong cgreen num"><?php echo $tongji['product_empty'] ?></span> 件</td>
+	</tr>
+	</table>
+</div>
+<script type="text/javascript">
+$(function(){
+	$.getJSON("http://www.phpshe.com/index.php?mod=api&act=license&callback=?", function(json){
+		if (json.result) $("#license_num").html(json.license_num);
+	})
+})
+</script>
+<?php include(pe_tpl('footer.html'));?>

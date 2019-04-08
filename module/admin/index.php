@@ -36,6 +36,19 @@ $tongji['iplog_user'] = $db->pe_num('user');
 $iplog_list = $db->pe_selectall('iplog', array('order by'=>'`iplog_atime` desc'), '*', array(20));
 
 
+$php_os = PHP_OS;
+$php_version = PHP_VERSION;
+$php_mysql = mysql_get_server_info();
+if (stripos($_SERVER["SERVER_SOFTWARE"], 'apache') === false) {
+	$iis_arr = explode('/', $_SERVER["SERVER_SOFTWARE"]);
+	$php_apache = "IIS {$iis_arr[1]}";
+}
+else {
+	$apache_arr = explode(' ', apache_get_version());
+	$php_apache = strtr($apache_arr[0], '/', ' ');	
+}
+
+
 $seo = pe_seo($menutitle='后台首页', '', '', 'admin');
 include(pe_tpl('index.html'));
 ?>

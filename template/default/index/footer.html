@@ -24,42 +24,19 @@
 <div class="foot">
 	<div class="bottom_link">
 		<div class="border_link">
+			<!--{foreach($cache_class_arr['help'] as $v):}-->
+			<!--{if(++$help_index>4)break;}-->
+			<!--{$info_list = $db->pe_selectall('article', array('class_id'=>$v['class_id']))}-->
 			<div class="item_1 fl">
-				<h3>用户指南</h3>
+				<h3>{$v['class_name']}</h3>
 				<ul class="mat5">
-					<li><a href="{pe_url('page-1')}" title="{$cache_page[1]['page_name']}">{$cache_page[1]['page_name']}</a></li>
-					<li><a href="{pe_url('page-2')}" title="{$cache_page[2]['page_name']}">{$cache_page[2]['page_name']}</a></li>
-					<li><a href="{pe_url('page-3')}" title="{$cache_page[3]['page_name']}">{$cache_page[3]['page_name']}</a></li>
+					<!--{foreach($info_list as $vv):}-->
+					<li><a href="{pe_url('article-'.$vv['article_id'])}" title="{$vv['article_name']}">{$vv['article_name']}</a></li>
+					<!--{endforeach;}-->
 				</ul>
 			</div>
 			<div class="bottom_libg fl"></div>
-			<div class="item_1 fl">
-				<h3>配送方式</h3>
-				<ul class="mat5">
-					<li><a href="{pe_url('page-4')}" title="{$cache_page[4]['page_name']}">{$cache_page[4]['page_name']}</a></li>
-					<li><a href="{pe_url('page-5')}" title="{$cache_page[5]['page_name']}">{$cache_page[5]['page_name']}</a></li>
-					<li><a href="{pe_url('page-6')}" title="{$cache_page[6]['page_name']}">{$cache_page[6]['page_name']}</a></li>
-				</ul>
-			</div>
-			<div class="bottom_libg fl"></div>
-			<div class="item_1 fl">
-				<h3>售后服务</h3>
-				<ul class="mat5">
-					<li><a href="{pe_url('page-7')}" title="{$cache_page[7]['page_name']}">{$cache_page[7]['page_name']}</a></li>
-					<li><a href="{pe_url('page-8')}" title="{$cache_page[8]['page_name']}">{$cache_page[8]['page_name']}</a></li>
-					<li><a href="{pe_url('page-9')}" title="{$cache_page[9]['page_name']}">{$cache_page[9]['page_name']}</a></li>
-				</ul>
-			</div>
-			<div class="bottom_libg fl"></div>
-			<div class="item_1 fl">
-				<h3>关于我们</h3>
-				<ul class="mat5">
-					<li><a href="{pe_url('page-10')}" title="{$cache_page[10]['page_name']}">{$cache_page[10]['page_name']}</a></li>
-					<li><a href="{pe_url('page-11')}" title="{$cache_page[11]['page_name']}">{$cache_page[11]['page_name']}</a></li>
-					<li><a href="{pe_url('page-12')}" title="{$cache_page[12]['page_name']}">{$cache_page[12]['page_name']}</a></li>
-				</ul>
-			</div>
-			<div class="bottom_libg fl"></div>
+			<!--{endforeach;}-->
 			<div class="foot_tel fl">
 				<h3 class="c666">{$cache_setting['web_title']['setting_value']}</h3>
 				<p class="mat10">
@@ -79,9 +56,9 @@
 		<!--{endforeach;}-->
 	</div>
 	<div class="subnav">
-		Copyright <span class="num">©</span> 2008-2015 {$cache_setting['web_copyright']['setting_value']} All Rights Reserved　{$cache_setting['web_icp']['setting_value']}
+		Copyright <span class="num">©</span> {$cache_setting['web_copyright']['setting_value']} All Rights Reserved　{$cache_setting['web_icp']['setting_value']}
 		<p>咨询热线：{$cache_setting['web_phone']['setting_value']}　咨询QQ：{$cache_setting['web_qq']['setting_value']}　{$cache_setting['web_tongji']['setting_value']}</p>
-		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统v1.2" class="cgreen">phpshe1.2</a></p>
+		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统v1.3" class="cgreen">phpshe1.3</a></p>
 	</div>
 </div>
 <LINK rel=stylesheet type=text/css href="{$pe['host_tpl']}/kefu1/css/common.css">

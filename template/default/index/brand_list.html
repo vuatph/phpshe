@@ -1,0 +1,17 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="content">
+	<!--{foreach($cache_category_arr[0] as $v):}-->
+	<!--{if(count($cache_category_brand[$v['category_id']])):}-->
+	<div class="index_fenlei_tt1"><h3>{$v['category_name']}</h3></div>
+	<div class="pinpai_list">
+		<ul>
+		<!--{foreach($cache_category_brand[$v['category_id']] as $vv):}-->
+		<li><a href="{pe_url('brand-'.$vv['brand_id'])}" title="{$vv['brand_name']}" target="_blank"><img src="{pe_thumb($cache_brand[$vv['brand_id']]['brand_logo'])}" /></a></li>
+		<!--{endforeach;}-->
+		</ul>
+		<div class="clear"></div>
+	</div>
+	<!--{endif;}-->
+	<!--{endforeach;}-->
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

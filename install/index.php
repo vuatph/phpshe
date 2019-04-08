@@ -25,10 +25,10 @@ else {
 	!empty($_GET) && extract(pe_trim($_GET),EXTR_PREFIX_ALL,'_g');
 	!empty($_POST) && extract(pe_trim($_POST),EXTR_PREFIX_ALL,'_p');
 }
-
 switch ($_g_step) {
 	//#####################@ 配置信息 @#####################//
 	case 'setting':
+		if (is_file("{$pe['path_root']}install/install.lock")) die('PHPSHE商城系统已经安装成功，如需再次安装请删除 ./install/install.lock 文件');
 		if (isset($_p_pesubmit)) {
 			$dbconn = mysql_connect("{$_p_db_host}:{$_p_db_port}", $_p_db_user, $_p_db_pw);
 			if (!$dbconn) pe_error('数据库连接失败...数据库ip，用户名，密码对吗？');
@@ -61,6 +61,14 @@ switch ($_g_step) {
 			$mod_data = '<strong class="cred num">No</strong>';
 			$mod_data_result = false;
 		}
+		if (is_writeable("{$pe['path_root']}install/")) {
+			$mod_install = '<strong class="cgreen num">Yes</strong>';
+			$mod_install_result = true;				
+		}
+		else {
+			$mod_install = '<strong class="cred num">No</strong>';
+			$mod_install_result = false;
+		}
 		if (is_writeable("{$pe['path_root']}config.php")) {
 			$mod_config = '<strong class="cgreen num">Yes</strong>';
 			$mod_config_result = true;				
@@ -76,11 +84,13 @@ switch ($_g_step) {
 	case 'success':
 		$menucss_3 = "sel";
 		$seo = pe_seo($menutitle='安装成功 -> PHPSHE商城系统安装向导');
+		file_put_contents("{$pe['path_root']}install/install.lock", 'phpshe');
 	break;
 	//#####################@ 安装协议 @#####################//
 	default :
 		$menucss_1 = "sel";
 		$seo = pe_seo($menutitle='安装协议 -> PHPSHE商城系统安装向导');
+		if (is_file("{$pe['path_root']}install/install.lock")) die('PHPSHE商城系统已经安装成功，如需再次安装请删除 ./install/install.lock 文件');
 	break;
 }
 include('install.html');

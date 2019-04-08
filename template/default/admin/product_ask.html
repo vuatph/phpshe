@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>快速咨询</title>
+<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+</head>
+<body style="background:none">
+<form method="post" id="form">
+<table style="width:510px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+<tr>
+	<td align="right" class="bg_f8" width="100">咨询用户：</td>
+	<td><input type="text" name="user_name" class="inputall input250" /> <span id="user_name_show"></span></td>
+</tr>
+<tr>
+	<td align="right" class="bg_f8">咨询内容：</td>
+	<td>
+		<textarea name="ask_text" style="width:250px;height:100px" class="fl"></textarea>
+		<span id="ask_text_show" style="margin-top:35px" class="fl mal5"></span>
+		<div class="clear"></div>
+	</td>
+</tr>
+<tr>
+	<td align="right" class="bg_f8">咨询时间：</td>
+	<td><input type="text" name="ask_atime" value="{pe_date(time())}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate" /></td>
+</tr>
+<tr>
+	<td align="right" class="bg_f8">管理回复：</td>
+	<td><textarea name="ask_replytext" style="width:250px;height:100px"></textarea></td>
+</tr>
+<tr>
+	<td class="bg_f8">&nbsp;</td>
+	<td>
+		<input type="hidden" name="pesubmit" />
+		<input type="button" value="提 交" class="tjbtn" />
+	</td>
+</tr>
+</table>
+</form>
+<script type="text/javascript" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
+<script type="text/javascript">
+var form_info = [
+	{"name":"user_name", "mod":"str", "act":"blur", "arg":"", "show_id":"user_name_show","show_error":"必须填写", "must":true},
+	{"name":"ask_text", "mod":"str", "act":"blur", "arg":"", "show_id":"ask_text_show","show_error":"必须填写", "must":true}
+]
+$(":button").pe_submit(form_info, 'form');
+</script>
+</body>
+</html>

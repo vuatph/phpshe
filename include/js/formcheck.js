@@ -15,7 +15,7 @@ var rule_zh = /^[\u4e00-\u9fa5]+$/;
 var rule_idcard = /^([1-9][0-9]{14})|([1-9][0-9]{17})$/;
 function _success(_this, show_id, show_icon) {
 	_this.attr("pe_result", "true");
-	_this.css("border","")
+	_this.css("background-color","#fff")
 	if (typeof(show_icon) == 'undefined') {
 		$("#" + show_id).empty();
 	}
@@ -25,7 +25,7 @@ function _success(_this, show_id, show_icon) {
 }
 function _error(_this, show_id, show_text) {
 	_this.attr("pe_result", "false");
-	_this.css("border","1px solid #e3051c");
+	_this.css("background-color","#ffcccc");
 	$("#" + show_id).html('<span style="color:#e3051c;">'+show_text+'</span>');
 }
 //比较数字大小或比较字符串长短（内部调用）

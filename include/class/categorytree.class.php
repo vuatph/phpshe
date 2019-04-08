@@ -58,7 +58,7 @@ class category {
 		!$this->tempvar && $this->tempvar = array();
 		foreach ($data as $v) {
 			if ($v[$this->field['pid']] == $pid) {
-				$this->tempvar[] = $v[$this->field['id']];
+				$this->tempvar[] = intval($v[$this->field['id']]);
 				$this->getcid_arr($data, $v[$this->field['id']], 0);
 			}
 			else {

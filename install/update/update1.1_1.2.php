@@ -27,6 +27,7 @@ $db->query("INSERT INTO `".dbpre."payway` (`payway_id`, `payway_name`, `payway_m
 $db->query("ALTER TABLE `".dbpre."product` CHANGE `product_smoney` `product_money` DECIMAL( 10, 1 ) UNSIGNED NOT NULL DEFAULT '0.0' COMMENT '商品商城价'");
 $db->query("ALTER TABLE `".dbpre."product` CHANGE `product_mmoney` `product_smoney` DECIMAL( 10, 1 ) UNSIGNED NOT NULL DEFAULT '0.0' COMMENT '商品市场价'");
 $db->query("ALTER TABLE `".dbpre."product` MODIFY COLUMN `product_money`  decimal(10,1) UNSIGNED NOT NULL DEFAULT 0.0 COMMENT '商品商城价' AFTER `product_logo`");
+$db->query("ALTER TABLE `pe_product` ADD `rule_id` VARCHAR( 30 ) NOT NULL COMMENT '商品规格id' AFTER `category_id`");
 //更新prorule表
 $sql = <<<html
 CREATE TABLE IF NOT EXISTS `{$pre}prorule` (

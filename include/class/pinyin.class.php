@@ -2,7 +2,7 @@
 /*
 汉字转化为拼音类
  */
-class Pinyin{
+class pinyin{
 	
 	/**
 	 * 汉字ASCII码库

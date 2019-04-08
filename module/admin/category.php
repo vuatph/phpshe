@@ -7,11 +7,13 @@ $menumark = 'category';
 pe_lead('hook/cache.hook.php');
 pe_lead('hook/category.hook.php');
 $category_treelist = category_treelist();
+$cache_menu = cache::get('menu');
 switch ($act) {
 	//#####################@ 增加分类 @#####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
-			if ($db->pe_insert('category', $_p_info)) {
+			if ($category_id = $db->pe_insert('category', $_p_info)) {
+				menu_update($_p_menutype, $category_id, $_p_info['category_name']);
 				cache_write('category');
 				pe_success('分类增加成功!', 'admin.php?mod=category');
 			}
@@ -27,6 +29,7 @@ switch ($act) {
 		$category_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
 			if ($db->pe_update('category', array('category_id'=>$category_id), $_p_info)) {
+				menu_update($_p_menutype, $category_id, $_p_info['category_name']);
 				cache_write('category');
 				pe_success('分类修改成功!', 'admin.php?mod=category');
 			}
@@ -59,7 +62,8 @@ switch ($act) {
 	break;
 	//#####################@ 分类删除 @#####################//
 	case 'del':
-		if ($db->pe_delete('category', array('category_id'=>is_array($_p_category_id) ? $_p_category_id : $_g_id))) {
+		if ($db->pe_delete('category', array('category_id'=>$_g_id))) {
+			menu_update(0, $_g_id);
 			cache_write('category');
 			pe_success('分类删除成功!');
 		}
@@ -73,5 +77,16 @@ switch ($act) {
 		$seo = pe_seo($menutitle='商品分类', '', '', 'admin');
 		include(pe_tpl('category_list.html'));
 	break;
+}
+function menu_update($type, $id, $name = '') {
+	global $db;
+	$num = $db->pe_num('menu', array('menu_url'=>"product-list-{$id}"));
+	if ($type == 1) {
+		!$num && $db->pe_insert('menu', array('menu_type'=>'sys', 'menu_name'=>$name, 'menu_url'=>"product-list-{$id}"));
+	}
+	else {
+		$num && $db->pe_delete('menu', array('menu_url'=>"product-list-{$id}"));
+	}
+	cache_write('menu');
 }
 ?>

@@ -6,7 +6,8 @@
 $menumark = 'order';
 pe_lead('hook/payway.hook.php');
 $ini_payway = payway_ini();
-$ini_wllist = array('顺丰快递','申通快递','圆通快递','韵达快递','中通快递','EMS快递');
+//$ini_wllist = array('顺丰快递','申通快递','圆通快递','韵达快递','中通快递','天天快递','宅急送','EMS快递','百事汇通','全峰快递','德邦物流');
+$wlname_list = is_array(unserialize($cache_setting['web_wlname']['setting_value'])) ? unserialize($cache_setting['web_wlname']['setting_value']) : array();
 $cache_payway = cache::get('payway');
 switch ($act) {
 	//#####################@ 订单修改 @#####################//

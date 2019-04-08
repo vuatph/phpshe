@@ -77,3 +77,22 @@ function pe_numchange(inputname, type, limit)
 		if (_input_val > limit) _input.val(_input_val - 1)
 	}
 }
+function pe_inputdefault(name, text) {
+	var _this = $(":input[name='"+name+"']");
+	if (_this.val() == '') _this.val(text);
+	_this.focus(function(){
+		if ($(this).val() == text) {
+			$(this).val('');
+		}
+	})
+	_this.blur(function(){
+		if ($(this).val() == '') {
+			$(this).val(text)
+		}
+	})
+	_this.parent("form").submit(function(){
+		if (_this.val() == text) {
+			_this.val('');
+		}
+	})
+}

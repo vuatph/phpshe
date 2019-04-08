@@ -17,9 +17,9 @@ class page {
 	function __construct($allnum, $page = null, $listnum = null, $pagenum = null) 
 	{
 		$this->listnums = $allnum;
-		$this->page = $page === null ? 1 : $page;
-		$this->listnum = $listnum === null ? 20 : $listnum;
-		$this->pagenum = $pagenum === null ? 10 : $pagenum;
+		$this->page = $page === null ? 1 : intval($page);
+		$this->listnum = $listnum === null ? 20 : intval($listnum);
+		$this->pagenum = $pagenum === null ? 10 : intval($pagenum);
 
 		$this->pagenums = ceil($this->listnums / $this->listnum);
 		
@@ -70,7 +70,6 @@ class page {
 	//获取翻页块带html的列表
 	function getpagelisthtml()
 	{
-		global $phpshe;
 		if (count($this->get_pagelist()) > 1) {
 			$url = pe_updateurl('page',1);				
 			$pagelisthtml = "<ul class='fr'><li><a href='{$url}'>首页</a></li>";
@@ -83,13 +82,17 @@ class page {
 $pagelisthtml .=<<<html
 <style type="text/css">
 .fenye li{float:left; font-family:Arial, Helvetica, sans-serif; margin-left:6px; display:inline; line-height:24px;}
-.fenye a{border:1px #C2D5E3 solid; padding:0 8px; color:#0066CC; background:#fff; float:left;  height:24px;}
+.fenye a{border:1px #C2D5E3 solid; padding:0 12px; border-radius:4px; color:#0066CC; background:#fff; float:left;  height:24px;}
 .fenye a:hover{background:#fff5f5; border:1px #76a5c8 solid;}
-.fenye .sel{background:#E5EDF2; color:#333; font-weight:bold; border:1px #C2D5E3 solid;  padding:0 8px;}
+.fenye .sel{background:#E5EDF2; color:#333; font-weight:bold; border:1px #C2D5E3 solid;  padding:0 12px; border-radius:4px}
 </style>
 html;
 			return $pagelisthtml;
 		}
+	}
+	//ajax模式分页
+	function ajax($func_name = 'page_ajax') {
+		return preg_replace("|href='[^']*page=(\d+)[^']*'|", "href='javascript:{$func_name}($1);'", $this->html);
 	}
 }
 ?>

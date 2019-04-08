@@ -21,13 +21,25 @@ switch ($act) {
 		$category_size += filesize("{$pe['path_root']}data/cache/class.cache.php");
 		$info_list['category']['cache_size'] = round($category_size/1024, 1);
 
-		$info_list['page']['cache_name'] = '单页信息';
+		$info_list['brand']['cache_name'] = '品牌信息';
+		$info_list['brand']['cache_text'] = '网站【品牌管理】里信息显示错乱或不显示时，可尝试更新此项。';
+		$info_list['brand']['cache_size'] = round(filesize("{$pe['path_root']}data/cache/brand.cache.php")/1024, 1);
+
+		$info_list['rule']['cache_name'] = '规格信息';
+		$info_list['rule']['cache_text'] = '网站【规格管理】里信息显示错乱或不显示时，可尝试更新此项。';
+		$info_list['rule']['cache_size'] = round(filesize("{$pe['path_root']}data/cache/rule.cache.php")/1024, 1);
+
+		/*$info_list['page']['cache_name'] = '单页信息';
 		$info_list['page']['cache_text'] = '网站【单页列表】里信息显示错乱或不显示时，可尝试更新此项。';
-		$info_list['page']['cache_size'] = round(filesize("{$pe['path_root']}data/cache/page.cache.php")/1024, 1);
+		$info_list['page']['cache_size'] = round(filesize("{$pe['path_root']}data/cache/page.cache.php")/1024, 1);*/
 
 		$info_list['setting']['cache_name'] = '网站信息';
 		$info_list['setting']['cache_text'] = '网站【基本信息】里信息显示错乱或不显示时，可尝试更新此项。';
 		$info_list['setting']['cache_size'] = round(filesize("{$pe['path_root']}data/cache/setting.cache.php")/1024, 1);
+
+		$info_list['setting']['cache_name'] = '导航信息';
+		$info_list['setting']['cache_text'] = '网站【导航管理】里信息显示错乱或不显示时，可尝试更新此项。';
+		$info_list['setting']['cache_size'] = round(filesize("{$pe['path_root']}data/cache/menu.cache.php")/1024, 1);
 
 		$info_list['payway']['cache_name'] = '支付信息';
 		$info_list['payway']['cache_text'] = '网站【支付方式】里信息显示错乱或不显示时，可尝试更新此项。';

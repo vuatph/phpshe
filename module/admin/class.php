@@ -5,6 +5,7 @@
  */
 $menumark = 'class';
 pe_lead('hook/cache.hook.php');
+$class_list = $db->index('class_type|class_id')->pe_selectall('class', array('order by'=>'`class_order` asc, `class_id` asc'));
 switch ($act) {
 	//#####################@ 分类增加 @#####################//
 	case 'add':

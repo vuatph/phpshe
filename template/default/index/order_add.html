@@ -26,7 +26,7 @@
 					<div class="shuliang_box"><input type="text" name="product_num[{$k}]" value="{$v['product_num']}" readonly /></div>
 					<span class="img2" onclick="pe_numchange('product_num[{$k}]', '+', {$v['product_maxnum']});cart_num('{$k}', 'product_num[{$k}]')">+</span>
 				</td>
-				<td><a href="javascript:cart_del('{$k}');">删除</a></td>
+				<td><a href="javascript:;" onclick="cart_del(this, '{$k}')">删除</a></td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>
@@ -109,13 +109,13 @@ function cart_num(product_id,name) {
 		}
 	})
 }
-function cart_del(product_id) {
+function cart_del(_this, product_id) {
 	if (confirm('您确认要删除该商品吗?') == false) {
 		return;
 	}
 	$.getJSON("{$pe['host_root']}index.php", {"mod":"order","act":"cartnum","product_id":product_id,"product_num":0}, function(json){
 		if (json.result) {
-			$("#"+product_id).remove();
+			$(_this).parents("tr").remove();
 			$("#order_productmoney").html(json.money.order_productmoney);
 			$("#order_wlmoney").html(json.money.order_wlmoney);
 			$("#order_money").html(json.money.order_money);
@@ -135,7 +135,7 @@ var form_info = [
 	{"name":"province", "mod":"str", "act":"change", "arg":"", "show_id":"province_show","show_error":"省份必须选择"},
 	{"name":"city", "mod":"str", "act":"change", "arg":"", "show_id":"city_show","show_error":"城市必须选择"},
 	{"name":"user_address", "mod":"str", "act":"blur", "arg":"", "show_id":"user_address_show","show_error":"地址必须填写"},
-	{"name":"user_tname", "mod":"match", "act":"blur", "arg":"zh", "show_id":"user_tname_show","show_error":"姓名必须为汉字"},
+	{"name":"user_tname", "mod":"str", "act":"blur", "arg":"", "show_id":"user_tname_show","show_error":"姓名必须填写"},
 	{"name":"user_phone", "mod":"match", "act":"blur", "arg":"phone", "show_id":"user_phone_show","show_error":"电话格式错误"}
 ]
 $(":button").pe_submit(form_info, 'form');

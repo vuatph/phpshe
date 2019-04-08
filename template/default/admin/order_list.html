@@ -1,111 +1,115 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<div class="now_l"></div>
-		<div class="now_m">{$menutitle}</div>
-		<div class="now_r"></div>
+		<span class="fl c888">管理中心 > {$menutitle}</span>
 		<div class="clear"></div>
 	</div>
-	<!--<div class="tixing">
-		<span class="cgreen">温馨提示：</span>为了方便商户快速与支付宝签约，PHPSHE(PE)目前只集成了常用的 <u>支付宝双功能收款（即时到帐+担保交易）接口</u>。
-		<p><span class="cblue">即时到帐流程</span>：买家 -> 付款给卖家 　-> 卖家到系统后台发货 -> 交易成功</p>
-		<p><span class="cblue">担保交易流程</span>：买家 -> 付款给支付宝 -> 卖家到系统后台发货 -> 买家确认收货 -> 交易资金自动转入卖家 -> 交易成功</p>
-	</div>-->
-	<div class="search">
-		<div class="fl qiehuan">
-			<a href="admin.php?mod=order" <!--{if(!$_g_state):}-->class="sel"<!--{endif;}-->>全部订单</a>
-			| <a href="admin.php?mod=order&state=notpay" <!--{if($_g_state=='notpay'):}-->class="sel"<!--{endif;}-->>未付款</a>
-			| <a href="admin.php?mod=order&state=paid" <!--{if($_g_state=='paid'):}-->class="sel"<!--{endif;}-->>待发货</a>
-			| <a href="admin.php?mod=order&state=send" <!--{if($_g_state=='send'):}-->class="sel"<!--{endif;}-->>已发货</a>
-			| <a href="admin.php?mod=order&state=success" <!--{if($_g_state=='success'):}-->class="sel"<!--{endif;}-->>成功订单</a>
-		</div>
-		<div class="fr searbox">
-			<form method="get">
-				<input type="hidden" name="mod" value="{$_g_mod}" />
-				订单编号：<input type="text" name="id" value="{$_g_id}" class="inputtext input100" />
-				收货姓名：<input type="text" name="user_tname" value="{$_g_user_tname}" class="inputtext input100" />
-				联系方式：<input type="text" name="user_phone" value="{$_g_user_phone}" class="inputtext input100" />
-				<input type="submit" value="搜索" class="input2" />
-			</form>
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="hy_table">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_tb_tt">
-		<tr>
-			<td class="bg_f8" width="">商品详情</td>
-			<td class="bg_f8" width="120">实付款(元)</td>
-			<td class="bg_f8" width="120">交易操作</td>
-			<td class="bg_f8" width="120" style="border-right:0;">订单详情</td>
-		</tr>
-		</table>
-		<!--{foreach($info_list as $v):}-->
-		<div class="hy_table_order c666">
-			<span class="fl">订单编号：{$v['order_id']}</span>
-			<span class="fr">下单时间：{pe_date($v['order_atime'])}</span>
+	<div class="right_main">
+		<!--<div class="tixing">
+			<span class="cgreen">温馨提示：</span>为了方便商户快速与支付宝签约，PHPSHE(PE)目前只集成了常用的 <u>支付宝双功能收款（即时到帐+担保交易）接口</u>。
+			<p><span class="cblue">即时到帐流程</span>：买家 -> 付款给卖家 　-> 卖家到系统后台发货 -> 交易成功</p>
+			<p><span class="cblue">担保交易流程</span>：买家 -> 付款给支付宝 -> 卖家到系统后台发货 -> 买家确认收货 -> 交易资金自动转入卖家 -> 交易成功</p>
+		</div>-->
+		<div class="search">
+			<div class="fl qiehuan">
+				<a href="admin.php?mod=order" <!--{if(!$_g_state):}-->class="sel"<!--{endif;}-->>全部订单</a>
+				| <a href="admin.php?mod=order&state=notpay" <!--{if($_g_state=='notpay'):}-->class="sel"<!--{endif;}-->>待付款</a>
+				| <a href="admin.php?mod=order&state=paid" <!--{if($_g_state=='paid'):}-->class="sel"<!--{endif;}-->>待发货</a>
+				| <a href="admin.php?mod=order&state=send" <!--{if($_g_state=='send'):}-->class="sel"<!--{endif;}-->>已发货</a>
+				| <a href="admin.php?mod=order&state=success" <!--{if($_g_state=='success'):}-->class="sel"<!--{endif;}-->>成功订单</a>
+			</div>
+			<div class="fr searbox">
+				<form method="get">
+					<input type="hidden" name="mod" value="{$_g_mod}" />
+					<input type="hidden" name="state" value="{$_g_state}" />
+					订单编号：<input type="text" name="id" value="{$_g_id}" class="inputtext input100" />
+					收货姓名：<input type="text" name="user_tname" value="{$_g_user_tname}" class="inputtext input100" />
+					联系方式：<input type="text" name="user_phone" value="{$_g_user_phone}" class="inputtext input100" />
+					<input type="submit" value="搜索" class="input2" />
+				</form>
+			</div>
 			<div class="clear"></div>
 		</div>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #D4E7FF;">
-		<tr>
-			<td style="text-align:left;">
-				<!--{foreach($v['product_list'] as $kk => $vv):}-->
-				<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
-					<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5"><img src="{pe_thumb($vv['product_logo'], 60, 60)}" width="45" height="45"></a>
-					<div class="fl font12">
-						<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{$vv['product_name']}</a>
-						<!--{if($vv['prorule_name']):}-->
-						<p class="c888 mat5"><!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
-						<!--{endif;}-->
-						</div>
-					<span class="fr font12"><span class="num">¥{$vv['product_money']}</span>(×{$vv['product_num']})</span>
-					<div class="clear"></div>
-				</div>
-				<!--{endforeach;}-->
-			</td>
-			<td width="100">
-				<p class="cred num font14 strong">{$v['order_money']}</p>
-				<p class="c888 font12"><!--{if($v['order_wlmoney']==0):}-->(卖家包邮)<!--{else:}-->(含运费{$v['order_wlmoney']}元)<!--{endif;}--></p>
-			</td>
-			<td width="100">
-			<!--货到付款-->
-			<!--{if($v['order_payway']=='cod'):}-->
+		<div class="hy_table">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_tb_tt">
+			<tr>
+				<td class="bg_f8" style="line-height:19px;" width="">商品详情</td>
+				<td class="bg_f8" style="line-height:19px;" width="100">实付款(元)</td>
+				<td class="bg_f8" style="line-height:19px;" width="100">交易操作</td>
+				<td class="bg_f8" style="line-height:19px;" width="310" style="border-right:0;">用户信息</td>
+			</tr>
+			</table>
+			<!--{foreach($info_list as $v):}-->
+			<div class="hy_table_order c666">
+				<span class="fl">下单时间：{pe_date($v['order_atime'])}<span class="c888 mal10">＜订单号：{$v['order_id']}＞</span></span>
+				<span class="fr"><a href="admin.php?mod=order&act=edit&id={$v['order_id']}" target="_blank" class="fabu_btn mat3">查看订单</a></span>
 				<!--{if($v['order_state']=='notpay'):}-->
-				<p class="cgreen font13">订单创建成功</p>
-				<p><a class="shouhuo_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_dialog(this, '填写快递信息')">发货</a></p>
-				<!--{elseif($v['order_state']=='send'):}-->
-				<p class="cgreen font13">卖家已经发货</p>
-				<p><a class="pay_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')">付款</a></p>
-				<!--{elseif($v['order_state']=='success'):}-->
-				<p class="cgreen font13">交易成功</p>
+				<span class="fr" style="margin-right:15px"><a href="admin.php?mod=order&act=del&id={$v['order_id']}" onclick="return pe_cfone(this, '删除订单')" style="background:#ddd;padding:3px 10px;color:#fff;border-radius:2px">删除</a></span>
 				<!--{endif;}-->
-			<!--先款后货-->
-			<!--{else:}-->
-				<!--{if($v['order_state']=='notpay'):}-->
-				<p class="cgreen font13">订单创建成功</p>
-				<p><a class="pay_btn" href="admin.php?mod=order&act=state&state=paid&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')">付款</a></p>
-				<!--{elseif($v['order_state']=='paid'):}-->
-				<p class="cgreen font13">买家付款成功</p>
-				<p><a class="shouhuo_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_dialog(this, '填写快递信息')">发货</a></p>
-				<!--{elseif($v['order_state']=='send'):}-->
-				<p class="cgreen font13">卖家已经发货</p>
-				<p class="cred font13">支付宝还未确认</p>
-				<!--{elseif($v['order_state']=='success'):}-->
-				<p class="cgreen font13">交易成功</p>
+				<div class="clear"></div>
+			</div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #D4E7FF;">
+			<tr>
+				<td style="text-align:left;">
+					<!--{foreach($v['product_list'] as $kk => $vv):}-->
+					<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
+						<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5" target="_blank"><img src="{pe_thumb($vv['product_logo'], 60, 60)}" width="45" height="45"></a>
+						<div class="fl font12">
+							<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{$vv['product_name']}</a>
+							<!--{if($vv['prorule_name']):}-->
+							<p class="c888 mat5"><!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
+							<!--{endif;}-->
+							</div>
+						<span class="fr font12"><span class="num">¥{$vv['product_money']}</span>(×{$vv['product_num']})</span>
+						<div class="clear"></div>
+					</div>
+					<!--{endforeach;}-->
+				</td>
+				<td width="80">
+					<p class="cred num font14 strong">{$v['order_money']}</p>
+					<p class="c888 font12"><!--{if($v['order_wlmoney']==0):}-->(卖家包邮)<!--{else:}-->(含运费{$v['order_wlmoney']}元)<!--{endif;}--></p>
+				</td>
+
+				<td width="80">
+				<!--货到付款-->
+				<!--{if($v['order_payway']=='cod'):}-->
+					<!--{if($v['order_state']=='notpay'):}-->
+					<p class="cgreen font13">订单创建成功</p>
+					<p><a class="shouhuo_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_dialog(this, '填写快递信息')">发货</a></p>
+					<!--{elseif($v['order_state']=='send'):}-->
+					<p class="cgreen font13">卖家已经发货</p>
+					<p><a class="pay_btn" href="admin.php?mod=order&act=state&state=paid&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')">付款</a></p>
+					<!--{elseif($v['order_state']=='success'):}-->
+					<p class="cgreen font13">交易成功</p>
+					<!--{endif;}-->
+				<!--先款后货-->
+				<!--{else:}-->
+					<!--{if($v['order_state']=='notpay'):}-->
+					<p class="cgreen font13">订单创建成功</p>
+					<p><a class="pay_btn" href="admin.php?mod=order&act=state&state=paid&id={$v['order_id']}" onclick="return pe_cfone(this, '付款')">付款</a></p>
+					<!--{elseif($v['order_state']=='paid'):}-->
+					<p class="cgreen font13">买家付款成功</p>
+					<p><a class="shouhuo_btn" href="admin.php?mod=order&act=state&state=send&id={$v['order_id']}" onclick="return pe_dialog(this, '填写快递信息')">发货</a></p>
+					<!--{elseif($v['order_state']=='send'):}-->
+					<p class="cgreen font13">卖家已经发货</p>
+					<p class="cred font13">支付宝还未确认</p>
+					<!--{elseif($v['order_state']=='success'):}-->
+					<p class="cgreen font13">交易成功</p>
+					<!--{endif;}-->
 				<!--{endif;}-->
-			<!--{endif;}-->
-				<p class="c888 font12 mat3">{$ini_payway[$v['order_payway']]}</p>
-			</td>
-			<td width="100">
-				<a href="admin.php?mod=order&act=edit&id={$v['order_id']}" target="_blank" class="font13">订单详情</a>
-				<!--{if($v['order_state']=='notpay'):}-->
-				<p class="mat3"><a href="admin.php?mod=order&act=del&id={$v['order_id']}" onclick="return pe_cfone(this, '删除订单')" class="cblue font12">删除订单</a></p>
-				<!--{endif;}-->
-			</td>
-		</tr>
-		</table>
-		<!--{endforeach;}-->
-		<div class="hy_pay">
-			<div class="fenye">{$db->page->html}</div>
+					<p class="c888 font12 mat3">{$ini_payway[$v['order_payway']]}</p>
+				</td>
+				<td width="300" class="font12 aleft" valign="top" style="padding:5px;color:#555">
+					<p>【姓名】{$v['user_tname']} <span class="c888">({$v['user_phone']})</span></p>
+					<p>【地址】{$v['user_address']}</p>
+					<p>【留言】{$v['order_text']}</p>
+				</td>
+			</tr>
+			</table>
+			<!--{endforeach;}-->
+			<div class="hy_pay">
+				<div class="fenye">{$db->page->html}</div>
+			</div>
 		</div>
 	</div>
 </div>

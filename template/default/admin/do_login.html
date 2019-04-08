@@ -5,6 +5,7 @@
 <title>{$seo['title']}</title>
 <meta name="keywords" content="{$seo['keywords']}" />
 <meta name="description" content="{$seo['description']}" />
+<link rel="shortcut icon" type="image/ico" href="{$pe['host_root']}/favicon.ico">
 <link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
@@ -28,11 +29,11 @@ body{background:#3C7DBE; font-family:'Microsoft Yahei','Simsun',"宋体"}
 </style>
 </head>
 <body>
-<div class="login_tt"><span class="num">PHPSHE</span>商城管理系统</div>
+<div class="login_tt"><!--<span class="num">PHPSHE</span>商城管理系统--><img src="{$pe['host_tpl']}images/admin_logo.png"></div>
 <form method="post">
 <div class="login">	
-	<div class="input1"><span class="input_name">账 号:</span><input type="text" name="admin_name" value="" /><div class="clear"></div></div>
-	<div class="input2"><span class="input_name">密 码:</span><input type="password" name="admin_pw" value="" /><div class="clear"></div></div>
+	<div class="input1"><span class="input_name">账 号:</span><input type="text" name="admin_name" /><div class="clear"></div></div>
+	<div class="input2"><span class="input_name">密 码:</span><input type="password" name="admin_pw" /><div class="clear"></div></div>
 	<div class="input3">
 		<div class="input3_box" style="position:relative;">
 			<span class="fl">验证码:</span>
@@ -45,7 +46,7 @@ body{background:#3C7DBE; font-family:'Microsoft Yahei','Simsun',"宋体"}
 	<div class="login_btn"><input type="submit" name="pesubmit" value=" " /></div>
 </div>
 </form>
-<div class="copyright">Copyright <span class="num">©</span> 2008-2013 <a href="http://www.phpshe.com" target="_blank">灵宝简好网络科技有限公司</a> 版权所有</div>
+<div class="copyright">Copyright <span class="num">©</span> 2008-2014 <a href="http://www.phpshe.com" target="_blank">灵宝简好网络科技有限公司</a> 版权所有</div>
 </body>
 <script type="text/javascript">
 $(function(){

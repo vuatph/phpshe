@@ -22,13 +22,14 @@ function category_path($id, $other = null)
 	$other && $path .= " > {$other}";
 	return $path;
 }
+
 function category_cidarr($id) {
 	$category_list = cache::get('category');
 	pe_lead('include/class/categorytree.class.php');
 	$category = new category();
 	$cid_arr = $category->getcid_arr($category_list, $id);
 	if ($cid_arr) {
-		$cid_arr[] = $id;
+		$cid_arr[] = intval($id);
 		return $cid_arr;
 	}
 	else {

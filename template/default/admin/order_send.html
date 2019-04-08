@@ -2,8 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>无标题文档</title>
-<link href="{$pe['host_tpl']}css/all.css" rel="stylesheet" type="text/css" />
+<title>填写快递信息</title>
 <link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 </head>
@@ -15,7 +14,8 @@
 	<td>
 		<select name="info[order_wlname]" class="inputselect">
 		<option value="">无需快递</option>
-		<!--{foreach($ini_wllist as $v):}-->
+		<!--{foreach($wlname_list as $v):}-->
+		<!--{if(!$v)continue;}-->
 		<option value="{$v}">{$v}</option>
 		<!--{endforeach;}-->
 		</select>
@@ -38,7 +38,7 @@
 $(function(){
 $(":button").click(function(){
 	if ($(":input[name='info[order_wlname]']").val() != '' && $(":input[name='info[order_wlid]']").val() == '') {
-		alert('物流编号必须填写');
+		alert('快递单号必须填写');
 		return false;
 	}
 	$("form").submit();

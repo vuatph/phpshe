@@ -149,6 +149,7 @@ switch ($act) {
 			}
 			echo '正在为您连接支付网站，请稍后...';
 			include("{$pe['path_root']}include/plugin/payway/{$order['order_payway']}/order_pay.php");
+			die();
 		}
 		$seo = pe_seo('选择支付方式');
 		include(pe_tpl('order_pay.html'));

@@ -1,68 +1,64 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<div class="now_l"></div>
-		<div class="now_m">
-			<span class="fl">{$menutitle}</span>
-			<span class="fr fabu"><a href="admin.php?mod=product&act=add">发布商品</a></span>
-		</div>
-		<div class="now_r"></div>
+		<span class="fl c888">管理中心 > {$menutitle}</span>
+		<span class="fr fabu"><a href="admin.php?mod=product&act=add">发布商品</a></span>
 		<div class="clear"></div>
 	</div>
-	<form method="post" enctype="multipart/form-data">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
-	<tr>
-		<td width="100" class="bg_f8" align="right">商品名称：</td>
-		<td colspan="3"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input500" maxlength="36" /></td>
-		<td rowspan="7" valign="top" width="80">
-			<img src="{pe_thumb($info['product_logo'])}" width="160" height="170" style="border:1px solid #ddd; display:block;" />
-			<p class="mat5"><input type="file" name="product_logo" size="12" style="width:160px;" /></p>
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">商品分类：</td>
-		<td colspan="3">
-			<select name="info[category_id]" class="inputselect">
-			<!--{foreach($category_treelist as $v):}-->
-			<option value="{$v['category_id']}" <!--{if($v['category_id']==$info['category_id']):}-->selected="selected"<!--{endif;}-->>{$v['category_showname']}</option>
-			<!--{endforeach;}-->
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">本店价格：</td>
-		<td width="250"><input type="text" name="info[product_money]" value="{$info['product_money']}" class="inputall input100" /> <span class="c888">元</span></td>
-		<td width="100" class="bg_f8" align="right">运　　费：</td>
-		<td><input type="text" name="info[product_wlmoney]" value="{$info['product_wlmoney']}" class="inputall input100" /> <span class="c888">元（注：0元为卖家包邮）</span></td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">市场售价：</td>
-		<td colspan="3"><input type="text" name="info[product_smoney]" value="{$info['product_smoney']}" class="inputall input100" /> <span class="c888">元</span></td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">商品货号：</td>
-		<td colspan="3"><input type="text" name="info[product_mark]" value="{$info['product_mark']}" class="inputall input100" /></td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">库存总量：</td>
-		<td colspan="3"><input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputall input100" /></td>
-	</tr>
-	<tr>
-		<td class="bg_f8" align="right">发布日期：</td>
-		<td colspan="3"><input type="text" name="info[product_atime]" value="{pe_date($info['product_atime'] ? $info['product_atime'] : time())}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate" /></td>
-	</tr>
-	</table>
-	<div class="mat5"><textarea name="info[product_text]" id="editortext" style="width:950px;height:600px">{htmlspecialchars($info['product_text'])}</textarea></div>
-	<div class="mat10 center">
-		<input type="hidden" name="pesubmit" />
-		<input type="button" value="提 交" class="tjbtn" />
+	<div class="right_main">
+		<form method="post" enctype="multipart/form-data">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+		<tr>
+			<td width="110" class="bg_f8" align="right">商品名称：</td>
+			<td colspan="3"><input type="text" name="info[product_name]" value="{$info['product_name']}" class="inputall input600" maxlength="36" /></td>
+			<td rowspan="6" valign="top" width="80">
+				<img src="{pe_thumb($info['product_logo'])}" width="160" height="170" style="border:1px solid #f4f4f4; display:block;" />
+				<p class="mat5"><input type="file" name="product_logo" size="12" style="width:160px;" /></p>
+			</td>
+		</tr>
+		<tr>
+			<td class="bg_f8" align="right">商品分类：</td>
+			<td colspan="3">
+				<select name="info[category_id]" class="inputselect">
+				<!--{foreach($category_treelist as $v):}-->
+				<option value="{$v['category_id']}" <!--{if($v['category_id']==$info['category_id']):}-->selected="selected"<!--{endif;}-->>{$v['category_showname']}</option>
+				<!--{endforeach;}-->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="bg_f8" align="right">本店价格：</td>
+			<td width="275"><input type="text" name="info[product_money]" value="{$info['product_money']}" class="inputall input100" /> <span class="c888">元</span></td>
+			<td width="110" class="bg_f8" align="right">运　　费：</td>
+			<td><input type="text" name="info[product_wlmoney]" value="{$info['product_wlmoney']}" class="inputall input100" /> <span class="c888">元（注：0元为卖家包邮）</span></td>
+		</tr>
+		<tr>
+			<td class="bg_f8" align="right">市场售价：</td>
+			<td colspan="3"><input type="text" name="info[product_smoney]" value="{$info['product_smoney']}" class="inputall input100" /> <span class="c888">元</span></td>
+		</tr>
+		<tr>
+			<td class="bg_f8" align="right">库存总量：</td>
+			<td><input type="text" name="info[product_num]" value="{$info['product_num']}" class="inputall input100" /></td>
+			<td class="bg_f8" align="right">商品货号：</td>
+			<td><input type="text" name="info[product_mark]" value="{$info['product_mark']}" class="inputall input100" /></td>
+		</tr>
+		<tr>
+			<td class="bg_f8" align="right">发布日期：</td>
+			<td colspan="3"><input type="text" name="info[product_atime]" value="{pe_date($info['product_atime'] ? $info['product_atime'] : time())}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="Wdate" /></td>
+		</tr>
+		</table>
+		<div class="mat5"><textarea name="info[product_text]" id="editortext" style="width:99.8%;height:500px">{htmlspecialchars($info['product_text'])}</textarea></div>
+		<div class="mat10 center">
+			<input type="hidden" name="pesubmit" />
+			<input type="button" value="提 交" class="tjbtn" />
+		</div>
+		</form>
 	</div>
-	</form>
 </div>
 <style type="text/css">
-a.js_add{display:block; float:left; width:120px; height:30px; line-height:30px; text-align:center;background:#76A500; color:#f5f5f5; border-radius:2px; font-family:'宋体'; font-size:14px; font-weight:bold}
+a.js_add{display:block; float:left; width:120px; height:30px; line-height:30px; text-align:center;background:#5CB85C; color:#f5f5f5; border-radius:2px; font-family:'宋体'; font-size:14px; font-weight:bold}
 a:hover.js_add,a:hover.js_del{background-color:#cccc00;}
-a.js_del{width:42px; padding:5px 10px; text-align:center;background:#FF9900; color:#f5f5f5; border-radius:2px; font-family:'宋体'; font-size:12px;}
+a.js_del{width:42px; padding:5px 10px; text-align:center;background:#FF6600; color:#f5f5f5; border-radius:3px; font-family:'宋体'; font-size:12px;}
 </style>
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
 <script charset="utf-8" src="{$pe['host_root']}include/plugin/editor/kindeditor.js"></script>

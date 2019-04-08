@@ -14,12 +14,12 @@
 			<!--{foreach($info_list as $v):}-->
 			<tr>
 				<td class="hotimg">
-					<a class="fl mar5" href="{pe_url('product-'.$v['product_id'])}"><img src="{pe_thumb($v['product_logo'], 60, 60)}" /></a>
-					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue fl mat20 mal5">{$v['product_name']}</a>
+					<a class="fl mar5" href="{pe_url('product-'.$v['product_id'])}"><img src="{pe_thumb($v['product_logo'], 45, 45)}" style="width:45px;height:45px;" /></a>
+					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue fl mat15 mal5">{$v['product_name']}</a>
 					<div class="clear"></div>
 				</td>
-				<td class="money1">¥{$v['product_money']}</td>
-				<td class="c666">{pe_date($v['collect_atime'])}</td>
+				<td class="money1" style="font-size:14px">¥{$v['product_money']}</td>
+				<td class="c666">{pe_date($v['collect_atime'], 'Y-m-d')}</td>
 				<td><a class="cblue" href="index.php?mod=user&act=collectdel&id={$v['collect_id']}&product_id={$v['product_id']}" onclick="return pe_cfone(this, '删除该收藏')">删除</a></td>
 			</tr>
 			<!--{endforeach;}-->

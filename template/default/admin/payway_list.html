@@ -1,36 +1,38 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<div class="now_l"></div>
-		<div class="now_m">{$menutitle}</div>
-		<div class="now_r"></div>
+		<span class="fl c888">管理中心 > {$menutitle}</span>
 		<div class="clear"></div>
 	</div>
-	<form method="post" id="form">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list mat5">
-	<tr>
-		<td class="bgtt" width="50">排序</td>
-		<td class="bgtt" width="150">支付名称</td>
-		<td class="bgtt">支付描述</td>
-		<td class="bgtt" width="80">启用状态</td>
-		<td class="bgtt" width="44">操作</td>
-	</tr>
-	<!--{foreach($info_list as $v):}-->
-	<tr>
-		<td><input type="text" name="payway_order[{$v['payway_id']}]" value="{$v['payway_order']}" class="inputtext input40" /></td>
-		<td>{$v['payway_name']}</td>
-		<td class="aleft">{$v['payway_text']}</td>
-		<td><!--{if($v['payway_state']):}--><span class="cgreen">启用</span><!--{else:}--><span class="cred">禁用</span><!--{endif;}--></td>
-		<td><a href="admin.php?mod=payway&act=edit&id={$v['payway_id']}" class="admin_edit">修改</a></td>
-	</tr>
-	<!--{endforeach;}-->
-	<tr>
-		<td class="bgtt aleft" colspan="5">
-			<span class="fl"><button href="admin.php?mod=payway&act=order" onclick="pe_doall(this,'form')">批量排序</button></span>
-			<span class="fenye">{$db->page->html}</span>
-		</td>
-	</tr>
-	</table>
-	</form>
+	<div class="right_main">
+		<form method="post" id="form">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+		<tr>
+			<td class="bgtt" width="50">排序</td>
+			<td class="bgtt" width="120">图标</td>
+			<td class="bgtt" width="130">支付名称</td>
+			<td class="bgtt">支付描述</td>
+			<td class="bgtt" width="90">启用状态</td>
+			<td class="bgtt" width="45">操作</td>
+		</tr>
+		<!--{foreach($info_list as $v):}-->
+		<tr>
+			<td><input type="text" name="payway_order[{$v['payway_id']}]" value="{$v['payway_order']}" class="inputtext input40" /></td>
+			<td><img src="{$pe['host_root']}include/plugin/payway/{$v['payway_mark']}/logo.gif" style="height:60px" /></td>
+			<td>{$v['payway_name']}</td>
+			<td class="aleft">{$v['payway_text']}</td>
+			<td><!--{if($v['payway_state']):}--><img src="{$pe['host_tpl']}images/dui.png" /><!--{else:}--><span class="cred">停用</span><!--{endif;}--></td>
+			<td><a href="admin.php?mod=payway&act=edit&id={$v['payway_id']}" class="admin_edit">修改</a></td>
+		</tr>
+		<!--{endforeach;}-->
+		<tr>
+			<td class="bgtt aleft" colspan="6">
+				<span class="fl"><button href="admin.php?mod=payway&act=order" onclick="pe_doall(this,'form')">批量排序</button></span>
+				<span class="fenye">{$db->page->html}</span>
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
 </div>
 <!--{include(pe_tpl('footer.html'));}-->

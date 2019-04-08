@@ -13,7 +13,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您的订单编号：<span class="cblue mar20">{$order['order_id']}</span>
 		应付金额：<span class="cred font16 mar20 strong num">{$order['order_money']}元</span>
 		付款方式：<span class="cred font14 mar20">{$cache_payway[$order['order_payway']]['payway_name']}</span>
-		<!--{if($order['order_payway']=='alipay'):}-->
+		<!--{if(in_array($order['order_payway'], array('alipay', 'ebank'))):}-->
 		<form method="post"><input type="submit" name="pesubmit" value="去付款" class="btn_05" /></form>
 		<!--{elseif($order['order_payway']=='bank'):}-->
 		<div class="shouhuo_info">{nl2br($cache_payway[$order['order_payway']]['payway_config']['bank_text'])}</div>

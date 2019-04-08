@@ -22,7 +22,7 @@
 				<td style="text-align:left;">
 					<!--{foreach($v['product_list'] as $kk => $vv):}-->
 					<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
-						<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5"><img src="{pe_thumb($vv['product_logo'], 60, 60)}" width="45" height="45"></a>
+						<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5"><img src="{pe_thumb($vv['product_logo'], 45, 45)}" width="45" height="45"></a>
 						<div class="fl font12">
 							<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{$vv['product_name']}</a>
 							<!--{if($vv['prorule_name']):}-->

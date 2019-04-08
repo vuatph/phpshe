@@ -4,6 +4,7 @@
  * @creatdate   2012-0501 koyshe <koyshe@gmail.com>
  */
 $menumark = 'ask';
+pe_lead('hook/product.hook.php');
 switch ($act) {
 	//#####################@ 咨询回复 @#####################//
 	case 'edit':
@@ -31,7 +32,12 @@ switch ($act) {
 	break;
 	//#####################@ 咨询删除 @#####################//
 	case 'del':
-		if ($db->pe_delete('ask', array('ask_id'=>is_array($_p_ask_id) ? $_p_ask_id : $_g_id))) {
+		$ask_id = is_array($_p_ask_id) ? $_p_ask_id : $_g_id;
+		$info_list = $db->pe_selectall('ask', array('ask_id'=>$ask_id));
+		if ($db->pe_delete('ask', array('ask_id'=>$ask_id))) {
+			foreach ($info_list as $v) {
+				product_num('asknum', $v['product_id']);
+			}
 			pe_success('咨询删除成功!');
 		}
 		else {

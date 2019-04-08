@@ -5,8 +5,8 @@
 		<h3 class="hy_rtt">{$menutitle}</h3>
 		<div class="asklist">
 			<!--{foreach($info_list as $v):}-->
-			<div style="border-bottom:1px #ddd dashed;padding:20px 0 15px">
-				<a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="fl mat3" style="border:1px solid #ddd"><img src="{pe_thumb($v['product_logo'], 60, 60)}" width="60" height="60"></a>
+			<div style="border-bottom:1px #ddd dashed;padding:10px 0">
+				<a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="fl mat3" style="border:1px solid #F2F2F2"><img src="{pe_thumb($v['product_logo'], 45, 45)}" width="45" height="45"></a>
 				<div class="fl" style="width:695px; margin-left:15px; display:inline;">
 					<p><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue font14">{$v['product_name']}</a></p>
 					<p class="mat5 font13">[{pe_date($v['ask_atime'],'Y-m-d')}]咨询：{$v['ask_text']}</p>
