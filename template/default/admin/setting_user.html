@@ -1,0 +1,41 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right">
+	<!--{include(pe_tpl('setting_menu.html'));}-->
+	<div class="right_main">
+		<form method="post" enctype="multipart/form-data">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
+		<tr>
+			<td align="right" width="150">提现金额：</td>
+			<td>
+				<input type="text" name="info[cashout_min]" value="{$info['cashout_min']['setting_value']}" class="inputall input100" /> 元
+				<span class="c888">（最低提现金额）</span>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">提现费用：</td>
+			<td>
+				<input type="text" name="info[cashout_fee]" value="{$info['cashout_fee']['setting_value']*100}" class="inputall input100" /> %
+				<span class="c888">（提现手续费）</span>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">游客购买：</td>
+			<td>
+				<!--{foreach(array(1=>'开启', 0=>'关闭') as $k=>$v):}-->
+				<label style="margin-right:20px"><input type="radio" name="info[web_guestbuy]" value="{$k}" <!--{if($info['web_guestbuy']['setting_value']==$k):}-->checked="checked"<!--{endif;}--> /> {$v}</label>
+				<!--{endforeach;}-->
+				<span class="c888">（开启后用户可以不注册购买）</span>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="hidden" name="pe_token" value="{$pe_token}" />
+				<input type="submit" name="pesubmit" value="提 交" class="tjbtn">
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
+</div>
+<!--{include(pe_tpl('footer.html'));}-->

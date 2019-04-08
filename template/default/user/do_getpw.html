@@ -1,47 +1,49 @@
-<!--{include(pe_tpl('header.html'));}-->
-<div class="width980">
-	<div class="loginbox" style="background:#f9f9f9;">
-	   <div class="logintt"><p>找回密码</p></div>
-	   <div class="fl login_l">
-			<form method="post" id="form">
-		    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-				<td width="80">用 户 名:</td>
-                <td>
-                	<input type="text" name="user_name" class="input1" />
-                	<span id="user_name_show" class="font12"></span>
-                </td>
-            </tr>
-			<tr>
-				<td>注册邮箱:</td>
-                <td>
-                	<input type="text" name="user_email" class="input1" />
-                	<span id="user_email_show" class="font12"></span>
-                </td>
-			</tr>
-			<tr>
-				<td>{$pe_csrf_set}</td>
-                <td>
-					<input type="hidden" name="pesubmit" />
-					<input type="button" class="btn_05" value="提 交" style="margin:0" />
-				</td>
-			</tr>
-            </table>
-			</form>
+<!--{include(pe_tpl('do_header.html'));}-->
+<div class="login_bg">
+	<div style="width:1000px; margin:0 auto">
+	<div class="login_r" style="width:300px;">
+		<div class="zctt">{$menutitle}</div>
+		<form method="post" id="form">
+		<div class="zc_input1">
+			用&nbsp;&nbsp;户 名：<input type="text" name="user_name" class="login_input1" placeholder="请填写您的用户名" />
 		</div>
-		<div class="fl login_zc">
-			<p>已有注册账号？请直接登录</p>
-			<p class="login_lx"><a href="{$pe['host_root']}user.php?mod=do&act=login" title="登录">登录</a></p>
+		<div class="zc_input1 mat10">
+			注册邮箱：<input type="text" name="user_email" class="login_input1" placeholder="请填写您的注册邮箱" />
 		</div>
-		<div class="clear"></div>
+		<div class="zc_input1 mat10">
+			<span class="fl">验&nbsp;&nbsp;证 码：</span>
+			<input type="text" name="authcode" class="login_input1 fl" style="width:90px" placeholder="请填写验证码"  />
+			<img src="{$pe['host_root']}include/class/authcode.class.php?w=100&h=40" onclick="pe_yzm(this)" class="fr mal5" style="cursor:pointer; border:0; height:40px;" />
+			<div class="clear"></div>
+		</div>
+		<div class="mat10">
+			<input type="hidden" name="pesubmit" />
+			<input type="button" class="loginbtn1" value="提 交" />
+		</div>
+		</form>
+		<div class="login_other mat20">
+			<a href="{$pe['host_root']}user.php?mod=do&act=register" class="mar10">免费注册</a> |
+			<a href="{$pe['host_root']}user.php?mod=do&act=login" class="mal10">用户登录</a>
+		</div>
+	</div>
 	</div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
-var form_info = [
-	{"name":"user_name", "mod":"str", "act":"blur", "arg":"5|15", "show_id":"user_name_show","show_error":"用户名为5-15位字符", "must":true},
-	{"name":"user_email", "mod":"match", "act":"blur", "arg":"email", "show_id":"user_email_show","show_error":"邮箱格式错误", "must":true}
-]
-$(":button").pe_submit(form_info, 'form');
+$(function(){
+	$(":button").click(function(){
+		if ($(":input[name='user_name']").val() == '') {
+			pe_tip('请填写用户名');
+			return false;
+		}
+		if ($(":input[name='authcode']").val() == '') {
+			pe_tip('请填写验证码...');
+			return false;
+		}
+		$(this).val('提交中...');
+		pe_submit('user.php?mod=do&act=getpw', function(json){
+			$(":button").val('提交');
+		})
+	})
+})
 </script>
-<!--{include(pe_tpl('footer.html'));}-->
+<!--{include(pe_tpl('do_footer.html'));}-->

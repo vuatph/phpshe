@@ -16,6 +16,7 @@ function cache_write($cache_type = 'all') {
 	}
 	if (in_array($cache_type, array('brand', 'all', 'data'))) {
 		cache::write('brand', $db->index('brand_id')->pe_selectall('brand', array('order by'=>'`brand_word` asc, `brand_order` asc, `brand_id` asc')));
+		cache::write('brand_arr', $db->index('brand_word|brand_id')->pe_selectall('brand', array('order by'=>'`brand_word` asc, `brand_order` asc, `brand_id` asc')));
 	}	
 	if (in_array($cache_type, array('rule', 'all', 'data'))) {
 		$rule_list = $db->index('rule_id')->pe_selectall('rule');
@@ -24,7 +25,7 @@ function cache_write($cache_type = 'all') {
 			$rule_list[$k]['list'] = $ruledata_list[$k];
 		}
 		cache::write('rule', $rule_list);
-		cache::write('ruledata', $db->index('ruledata_id')->pe_selectall('ruledata', array('order by'=>'ruledata_order asc')));
+		cache::write('ruledata', $db->index('ruledata_id')->pe_selectall('ruledata', array('order by'=>'rule_id asc, ruledata_order asc')));
 	}	
 	if (in_array($cache_type, array('class', 'all', 'data'))) {
 		cache::write('class', $db->index('class_id')->pe_selectall('class', array('order by'=>'`class_order` asc, `class_id` asc')));
@@ -41,7 +42,11 @@ function cache_write($cache_type = 'all') {
 		cache::write('setting', $info_list);
 	}
 	if (in_array($cache_type, array('payway', 'all', 'data'))) {
-		cache::write('payway', $db->index('payway_mark')->pe_selectall('payway', array('order by'=>'`payway_order` asc, `payway_id` asc')));
+		$info_list = $db->index('payway_mark')->pe_selectall('payway', array('order by'=>'`payway_order` asc, `payway_id` asc'));
+		foreach ($info_list as $k=>$v) {
+			$info_list[$k]['payway_config'] = unserialize($v['payway_config']);
+		}
+		cache::write('payway', $info_list);
 	}
 	if (in_array($cache_type, array('notice', 'all', 'data'))) {
 		cache::write('notice', $db->index('notice_mark|notice_obj')->pe_selectall('notice'));
@@ -49,12 +54,8 @@ function cache_write($cache_type = 'all') {
 	if (in_array($cache_type, array('menu', 'all', 'data'))) {
 		$info_list = $db->pe_selectall('menu', array('order by'=>'`menu_order` asc, `menu_id` asc'));
 		foreach ($info_list as &$v) {
-			if ($v['menu_type'] == 'sys') {
-				$v['menu_url'] = pe_url($v['menu_url']);
-			}
-			else {
-				$v['target'] = 'target="blank"';
-			}
+			if ($v['menu_type'] == 'sys') $v['menu_url'] = pe_url($v['menu_url']);
+			$v['menu_target'] = $v['menu_target'] ? 'target="_blank"' : 'target="_self"';
 		}
 		cache::write('menu', $info_list);
 	}

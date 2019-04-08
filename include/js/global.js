@@ -4,8 +4,8 @@
  */
 //$.ajaxSettings.async = false;
 //常用正则规则
-var rule_phone = /^((1[0-9]{10})|(029[0-9]{8}))$/;
-var rule_qq = /^[0-9]{5,10}$/;
+var rule_phone = /^1[0-9]{10}$/;
+var rule_qq = /^[0-9]{5,15}$/;
 var rule_email = /^[-_A-Za-z0-9]+@([_A-Za-z0-9]+\.)+[a-z]{2,3}$/;
 var rule_zh = /^[\u4e00-\u9fa5]+$/;
 
@@ -61,10 +61,28 @@ function pe_doall(_this, formid) {
 	$("#"+formid).attr("action", $(_this).attr("href")).submit();
 }
 //dialog函数 by koyshe 2011-11-12
-function pe_dialog(_this, title, width, height, id, lock) {
+function pe_artdialog(_this, title, width, height, id, lock) {
 	art.dialog.open($(_this).attr("href"), {title:title, width: width, height: height, id: id, lock: lock});
 	return false;
 }
+
+//dialog函数 by layer
+function pe_dialog(_this, _title, width, height, id) {
+	var url = (typeof(_this) == 'object') ? $(_this).attr("href") : _this;
+	var layer_index = layer.open({
+		type: 2,
+		title: _title,
+		area: [width+'px', height+'px'],
+		fixed: false, //不固定
+		shadeClose: true,
+		shade: 0.5,
+		content: url //iframe的url
+	});
+	if (width == 'max' && height == 'max') layer.full(layer_index);
+	return false;
+}
+
+//验证码函数
 function pe_yzm(_this) {
 	var yzm_url = $(_this).attr("src");
 	var yzm_time = new Date().getTime();
@@ -89,6 +107,38 @@ function pe_numchange(inputname, type, limit)
 		if (_input_val > limit) _input.val(_input_val - 1)
 	}
 }
+
+//数字处理
+function pe_num(num, type, len, fix) {
+	if (typeof(len) == 'undefined') len = 0;
+	if (typeof(fix) == 'undefined') fix = false;
+	var pow = Math.pow(10, len);	
+	var num = parseFloat(num);
+	if (isNaN(num)) num = 0;
+	if (type == 'round') {
+		num = Math.round(num * pow) / pow;
+	}
+	else if (type == 'ceil') {
+		num = Math.ceil(num * pow) / pow;
+	}
+	else if (type == 'floor') {
+		num = Math.floor(num * pow) / pow;
+	}
+	if (fix == true) {
+		num = num.toFixed(len);
+		/*var num_arr = String(num).split('.');
+		num = String(num_arr[0]);
+		if (typeof(num_arr[1]) != 'undefined') {
+			num = num + '.' + String(num_arr[1]) + String(new Array(len - num_arr[1].length).join("0") + "0");
+		}
+		else {
+			num = num + '.' + String(new Array(len).join("0") + "0");	
+		}
+		num = parseFloat(num);*/
+	}
+	return num;
+}
+
 function pe_inputdefault(name, text) {
 	var _this = $(":input[name='"+name+"']");
 	if (_this.val() == '') _this.val(text);
@@ -121,7 +171,8 @@ function pe_countdown(id, etime) {
 	    var myS=Math.floor(nMS/1000) % 60;
 	    var myMS=Math.floor(nMS/100) % 10;
 	    if(myD>= 0){
-			var str = myD+"天"+myH+"小时"+myM+"分"+myS+"."+myMS+"秒";
+			//var str = myD+"天"+myH+"小时"+myM+"分"+myS+"."+myMS+"秒";
+			var str = myD+"天"+myH+"小时"+myM+"分"+myS+"秒";
 	    }else{
 			var str = "0天0小时0分0秒";
 		}
@@ -130,8 +181,194 @@ function pe_countdown(id, etime) {
 }
 
 function pe_loadscript (url){
-    var script = document.createElement("script");
+	$.get(url);
+    /*var script = document.createElement("script");
     script.type = "text/javascript";
     script.src = url;
-    document.body.appendChild(script);
+    document.body.appendChild(script);*/
+}
+
+//js模板引擎赋值
+function pe_jsontpl(id, json) {
+	$("#"+id).html(template(id+'_tpl', json));
+}
+
+//打开新页面
+function pe_open(url, time) {
+	if (typeof(time) == 'undefined') time = 1;
+	setTimeout(function(){
+		if (url == 'back') {
+			window.history.go(-1);
+		}
+		else if (url == 'reload') {
+			window.location.reload();
+		}
+		else {
+			window.location.href = url;		
+		}
+	}, time);
+}
+
+//ajax获取列表
+var getmore_state = 0;
+function pe_getlist(url, event, func) {
+	if (getmore_state != 0) return;
+	getmore_state = 1;
+	var page = parseInt($("#getmore_jindu").attr("page"));
+	var page = isNaN(page) ? 1 : page + 1;
+	var pageid = parseInt($(".pageid").length);
+	var pageid = isNaN(pageid) ? 0 : pageid;
+	var sleep = 0;
+	$("#getmore_jindu").html('<div id="getmore_load">正在加载...</div>').show();
+	if (pageid >= 10) {
+		//$("#getmore_jindu").show();
+		sleep = 800;
+	}
+	$.getJSON(url + '&page=' + page + '&pageid=' + pageid, {}, function(json){
+		setTimeout(function(){
+	    	if (func && typeof(func) == "function") {
+	    		func(json);
+	    	}
+			if (json.result) {
+		    	//克隆模板并显示信息
+				$("#json_html").clone().insertBefore("#json_html").attr("id", "json_html_" + page).find("#json_tpl").attr("id", "json_tpl_" + page);
+		    	$("#json_html_" + page).html(template('json_tpl_' + page, json));
+		    	$("#getmore_jindu").attr("page", page);
+				$("#getmore_jindu").hide();
+				getmore_state = 0;
+			}
+			else {
+				getmore_state = -1;
+				if (pageid >= 10) {
+					$("#getmore_jindu").html('已加载全部数据');
+				}
+				else {
+					$("#getmore_jindu").hide();
+				}
+				/*setTimeout(function(){
+					$("#getmore_jindu").slideUp("fast");
+				}, 1000)*/		
+			}
+		}, sleep);
+	});
+	if (event == 'down') {
+		//监听下拉刷新
+		var start_height = 36; //距下边界长度px
+		var total_height = 0;
+		$(window).scroll(function(){
+			total_height = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+			if (($(document).height() - start_height) <= total_height) {
+				pe_getlist(url);
+			}
+		})
+	}
+}
+//ajax获取信息
+function pe_getinfo(url, func) {
+	$.getJSON(url, {}, function(json){
+		pe_tip(json.show);
+    	if (func && typeof(func) == "function") {
+    		func(json);
+    	}
+	    else {
+			$("#json_html").html(template('json_tpl', json));		    
+	    }
+	});
+}
+//ajax删除信息
+function pe_delinfo(_this, show) {
+	layer.open({
+	    content: '您确认'+show+'吗?',
+	    btn: ['确认', '取消'],
+	    shadeClose: false,
+	    yes: function(){
+	    	$.getJSON($(_this).attr("href"), {}, function(json){
+	    		layer.closeAll();
+	    		pe_tip(json.show);
+				if (json.result) {
+					$(_this).parents(".pageid").slideUp().remove();	
+				}
+			})
+	    }, no: function(index){
+	    	layer.closeAll();
+	    }
+	});
+	return false;
+}
+
+//弹出提醒框
+function pe_alert(show, func) {
+	layer.open({
+	    content: show,
+	    btn: ['确认'],
+	    yes: function(){
+	    	layer.closeAll();
+	    	if (func && typeof(func) == "function") {
+				func();
+			}
+	    }
+	});
+};
+
+//tip提示信息
+function pe_tip(text) {
+	if (typeof(text) != 'undefined' && text != '') {
+		layer.msg(text);
+	}
+};
+//tips解释信息
+function pe_tips(_this, text) {
+	layer.tips(text, _this, {
+		time : 0
+	});
+	$(_this).mouseout(function(){
+		layer.closeAll('tips');	
+	})
+}
+
+//确认提醒
+function pe_confirm(show, func) {
+	layer.open({
+	    content: '您确认'+show+'吗?',
+	    btn: ['确认', '取消'],
+	    shadeClose: false,
+	    yes: function(){
+	    	layer.closeAll();
+	    	func();
+	    }, no: function(index){
+	    	layer.closeAll();
+	    }
+	});
+	return false;
+}
+
+//ajax表单post提交
+function pe_submit(url, func) {
+	$.post(url, $("#form").serialize(), function(json){
+    	if (json.show != '') pe_tip(json.show);
+    	func(json);
+	}, "json");
+}
+
+//js模板赋值
+function pe_jshtml(id, json){
+	$("#"+id).html(template(id+'_tpl', json));	
+};
+
+//单选/多选美化版
+function pe_select_radio(name, value, pid) {
+	var _this = (typeof(pid) == 'undefined') ? $("body") : $("#"+pid);
+	_this.find(".js_radio").live("click", function(){
+		select_radio(name, $(this).attr("val"), pid);
+	})
+	select_radio(name, value, pid);
+	function select_radio(name, value, pid) {
+		var _this = (typeof(pid) == 'undefined') ? $("body") : $("#"+pid); 
+		if (typeof(value) == 'undefined' || value == null) {
+			var value = _this.find(".js_radio:eq(0)").attr("val");
+		}
+		_this.find(".js_radio").removeClass("sel");
+		_this.find(".js_radio[val='"+value+"']").addClass("sel");
+		$(":input[name='"+name+"']").val(value);
+	} 
 }

@@ -22,8 +22,8 @@ class category {
 			if ($v[$this->field['pid']] == $pid) {
 				//前三级前导符号
 				$level == 1 && $v[$this->field['showname']] = "{$v[$this->field['name']]}";
-				$level == 2 && $v[$this->field['showname']] = "　 ┝ {$v[$this->field['name']]}";
-				$level >= 3 && $v[$this->field['showname']] = '　 '.str_repeat('　　', $level - 2)."┝ {$v[$this->field['name']]}";
+				$level == 2 && $v[$this->field['showname']] = "　 ├ {$v[$this->field['name']]}";
+				$level >= 3 && $v[$this->field['showname']] = '　 '.str_repeat('　　', $level - 2)."├ {$v[$this->field['name']]}";
 				$this->tree[] = $v;
 				$this->gettree($data, $v[$this->field['id']], $level+1);
 			}

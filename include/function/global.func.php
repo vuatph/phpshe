@@ -10,13 +10,12 @@ function pe_tpl($tplname, $tplpath = '')
 	global $pe, $module;
 	$tplnamearr = explode('.', $tplname);
 	$tplpathcache = "{$pe['path_root']}data/cache/template/{$module}/";
-
 	$tplpathcache_name = "{$tplpathcache}{$tplnamearr[0]}.php";
 	$tplpath_name = $pe['path_tpl'] . $tplname;
 	!is_dir($tplpathcache) && mkdir($tplpathcache, 0777, true);
 	if (!is_file($tplpathcache_name) or @filemtime($tplpath_name) > @filemtime($tplpathcache_name)) {
 		if (!is_file($tplpath_name)) {
-			pe_bug("模板文件丢失,路径：./template/default/{$module}/{$tplname}", __LINE__);			
+			pe_bug("模板文件 ./template/default/{$module}/{$tplname} 丢失", __LINE__);			
 		}
 		$html = file_get_contents($tplpath_name);
 		$html = preg_replace('/<\!\-\-\{/', '<?php ', $html);
@@ -91,10 +90,10 @@ function pe_thumb($img = '', $w = null, $h = null, $thumbtype = null)
 	$img = "{$pe['path_root']}$img";
 	switch ($thumbtype) {
 		case 'avatar':
-			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/noavatar.gif";		
+			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/noavatar.jpg";		
 		break;
 		default :
-			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/nopic.gif";	
+			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/nopic.png";	
 		break;
 	}
 	if ($w or $h) {
@@ -109,6 +108,25 @@ function pe_thumb($img = '', $w = null, $h = null, $thumbtype = null)
 	}
 	return str_ireplace($pe['path_root'], $pe['host_root'], $img_new);
 }
+
+//评价星级
+function pe_comment($val) {
+	global $pe;
+	$star_arr = array(1=>'很差', 2=>'较差', 3=>'一般', 4=>'满意', 5=>'很满意');
+	for ($i=1; $i<=5; $i++) {
+		if ($i <= intval($val)) {
+			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-on.png' title='{$i}' style='width:16px;margin-right:1px' />";
+		}
+		elseif (ceil($val) == $i) {
+			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-half.png' title='{$i}' style='width:16px;margin-right:1px' />";			
+		}
+		else {
+			$html .= "<img src='{$pe['host_root']}include/plugin/raty/images/star-off.png' title='{$i}' style='width:16px;margin-right:1px' />";	
+		}
+	}
+	return $html;
+}
+
 //seo信息
 function pe_seo($title='', $keywords='', $description='', $type = 'index')
 {
@@ -122,6 +140,33 @@ function pe_seo($title='', $keywords='', $description='', $type = 'index')
 		$seo['description'] = $description ? $description : $setting['web_description'];
 	}
 	return $seo;
+}
+//获取域名及根路径
+function pe_root($type = 'host') {
+	$ftp_path = rtrim(str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']), '/');
+	$web_path = str_replace('\\', '/', dirname(dirname(dirname(__FILE__))));
+	if ($type == 'host') {
+		if (stripos($ftp_path, $web_path) === false) {			
+			$file_arr = explode('/', $web_path);
+			$file_arrnum = count($file_arr);
+			$php_self = trim($_SERVER['PHP_SELF'], '/');
+			$root['host'] = "http://{$_SERVER['HTTP_HOST']}/";
+			for ($i = 1; $i <= $file_arrnum; $i++) {
+				array_shift($file_arr);
+				if (stripos($php_self, implode('/', $file_arr)) === 0) {
+					$root['host'] .= implode('/', $file_arr)."/";
+					break;
+				}
+			}
+			return $root['host'];
+		}
+		else {
+			return $root['host'] = 'http://'.str_ireplace($ftp_path, $_SERVER['HTTP_HOST'], $web_path).'/';
+		}
+	}
+	if ($type == 'path') {
+		return $root['path'] = "{$web_path}/";	
+	}
 }
 //#####################@ 处理结果展示 @#####################//
 function pe_success($msg, $url=null, $type=null)
@@ -250,21 +295,64 @@ function pe_filename($path, $type = '')
 		break;
 	}
 }
+//获取文件或文件夹读写权限
+function pe_is_writeable($file)
+{
+	//从分隔符DIRECTORY_SEPARATOR判断是linux系统，直接用is_writable判断是否可写
+	if (DIRECTORY_SEPARATOR == '/' and @ini_get("safe_mode") == false) return is_writable($file);
+	//如果是windows平台，首先判断是否是目录，如果是目录，则创建随机文件(用完删除)，判断文件是否成功创建，来判断是否可写
+	if (is_dir($file)) {
+		$file = rtrim($file, '/').'/'.md5(mt_rand(1,100).mt_rand(1,100));
+		if (($fp = @fopen($file, 'x')) === false) {
+			return false;
+		}
+		fclose($fp);
+		@chmod($file, 0777);
+		@unlink($file);
+		return true;
+	}
+	//如果是文件，通过是否能够写入判断
+	elseif (!is_file($file) or ($fp = @fopen($file, 'x')) === false) {
+		return false;
+	}
+	fclose($fp);
+	return true;
+}
 
 //#####################@ 杂项函数 @#####################//
-function pe_404()
+function pe_404($title = null, $show = null)
 {
 	global $pe;
 	header("HTTP/1.1 404 Not Found");
     header("status: 404 Not Found");
-	$title = "404错误页面，您所访问的页面未找到！";
-	$html = "<title>{$title}</title><p style='width:800px;margin:100px auto;padding:50px 10px;background:#f8f8f8'>{$title}<br/><br/><a href='{$pe['host_root']}'>点击返回主页</a></p>";
+    if ($title) {
+    	$title = $title;
+ 		$show  = $show  ? $show  : "{$title}";
+    }
+    else {
+    	$title = "404错误页面，您所访问的页面未找到！";
+ 		$show  = "{$title}<a href='{$pe['host_root']}' style='text-decoration:none'>点击返回首页</a>";
+    }
+print<<<html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$title}</title>
+<meta name="keywords" content="phpshe" />
+<meta name="description" content="phpshe" />
+</head>
+<body style="background:#F9F9F9">
+	<div style="max-width:600px;margin:100px auto;padding:40px 10px 40px 30px; background:#ffffff; border:1px solid #DFDFDF; border-radius:3px;font-size:14px">{$show}</div>
+</body>
+</html>
+html;
 	die($html);
 }
 function pe_bug($notice, $line = null)
 {
-	$html = "<p style='width:800px;margin:100px auto;padding:50px 10px;background:#f8f8f8'>错误提示：{$notice}<br/>错误定位：{$_SERVER[SCRIPT_FILENAME]}(第{$line}行)</p>";
-	die($html);
+	$html = "<p>错误提示：{$notice}</p><p>错误定位：{$_SERVER[SCRIPT_FILENAME]}(第{$line}行)</p>";
+	pe_404('系统错误', $html);
 }
 //获取text
 function pe_text($str)
@@ -303,6 +391,24 @@ function pe_cut($str, $len, $tail = '')
 			return $str_len <= $i ? $cnstr : $cnstr . $tail;
 		}
 	}
+}
+//数字处理
+function pe_num($num, $type, $len = 1, $fix = false) {
+	$pow = pow(10, $len);
+	if ($type == 'round') {
+		$num = round($num, $len);
+	}
+	elseif ($type == 'ceil') {
+		$num = ceil($num * $pow) / $pow;	
+	}
+	elseif ($type == 'floor') {
+		$num = floor(round($num * $pow)) / $pow;	
+	}
+	if ($fix == true) {
+		$num_arr = explode('.', $num);
+		$num = "{$num_arr[0]}.{$num_arr[1]}".str_repeat('0', $len - strlen($num_arr[1]));
+	}
+	return $num;
 }
 //js弹框
 function pe_alert($msg)
@@ -366,10 +472,18 @@ function pe_ip()
     return $realip;
 }
 //转换日期
-function pe_date($time, $type = 'Y-m-d H:i')
-{
+function pe_date($time, $type = 'Y-m-d H:i') {
 	return $time ? date($type, $time) : '';
 }
+
+function pe_date_color($date) {
+	if (substr($date, 0, 10) == date('Y-m-d')) {
+		$date = '<span class="cred">'.$date.'</span>';
+	
+	}
+	return $date;
+}
+
 //多久以前
 function pe_dayago($dmtime) {
 	if (!$dmtime) return '≠';
@@ -386,13 +500,19 @@ function pe_dayago($dmtime) {
 		return (time()-$dmtime).'秒前';
 	}
 }
+
+//获取无符号数字
+function pe_unsigned($num1 = 0, $num2 = 0) {
+	return ($num1 < $num2) ? 0 : $num1 - $num2;
+}
+
 //url处理函数
 function pe_updateurl($k, $v='')
 {
 	$querystr = $_SERVER['QUERY_STRING'];
 	$url = $v === ''
-		? preg_replace('/'.$k.'=[^&]*/', '', $querystr)
-		: ((stripos($querystr, "&{$k}=") === false && stripos($querystr, "{$k}=") === false) ? "{$querystr}&{$k}={$v}" : preg_replace('/'.$k.'=[^&]*/', "$k=$v", $querystr));
+		? preg_replace('/\b'.$k.'=[^&]*/', '', $querystr)
+		: ((stripos($querystr, "&{$k}=") === false && stripos($querystr, "?{$k}=") === false) ? "{$querystr}&{$k}={$v}" : preg_replace('/\b'.$k.'=[^&]*/', "$k=$v", $querystr));
 	$url = trim($url, '&');
 	return $url ? "?{$url}" : '?';
 }
@@ -510,9 +630,113 @@ function pe_dbxss($val) {
    }
    return $val;
 }
+
+//判断手机还是PC
+function pe_mobile(){
+	global $pe;
+	$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';  
+	$useragent_mark = preg_match('|\(.*?\)|' , $useragent , $matches) >0 ? $matches[0] : '';  	  
+	function CheckSubstrs($substrs,$text){  
+		foreach($substrs as $substr) {
+			if (false !== strpos($text,$substr)) {  
+				return true;  
+			}
+		}
+		return false;
+	}
+	$mobile_os_list=array('Google Wireless Transcoder','Windows CE','WindowsCE','Symbian','Android','armv6l','armv5','Mobile','CentOS','mowser','AvantGo','Opera Mobi','J2ME/MIDP','Smartphone','Go.Web','Palm','iPAQ');
+	$mobile_token_list=array('Profile/MIDP','Configuration/CLDC-','160×160','176×220','240×240','240×320','320×240','UP.Browser','UP.Link','SymbianOS','PalmOS','PocketPC','SonyEricsson','Nokia','BlackBerry','Vodafone','BenQ','Novarra-Vision','Iris','NetFront','HTC_','Xda_','SAMSUNG-SGH','Wapaka','DoCoMo','iPhone','iPod');	  
+	$found_mobile = CheckSubstrs($mobile_os_list,$useragent_mark) || CheckSubstrs($mobile_token_list,$useragent);
+	if (($found_mobile or stripos($_SERVER['SERVER_NAME'], 'm.') === 0) && file_exists("{$pe['path_root']}module/mobile_index")) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+function pe_jsonshow($arr, $tmp = 1) {
+	/*if ($tmp == 1) {
+	//	$json['isAdmin'] = true;
+		$json['json'] = $arr;
+	}
+	else {
+		$json = $arr;
+	}*/
+	echo json_encode($arr);
+	die();
+}
+
+//给文件加非阻塞锁
+function pe_lock($name) {
+	$fp = fopen("{$pe['path_root']}data/lock/{$name}.lock", "w+");
+	if (!flock($fp, LOCK_EX | LOCK_NB)) {
+		fclose($fp);
+		return false;
+	}
+	return $fp;
+}
+//给文件解锁
+function pe_lock_del($fp) {
+	flock($fp, LOCK_UN); // 释放锁定
+	fclose($fp);
+}
+
+//表单验证
+function pe_formcheck($type, $value) {
+	switch ($type) {
+		case 'uname':
+			$result = preg_match("/^[A-Za-z0-9\x{4e00}-\x{9fa5}]+$/u", $value) ?  true : false;
+		break;
+		case 'tname':
+			$result = preg_match("/^[\x{4e00}-\x{9fa5}]{2,4}$/u", $value) ?  true : false;
+		break;
+		case 'phone':
+			$result = preg_match("/^1[34578]{1}\d{9}$/", $value) ?  true : false;
+		break;
+		case 'email':
+			$result = preg_match("/^[-_A-Za-z0-9]+@([_A-Za-z0-9]+\.)+[a-z]{2,3}$/", $value) ?  true : false;
+		break;
+	}
+	return $result;
+}
+
+//判断是否ajax请求
+function pe_checkajax() {
+	if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+//设置cookie
+function pe_setcookie($name, $value='', $time=0) {
+	$value = is_array($value) ? serialize($value) : '';
+	setcookie($name, $value, $time);
+}
+//读取cookie
+function pe_getcookie($name, $type = 'string') {
+	$value = pe_trim(pe_stripslashes($_COOKIE[$name]));
+	if ($type == 'array') {
+		$value = unserialize($value) !== false ? unserialize($value) : array();
+	}
+	else {
+		$value = unserialize($value) !== false ? unserialize($value) : $value;
+	}
+	$value = pe_trim(pe_stripslashes($value));
+	return $value;
+}
 //#####################@ 用户权限函数 @#####################//
 function pe_login($utype){
 	global $pe;
 	return (md5($_SESSION["{$utype}_id"].$pe['host_root']) == $_SESSION["{$utype}_idtoken"]) ? 1 : 0;
+}
+//生成用户id(针对未登录用户)
+function pe_user_id() {
+	global $pe;
+	$user_id = md5($pe['db_name'].session_id().$pe['db_name']);
+	$_SESSION['pe_token'] = pe_token_set($user_id);
+	return $user_id;
 }
 ?>

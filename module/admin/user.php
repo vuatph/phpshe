@@ -13,10 +13,10 @@ switch ($act) {
 			pe_token_match();
 			$_p_user_pw && $_p_info['user_pw'] = md5($_p_user_pw);
 			if ($db->pe_update('user', array('user_id'=>$user_id), pe_dbhold($_p_info))) {
-				pe_success('信息修改成功!', $_g_fromto);
+				pe_success('修改成功!', $_g_fromto);
 			}
 			else {
-				pe_error('信息修改失败...');
+				pe_error('修改失败...');
 			}
 		}
 		$info = $db->pe_select('user', array('user_id'=>$user_id));
@@ -50,6 +50,7 @@ switch ($act) {
 			}
 		}
 		$info = $db->pe_select('user', array('user_id'=>$user_id));
+		$cashout = $db->pe_select('cashout', array('user_id'=>$user_id, 'cashout_state'=>0));
 		$seo = pe_seo($menutitle='充值(扣除)金额', '', '', 'admin');
 		include(pe_tpl('user_addmoney.html'));
 	break;
@@ -108,7 +109,7 @@ switch ($act) {
 		$_g_name && $sqlwhere .= " and `user_name` like '%{$_g_name}%'";
 		$_g_phone && $sqlwhere .= " and `user_phone` like '%{$_g_phone}%'";
 		$_g_email && $sqlwhere .= " and `user_email` like '%{$_g_email}%'";
-		if (in_array($_g_orderby, array('ltime|desc', 'point|desc'))) {
+		if (in_array($_g_orderby, array('ltime|desc', 'point|desc', 'ordernum|desc'))) {
 			$orderby = explode('|', $_g_orderby);
 			$sqlwhere .= " order by `user_{$orderby[0]}` {$orderby[1]}";
 		}
@@ -116,6 +117,10 @@ switch ($act) {
 			$sqlwhere .= " order by `user_id` desc";
 		}
 		$info_list = $db->pe_selectall('user', $sqlwhere, '*', array(20, $_g_page));
+
+		$tongji['user'] = $db->pe_num('user');
+		$tongji['useraddr'] = $db->pe_num('useraddr');
+		$tongji['userbank'] = $db->pe_num('userbank');
 		$seo = pe_seo($menutitle='会员列表', '', '', 'admin');
 		include(pe_tpl('user_list.html'));
 	break;

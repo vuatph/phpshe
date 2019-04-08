@@ -317,7 +317,7 @@
       for (var i = 1; i <= this.opt.number; i++) {
         var
           name  = methods._nameForIndex.call(this, i),
-          attrs = { alt: i, src: this.opt.path + this.opt[name] };
+    attrs = { alt: i, src: this.opt.path + this.opt[name], style:'width:20px;margin-right:1px' };
 
         if (this.opt.starType !== 'img') {
           attrs = { 'data-alt': i, 'class': attrs.src }; // TODO: use $.data.

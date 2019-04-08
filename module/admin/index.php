@@ -26,13 +26,13 @@ switch ($act) {
 		$tongji['order_all'] = $db->pe_num('order'); 
 
 		$tongji['product_num'] = $db->pe_num('product');
-		$tongji['ask_num'] = $db->pe_num('ask');
 		$tongji['comment_num'] = $db->pe_num('comment');
+		$tongji['cashout_num'] = $db->pe_num('cashout', array('cashout_state'=>array(0,1)));
 
-		$tongji['order_notpay'] = $db->pe_num('order', " and `order_state` = 'notpay' and `order_payway` != 'cod'");
-		$tongji['order_waitsend'] = $db->pe_num('order', " and (`order_state` = 'paid' or (`order_state` = 'notpay' and `order_payway` = 'cod'))");
-		$tongji['order_waitsure'] = $db->pe_num('order', array('order_state'=>'send'));
-		$tongji['ask_waitreply'] = $db->pe_num('ask', array('ask_state'=>0));
+		$tongji['order_wpay'] = $db->pe_num('order', array('order_state'=>'wpay'));
+		$tongji['order_wsend'] = $db->pe_num('order', array('order_state'=>'wsend'));
+		$tongji['order_wget'] = $db->pe_num('order', array('order_state'=>'wget'));
+		$tongji['cashout_js'] = $db->pe_num('cashout', array('cashout_state'=>0));
 
 		$php_os = PHP_OS;
 		$php_version = PHP_VERSION;
@@ -45,7 +45,7 @@ switch ($act) {
 			$apache_arr = explode(' ', $_SERVER["SERVER_SOFTWARE"]);
 			$php_apache = $apache_arr[0];	
 		}
-		$seo = pe_seo($menutitle='后台首页', '', '', 'admin');
+		$seo = pe_seo($menutitle='网站概况', '', '', 'admin');
 		include(pe_tpl('index.html'));
 	break;
 }

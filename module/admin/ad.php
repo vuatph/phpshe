@@ -5,7 +5,14 @@
  */
 $menumark = 'ad';
 pe_lead('hook/cache.hook.php');
-$ad_position = array('index_jdt'=>'首页焦点图广告(700*300)', 'index_header'=>'首页顶部广告(1200*80)','index_footer'=>'首页底部广告(1200*80)', 'header'=>'整站顶部广告(1200*80)','footer'=>'整站底部广告(1200*80)');
+$cache_category = cache::get('category');
+$cache_category_arr = cache::get('category_arr');
+if (is_array($cache_category_arr[0])) {
+	foreach ($cache_category_arr[0] as $k=>$v) {
+		$category_list['index_category'][] = array('id'=>$v['category_id'], 'name'=>$v['category_name']);
+	}
+}
+$category_list = json_encode($category_list);
 switch ($act) {
 	//#####################@ 添加广告 @#####################//
 	case 'add':
@@ -16,12 +23,13 @@ switch ($act) {
 				$upload = new upload($_FILES['ad_logo']);
 				$_p_info['ad_logo'] = $upload->filehost;
 			}
+			$_p_info['category_id'] = intval($_p_info['category_id']);
 			if ($db->pe_insert('ad', pe_dbhold($_p_info))) {
 				cache_write('ad');
-				pe_success('广告添加成功!', 'admin.php?mod=ad');
+				pe_success('添加成功!', 'admin.php?mod=ad');
 			}
 			else {
-				pe_error('广告添加失败...');
+				pe_error('添加失败...');
 			}
 		}
 		$info['ad_state'] = 1;
@@ -38,15 +46,16 @@ switch ($act) {
 				$upload = new upload($_FILES['ad_logo']);
 				$_p_info['ad_logo'] = $upload->filehost;
 			}
+			$_p_info['category_id'] = intval($_p_info['category_id']);
 			if ($db->pe_update('ad', array('ad_id'=>$ad_id), pe_dbhold($_p_info))) {
 				cache_write('ad');
-				pe_success('广告修改成功!', 'admin.php?mod=ad');
+				pe_success('修改成功!', $_g_fromto);
 			}
 			else {
-				pe_error('广告修改失败...');
+				pe_error('修改失败...');
 			}
 		}
-		$info = $db->pe_select('ad', array('ad_id'=>$ad_id));
+		$info = $db->pe_select('ad', array('ad_id'=>$ad_id));		
 		$seo = pe_seo($menutitle='修改广告', '', '', 'admin');
 		include(pe_tpl('ad_add.html'));
 	break;
@@ -58,27 +67,29 @@ switch ($act) {
 		}
 		if ($result) {
 			cache_write('ad');
-			pe_success('广告排序成功!');
+			pe_success('排序成功!');
 		}
 		else {
-			pe_error('广告排序失败...');
+			pe_error('排序失败...');
 		}
 	break;
 	//#####################@ 广告删除 @#####################//
 	case 'del':
 		pe_token_match();
-		if ($db->pe_delete('ad', array('ad_id'=>is_array($_p_ad_id) ? $_p_ad_id : $_g_id))) {
+		$ad_id = is_array($_p_ad_id) ? $_p_ad_id : intval($_g_id);
+		if ($db->pe_delete('ad', array('ad_id'=>$ad_id))) {
 			cache_write('ad');
-			pe_success('广告删除成功!');
+			pe_success('删除成功!');
 		}
 		else {
-			pe_error('广告删除失败...');
+			pe_error('删除失败...');
 		}
 	break;
 	//#####################@ 广告状态 @#####################//
 	case 'state':
 		pe_token_match();
-		if ($db->pe_update('ad', array('ad_id'=>is_array($_p_ad_id) ? $_p_ad_id : $_g_id), array('ad_state'=>$_g_state))) {
+		$ad_id = is_array($_p_ad_id) ? $_p_ad_id : intval($_g_id);
+		if ($db->pe_update('ad', array('ad_id'=>$ad_id), array('ad_state'=>$_g_state))) {
 			cache_write('ad');
 			pe_success("操作成功!");
 		}
@@ -88,7 +99,14 @@ switch ($act) {
 	break;
 	//#####################@ 广告列表 @#####################//
 	default :
-		$info_list = $db->pe_selectall('ad', array('order by'=>'`ad_order` asc, `ad_id` asc'), '*', array(10, $_g_page));
+		$_g_position && $sql_where .= " and `ad_position` = '{$_g_position}'";
+		$sql_where .= " order by `ad_order` asc, `ad_id` desc";
+		$info_list = $db->pe_selectall('ad', $sql_where, '*', array(20, $_g_page));
+		$tongji = $db->index('ad_position')->pe_selectall('ad', array('group by'=>'ad_position'), 'count(1) as num, ad_position');
+		foreach ($ini['ad_position'] as $k=>$v){
+			$tongji[$k] = intval($tongji[$k]['num']);
+			$tongji['all'] += $tongji[$k]; 
+		}
 		$seo = pe_seo($menutitle='广告列表', '', '', 'admin');
 		include(pe_tpl('ad_list.html'));
 	break;

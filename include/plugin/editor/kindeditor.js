@@ -238,7 +238,7 @@ K.options = {
 	pluginsPath : K.basePath + 'plugins/',
 	themeType : 'default',
 	langType : 'zh_CN',
-	urlType : '',
+	urlType : 'domain',
 	newlineTag : 'p',
 	resizeType : 2,
 	syncType : 'form',

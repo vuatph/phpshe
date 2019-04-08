@@ -9,45 +9,37 @@
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
 </head>
-<body style="background:#fff">
-<form method="post" id="form">
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak" style="width:360px;margin:0;">
+<body style="background:#fff;padding:5px">
+<form method="post" id="form" autocomplete="off">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <tr>
 	<td class="bgtt aright c888" width="100">账户积分</td>
-	<td class="num5 cgreen strong">{$info['user_point']} 积分</td>
+	<td class="num strong">{$info['user_point']} 点</td>
 </tr>
 <tr>
-	<td class="bgtt aright c888">{$act=='addpoint'?'增加':'扣除'}积分</td>
-	<td><input type="text" name="point" class="inputall input80" /> 积分</td>
+	<td class="bgtt aright c888">{$act=='addpoint'?'充值':'扣除'}积分</td>
+	<td><input type="text" name="point" class="inputall input100" /> 点 <span id="point_show"></span></td>
 </tr>
 <tr>
 	<td class="bgtt aright c888">操作说明</td>
-	<td><input type="text" name="text" class="inputall input200" /></td>
-</tr>
-<tr>
-	<td class="bgtt aright c888"></td>
-	<td>
-		<input type="hidden" name="pesubmit" />
-		<input type="hidden" name="pe_token" value="{$pe_token}" />
-		<input type="button" id="button" value="提 交" class="tjbtn" />
-	</td>
+	<td><input type="text" name="text" class="inputall input250" /> <span id="text_show"></span></td>
 </tr>
 </table>
+<div class="acenter mat20">
+	<input type="hidden" name="pesubmit" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="button" value="提 交" class="tjbtn" />
+</div>
 </form>
 </body>
 </html>
+<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
-$(function(){
-	$("#button").click(function(){
-		if ($(":input[name='point']").val() == '') {
-			alert('积分必须填写...');
-			return;
-		}
-		if ($(":input[name='text']").val() == '') {
-			alert('说明必须填写...');
-			return;
-		}
-		$("form").submit();
-	})
-})
+var form_info = [
+	{"name":"point", "mod":"str", "act":"blur", "arg":"", "show_id":"point_show","show_error":"必填", "must":true},
+	{"name":"text", "mod":"str", "act":"blur", "arg":"", "show_id":"text_show","show_error":"必填", "must":true}
+]
+$(":button").pe_submit(form_info, 'form');
 </script>
+</body>
+</html>

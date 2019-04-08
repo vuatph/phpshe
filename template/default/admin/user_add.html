@@ -4,74 +4,74 @@
 		<a href="javascript:;" class="sel">{$menutitle}</a>
 		<div class="clear"></div>
 	</div>
-	<form method="post">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20">
-	<tr>
-		<td align="right" width="150">用 户 名：</td>
-		<td>{$info['user_name']}</td>
-	</tr>
-	<tr>
-		<td align="right">密　　码：</td>
-		<td><input type="password" name="user_pw" class="inputall input200" autocomplete="off" /> <span class="c888">如无需修改请留空</span></td>
-	</tr>
-	<!--<tr>
-		<td align="right">账户余额：</td>
-		<td>
-			<span class="num5 cgreen strong fl" style="width:110px">{$info['user_money']} 元</span>
-			<a href="admin.php?mod=user&act=addmoney&id={$info['user_id']}" class="tag_green mar10" onclick="return pe_dialog(this, '账户充值', 370, 168)">充值</a>
-			<a href="admin.php?mod=user&act=delmoney&id={$info['user_id']}" class="tag_org " onclick="return pe_dialog(this, '账户扣钱', 370, 168)">扣钱</a>
-			<div class="clear"></div>
-		</td>
-	</tr>-->
-	<tr>
-		<td align="right">账户积分：</td>
-		<td>
-			<span class="num fl" style="width:110px">{$info['user_point']} 积分</span>
-			<a href="admin.php?mod=user&act=addpoint&id={$info['user_id']}" class="tag_green mar10" onclick="return pe_dialog(this, '增加积分', 360, 181)">增加</a>
-			<a href="admin.php?mod=user&act=delpoint&id={$info['user_id']}" class="tag_org " onclick="return pe_dialog(this, '扣除积分', 360, 181)">扣除</a>
-			<div class="clear"></div>
-		</td>
-	</tr>
-	<tr>
-		<td align="right">用户姓名：</td>
-		<td><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputall input200" /></td>
-	</tr>
-	<tr>
-		<td align="right">联系电话：</td>
-		<td><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputall input200" /></td>
-	</tr>
-	<tr>
-		<td align="right">收货地址：</td>
-		<td><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputall input400" /></td>
-	</tr>
-	<tr>
-		<td align="right">常用邮箱：</td>
-		<td><input type="text" name="info[user_email]" value="{$info['user_email']}" class="inputall input200" /></td>
-	</tr>
-	<tr>
-		<td align="right">注册地区：</td>
-		<td><a href="http://www.ip138.com/ips138.asp?ip={$info['user_ip']}" target="_blank" class="ipname"></a><span class="num mal10">（IP：{$info['user_ip']}）</span></td>
-	</tr>
-	<tr>
-		<td align="right">注册日期：</td>
-		<td class="num">{pe_date($info['user_atime'])}</td>
-	</tr>
-	<tr>
-		<td align="right">上次登录：</td>
-		<td class="num">{pe_date($info['user_ltime'])}</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td>
-			<input type="hidden" name="pe_token" value="{$pe_token}" />
-			<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
-		</td>
-	</tr>
-	</table>
-	</form>
+	<div class="right_main">
+		<form method="post" id="form">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20">
+		<tr>
+			<td align="right" width="150">用 户 名：</td>
+			<td>{$info['user_name']}</td>
+		</tr>
+		<tr>
+			<td align="right">密　　码：</td>
+			<td><input type="password" name="user_pw" class="inputall input200" autocomplete="off" /> <span class="c888">如无需修改请留空</span></td>
+		</tr>
+		<tr>
+			<td align="right">账户余额：</td>
+			<td>
+				<span class="num corg fl" style="width:110px">{$info['user_money']} 元</span>
+				<a href="admin.php?mod=user&act=addmoney&id={$info['user_id']}" class="admin_edit mar10" onclick="return pe_dialog(this, '账户充值', 450, 250)">充值</a>
+				<a href="admin.php?mod=user&act=delmoney&id={$info['user_id']}" class="admin_del " onclick="return pe_dialog(this, '账户扣款', 450, 250)">扣款</a>
+				<div class="clear"></div>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">账户积分：</td>
+			<td>
+				<span class="num fl" style="width:110px">{$info['user_point']} 点</span>
+				<a href="admin.php?mod=user&act=addpoint&id={$info['user_id']}" class="admin_edit mar10" onclick="return pe_dialog(this, '积分充值', 450, 250)">充值</a>
+				<a href="admin.php?mod=user&act=delpoint&id={$info['user_id']}" class="admin_del " onclick="return pe_dialog(this, '积分扣除', 450, 250)">扣除</a>
+				<div class="clear"></div>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">用户姓名：</td>
+			<td><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputall input200" /></td>
+		</tr>
+		<tr>
+			<td align="right">联系电话：</td>
+			<td><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputall input200" /></td>
+		</tr>
+		<!--<tr>
+			<td align="right">收货地址：</td>
+			<td><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputall input400" /></td>
+		</tr>-->
+		<tr>
+			<td align="right">常用邮箱：</td>
+			<td><input type="text" name="info[user_email]" value="{$info['user_email']}" class="inputall input200" /></td>
+		</tr>
+		<tr>
+			<td align="right">注册地区：</td>
+			<td><a href="http://www.ip138.com/ips138.asp?ip={$info['user_ip']}" target="_blank" class="ipname"></a><span class="num mal10">（IP：{$info['user_ip']}）</span></td>
+		</tr>
+		<tr>
+			<td align="right">注册日期：</td>
+			<td class="num">{pe_date($info['user_atime'])}</td>
+		</tr>
+		<tr>
+			<td align="right">上次登录：</td>
+			<td class="num">{pe_date($info['user_ltime'])}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<input type="hidden" name="pe_token" value="{$pe_token}" />
+				<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
 </div>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 <script type="text/javascript">
 $(function(){
 	$.getJSON("http://www.phpshe.com/index.php?mod=api&act=ipname&ip={$info['user_ip']}&callback=?", function(json){

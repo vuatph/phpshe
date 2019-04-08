@@ -571,11 +571,11 @@ class PHPMailer {
       // Choose the mailer and send through it
       switch($this->Mailer) {
         case 'sendmail':
-          return $this->SendmailSend($header, $body);
+          return array('result'=>$this->SendmailSend($header, $body));
         case 'smtp':
-          return $this->SmtpSend($header, $body);
+          return array('result'=>$this->SmtpSend($header, $body));
         default:
-          return $this->MailSend($header, $body);
+          return array('result'=>$this->MailSend($header, $body));
       }
 
     } catch (phpmailerException $e) {
@@ -583,8 +583,9 @@ class PHPMailer {
       if ($this->exceptions) {
         throw $e;
       }
-      echo $e->getMessage()."\n";
-      return false;
+      //echo $e->getMessage()."\n";
+      //return false;
+      return array('result'=>false, 'show'=>$e->getMessage());
     }
   }
 

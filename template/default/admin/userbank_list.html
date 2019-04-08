@@ -1,0 +1,71 @@
+<!--{include(pe_tpl('header.html'));}-->
+<div class="right">
+	<div class="now">
+		<a href="admin.php?mod=user" <!--{if($mod=='user'):}-->class="sel"<!--{endif;}-->>会员列表（{$tongji['user']}）</a>
+		<a href="admin.php?mod=userbank" <!--{if($mod=='userbank'):}-->class="sel"<!--{endif;}-->>收款账户（{$tongji['userbank']}）</a>
+		<a href="admin.php?mod=useraddr" <!--{if($mod=='useraddr'):}-->class="sel"<!--{endif;}-->>收货地址（{$tongji['userbank']}）</a>
+		<div class="clear"></div>
+	</div>
+	<div class="right_main">
+		<div class="search">
+			<form method="get">
+			<input type="hidden" name="mod" value="{$_g_mod}" />
+			用户名：<input type="text" name="name" value="{$_g_name}" class="inputtext input150"/>
+			收款帐号：<input type="text" name="num" value="{$_g_num}" class="inputtext input150" />
+			收款人：<input type="text" name="tname" value="{$_g_tname}" class="inputtext input150" />
+			<select name="type" class="selectmini">
+			<option value="" href="{pe_updateurl('type', '')}">= 账户类型 =</option>
+			<!--{foreach($ini['userbank_type'] as $k=>$v):}-->
+			<option value="{$k}" href="{pe_updateurl('type', $k)}" <!--{if($_g_type==$k):}-->selected="selected"<!--{endif;}-->><!--{echo ++$index}-->){$v}</option>
+			<!--{endforeach;}-->
+			</select>
+			<input type="submit" value="搜索" class="input_btn" />
+			</form>
+		</div>
+		<form method="post" id="form">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+		<tr>
+			<th class="bgtt" width="20"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'userbank_id')" /></th>
+			<th class="bgtt" width="50">ID号</th>
+			<th class="bgtt" width="150">用户名</th>
+			<th class="bgtt" width="220">账户类型</th>
+			<th class="bgtt">收款帐号</th>
+			<th class="bgtt" width="150">收款人</th>
+			<th class="bgtt" width="150">添加日期</th>
+			<th class="bgtt" width="110">操作</th>
+		</tr>
+		<!--{foreach($info_list as $v):}-->
+		<tr>
+			<td><input type="checkbox" name="userbank_id[]" value="{$v['userbank_id']}"></td>
+			<td class="num">{$v['userbank_id']}</td>
+			<td>{$v['user_name']}</td>
+			<td>{$v['userbank_name']}</td>
+			<td>{$v['userbank_num']}</td>
+			<td>{$v['userbank_tname']}</td>
+			<td class="num"><span <!--{if(pe_date($v['userbank_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['userbank_atime'])}</span></td>
+			<td>
+				<a href="admin.php?mod=userbank&act=edit&id={$v['userbank_id']}" onclick="return pe_dialog(this, '修改收款账户', 650, 400);" class="admin_edit mar3">修改</a>
+				<a href="admin.php?mod=userbank&act=del&id={$v['userbank_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
+			</td>
+		</tr>
+		<!--{endforeach;}-->
+		</table>
+		</form>
+	</div>
+	<div class="right_bottom">
+		<span class="fl mal10">
+			<input type="checkbox" name="checkall" onclick="pe_checkall(this, 'userbank_id')" />
+			<button href="admin.php?mod=userbank&act=del&token={$pe_token}" onclick="return pe_cfall(this, 'userbank_id', 'form', '批量删除')">批量删除</button>
+		</span>
+		<span class="fr fenye">{$db->page->html}</span>
+		<div class="clear"></div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$("select").change(function(){
+		window.location.href = 'admin.php' + $(this).find("option:selected").attr("href");
+	})
+})
+</script>
+<!--{include(pe_tpl('footer.html'));}-->

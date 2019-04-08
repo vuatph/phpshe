@@ -39,14 +39,14 @@ switch ($act) {
 	//#####################@ 设置模板 @#####################//
 	case 'setting':
 		pe_token_match();
-		pe_lead('hook/cache.hook.php');
 		if ($db->pe_update('setting', array('setting_key'=>'web_tpl'), array('setting_value'=>pe_dbhold($_g_tpl)))) {
+			pe_lead('hook/cache.hook.php');
 			cache_write('setting');
 			cache_write('template');
-			pe_success('模板启用成功!');
+			pe_success('启用成功!');
 		}
 		else {
-			pe_error('模板启用失败...');
+			pe_error('启用失败...');
 		}
 	break;
 	//#####################@ 删除模板 @#####################//
@@ -55,24 +55,20 @@ switch ($act) {
 		$tpl_name = pe_dbhold($_g_tpl);
 		if ($tpl_name == 'default') pe_error('默认模板不能删除...');
 		if ($db->pe_num('setting', array('setting_key'=>'web_tpl', 'setting_value'=>$tpl_name))) {
-			pe_error('模板正在使用中...');
+			pe_error('使用中不能删除');
 		}
 		else {
 			pe_dirdel("{$pe['path_root']}template/{$tpl_name}");
-			pe_success('模板删除成功!');
+			pe_success('删除成功!');
 		}
 	break;
 	//#####################@ 模板管理 @#####################//
 	default:
-		$moban_list = pe_dirlist('template/*');
-		$moban_qian = $cache_setting['web_tpl'] == 'default' ? array('default') : array('default', $cache_setting['web_tpl']);
-		foreach ($moban_list as $k=>$v) {
-			if (in_array($v, $moban_qian)) unset($moban_list[$k]);
+		$info_list = pe_dirlist('template/*');
+		$moban_now = $cache_setting['web_tpl'];
+		foreach ($info_list as $k=>$v) {
+			if (!is_dir("{$pe['path_root']}template/{$v}")) unset($info_list[$k]);
 		}
-		foreach ($moban_qian as $k=>$v) {
-			array_unshift($moban_list, $v);
-		}
-
 		$seo = pe_seo($menutitle='模板管理', '', '', 'admin');
 		include(pe_tpl('moban_list.html'));
 	break;

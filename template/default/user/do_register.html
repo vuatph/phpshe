@@ -1,90 +1,81 @@
-<!--{include(pe_tpl('header.html'));}-->
-<div class="width980">
-	<div class="loginbox" style="background:#f9f9f9;">
-		<div class="logintt">用户注册</div>
-		<div class="fl zhuce_l">
-			<form method="post" id="form">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="regist_table">
-			<tr>
-				<td width="20%" align="right"><span class="cred">*</span> 登录帐号:</td>
-				<td width="">
-					<input type="text" name="user_name" class="input1" />
-					<span class="c888 font12" id="user_name_show">由5-15位字符组成（可以是字母、汉字、数字）</span>
-				</td>
-			</tr>
-			<tr>
-				<td align="right"><span class="cred">*</span> 登录密码:</td>
-				<td>
-					<input type="password" name="user_pw" class="input1" />
-					<span class="c888 font12" id="user_pw_show">密码由6-20个字符组成!</span>
-				</td>
-			</tr>
-			<tr>
-				<td align="right"><span class="cred">*</span> 确认密码:</td>
-				<td>
-					<input type="password" name="user_pw1" class="input1" />
-					<span class="c888 font12" id="user_pw1_show"></span>
-				</td>
-			</tr>
-			<tr>
-				<td align="right"><span class="cred">*</span> 常用邮箱:</td>
-				<td>
-					<input type="text" name="user_email" class="input1" />
-					<span class="c888 font12" id="user_email_show">请填写您的常用邮箱，以方便与您联系</span>
-				</td>
-			</tr>
-			<tr>
-				<td align="right"><span class="cred">*</span> 验 证 码:</td>
-				<td>
-					<input type="text" name="authcode" class="input1 fl" style="width:100px" />
-					<img src="{$pe['host_root']}include/class/authcode.class.php" onclick="pe_yzm(this)" class="fl mal5" style="cursor:pointer;border:1px solid #d4d4d4" />
-					<span class="fl mat5 mal10 font12" id="authcode_show"></span>
-					<div class="clear"></div>
-				</td>
-			</tr>
-			<tr>
-				<td align="right"></td>
-				<td>
-					<input type="hidden" name="pesubmit" />
-					<input type="button" class="loginbtn" value="点击注册" />
-				</td>
-			</tr>
-			</table>
-			</form>
+<!--{include(pe_tpl('do_header.html'));}-->
+<div class="login_bg1">
+<div style="width:1000px; margin:0 auto; position:relative">
+	<div class="login_r" style="height:430px; width:300px; position:absolute; right:0; top:-45px;">
+		<div class="zctt">用户注册</div>
+		<form method="post" id="form">
+		<div class="zc_input1">
+			用&nbsp;&nbsp;户 名：<input type="text" name="user_name" class="login_input1" placeholder="由5-15位字符组成（字母/数字/汉字）" />
 		</div>
-		<div class="fl login_zc">
-			<p>已有注册账号？请直接登录</p>
-			<p class="login_lx"><a href="{$pe['host_root']}user.php?mod=do&act=login" title="登录">登录</a></p>
+		<div class="zc_input1 mat10">
+			登录密码：<input type="password" name="user_pw" class="login_input1" placeholder="密码由6-20个字符组成" />
+		</div>
+		<div class="zc_input1 mat10">
+			确认密码：<input type="password" name="user_pw1" class="login_input1" placeholder="请再次输入登录密码" />
+		</div>
+		<div class="zc_input1 mat10">
+			常用邮箱：<input type="text" name="user_email" class="login_input1" placeholder="请填写您的电子邮箱" />
+		</div>
+		<div class="zc_input1 mat10" style="border-bottom:1px #e2e2e2 solid; padding-right:0; width:290px">
+			<span class="fl">验&nbsp;&nbsp;证 码：</span>
+			<input type="text" name="authcode" class="login_input1 fl" style="width:90px" />
+			<img src="{$pe['host_root']}include/class/authcode.class.php?w=110&h=40" onclick="pe_yzm(this)" class="fr mal5" style="cursor:pointer; border:0; height:40px;" />
+			<div class="clear"></div>
+		</div>
+		<div class="mat25">
+			<input type="hidden" name="pesubmit" />
+			<input type="button" class="loginbtn1" value="点击注册" />
+		</div>
+		</form>
+		<div class="login_other mat20" style="text-align:right">
+			已有注册账号？请直接 <a href="{$pe['host_root']}user.php?mod=do&act=login" title="登录"><span class="corg">登录</span></p>
 		</div>
 		<div class="clear"></div>
 	</div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
+</div>
 <script type="text/javascript">
 $(function(){
-var reg_checkname = function () {
-	return	{'url':"{$pe['host_root']}user.php",
-			'data':{'mod':'do','act':'check','type':'name','value':$(":input[name='user_name']").val()}}
-}
-var reg_checkemail = function () {
-	return	{'url':"{$pe['host_root']}user.php",
-			'data':{'mod':'do','act':'check','type':'email','value':$(":input[name='user_email']").val()}}
-}
-var reg_checkauthcode = function () {
-	return	{'url':"{$pe['host_root']}user.php",
-			'data':{'mod':'do','act':'check','type':'authcode','value':$(":input[name='authcode']").val()}}
-}
-var form_info = [
-	{"name":"user_name", "mod":"str", "act":"blur", "arg":"5|15", "show_id":"user_name_show","show_error":"用户名为5-15位字符", "must":true},
-	{"name":"user_name", "mod":"ajax", "act":"blur", "arg":reg_checkname, "show_id":"user_name_show","show_error":"该用户名已被注册", "must":true},
-	{"name":"user_pw", "mod":"str", "act":"blur", "arg":"6|16", "show_id":"user_pw_show","show_error":"密码为6-20位字符", "must":true},
-	{"name":"user_pw1", "mod":"str", "act":"blur", "arg":"6|16", "show_id":"user_pw1_show","show_error":"确认密码为6-20位字符", "must":true},
-	{"name":"user_pw1", "mod":"equal", "act":"blur", "arg":$(":input[name='user_pw']"), "show_id":"user_pw1_show","show_error":"两次密码不一致", "must":true},
-	{"name":"user_email", "mod":"match", "act":"blur", "arg":"email", "show_id":"user_email_show","show_error":"邮箱格式错误", "must":true},
-	{"name":"user_email", "mod":"ajax", "act":"blur", "arg":reg_checkemail, "show_id":"user_email_show","show_error":"该邮箱已被注册", "must":true},
-	{"name":"authcode", "mod":"ajax", "act":"blur", "arg":reg_checkauthcode, "show_id":"authcode_show","show_error":"验证码错误", "must":true}
-]
-$(":button").pe_submit(form_info, 'form');
+	$(":button").click(function(){
+		if ($(":input[name='user_name']").val() == '') {
+			pe_tip('请填写用户名...');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val() == '') {
+			pe_tip('请填写登录密码...');
+			return false;
+		}
+		if ($(":input[name='user_pw1']").val() == '') {
+			pe_tip('请填写确认密码...');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val() != $(":input[name='user_pw1']").val()) {
+			pe_tip('登录密码与确认密码不一致');
+			return false;
+		}
+		if ($(":input[name='user_email']").val() == '') {
+			pe_tip('请填写常用邮箱...');
+			return false;
+		}
+		if ($(":input[name='authcode']").val() == '') {
+			pe_tip('请填写验证码...');
+			return false;
+		}
+		$(this).val('提交中...');
+		pe_submit('user.php?mod=do&act=register', function(json){
+			if (json.result) {
+				if ('{$_g_fromto}' != '') {
+					pe_open('back', 1000);
+				}
+				else {
+					pe_open('user.php', 1000);				
+				}
+			}
+			else {
+	    		$(":button").val('注 册');			
+			}
+		})
+	})
 })
 </script>
-<!--{include(pe_tpl('footer.html'));}-->
+<!--{include(pe_tpl('do_footer.html'));}-->

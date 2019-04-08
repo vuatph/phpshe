@@ -1,62 +1,51 @@
-<!--{include(pe_tpl('header.html'));}-->
-<div class="huiyuan_content">
-	<!--{include(pe_tpl('user_menu.html'));}-->
-	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
-		<form method="post" id="form">
-		<div class="hy_tablelist">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<th width="150">商品详情</th>
-			<th width="200">评分</th>
-			<th>评价内容</th>
-		</tr>
-		<!--{foreach($info_list as $v):}-->
-		<!--{if($info['order_comment']):}-->
-		<!--{$comment = $db->pe_select('comment', array('order_id'=>$order_id, 'product_id'=>$v['product_id']))}-->
-		<tr>
-			<td>
-				<a href="{pe_url('product-'.$v['product_id'])}" target="_blank"><img src="{pe_thumb($v['product_logo'], 220, 220)}" width="100" height="100"></a>
-				<br /><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a>
-			</td>
-			<td>{comment_star($comment['comment_star'])}</td>
-			<td class="aleft">{$comment['comment_text']}</td>
-		</tr>
-		<!--{else:}-->
-		<tr>
-			<td>
-				<a href="{pe_url('product-'.$v['product_id'])}" target="_blank"><img src="{pe_thumb($v['product_logo'], 220, 220)}" width="100" height="100"></a>
-				<br /><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue font12">{$v['product_name']}</a>
-			</td>
-			<td>
-				<input type="hidden" id="comment_star_{$v['product_id']}" name="comment_star[{$v['product_id']}]" value="5" />
-				<span id="star_{$v['product_id']}" class="fl" style="margin-left:40px"></span>
-				<span id="comment_star_show_{$v['product_id']}" class="fl mal10 corg"></span>
-				<div class="clear"></div>
-			</td>
-			<td>		
-				<textarea name="comment_text[{$v['product_id']}]" style="width:300px;height:100px" class="fl"></textarea>
-				<span id="comment_text_show_{$v['product_id']}" style="margin-top:45px" class="fl mal10"></span>
-				<div class="clear"></div>
-			</td>
-		</tr>
-		<!--{endif;}-->
-		<!--{endforeach;}-->
-		</table>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$seo['title']}</title>
+<meta name="keywords" content="{$seo['keywords']}" />
+<meta name="description" content="{$seo['description']}" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
+</head>
+<body style="background:#fff;">
+<form method="post" id="form" autocomplete="off">
+<div class="hy_tablelist" style="margin-top:0;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+	<th width="300">商品详情</th>
+	<th width="360">评价内容</th>
+	<th></th>
+</tr>
+<!--{foreach($info_list as $v):}-->
+<tr>
+	<td>
+		<a href="{pe_url('product-'.$v['product_id'])}" class="dingdan_img" target="_blank"><img src="{pe_thumb($v['product_logo'], 100, 100)}" style="width:100px;height:100px"></a>
+		<p class="mat20"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{pe_cut($v['product_name'], 18, '..')}</a></p>
+	</td>
+	<td valign="top">		
+		<textarea name="comment_text[{$v['product_id']}]" style="width:348px;height:96px" placeholder="请填写评价内容"></textarea>
+		<div class="mat20">
+			<span class="fl">综合评分：</span>
+			<span id="star_{$v['product_id']}" class="fr" style="margin-left:40px"></span>
+			<!--<span id="comment_star_show_{$v['product_id']}" class="fl mal10 corg"></span>-->
+			<input type="hidden" id="comment_star_{$v['product_id']}" name="comment_star[{$v['product_id']}]" value="5" />
+			<div class="clear"></div>
 		</div>
-		<!--{if(!$info['order_comment']):}-->
-		<div class="mat20" style="text-align:center;">
-			<input type="hidden" name="pesubmit" />
-			<input type="hidden" name="pe_token" value="{$pe_token}" />
-			<input type="button" value="提 交" class="tjbtn" />		
-		</div>
-		<!--{endif;}-->
-		</form>
-	</div>
-	<div class="clear"></div>
+	</td>
+	<td><span id="comment_text_show_{$v['product_id']}"></span></td>
+</tr>
+<!--{endforeach;}-->
+</table>
 </div>
+<div class="mat20" style="text-align:center;">
+	<input type="hidden" name="pesubmit" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="button" value="提 交" class="tjbtn" />		
+</div>
+</form>
 <script type="text/javascript" src="{$pe['host_root']}include/plugin/raty/jquery.raty.js"></script>
-<script type="text/javascript" src="{$pe['host_root']}include/plugin/my97/WdatePicker.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
 $(function() {
@@ -65,8 +54,8 @@ $("#star_{$v['product_id']}").raty({
 	path:"{$pe['host_root']}include/plugin/raty/images",
 	hints: ['很差', '较差', '一般', '满意', '很满意'],
 	score: 5,
-	target: "#comment_star_show_{$v['product_id']}",
-	targetKeep : true,
+	//target: "#comment_star_show_{$v['product_id']}",
+	//targetKeep : true,
 	click: function (score, evt) {
 		$("#comment_star_{$v['product_id']}").val(score);
 	}
@@ -75,10 +64,14 @@ $("#star_{$v['product_id']}").raty({
 })
 var form_info = [
 	<!--{foreach($info_list as $v):}-->
-	{$douhao}{"name":"comment_text[{$v['product_id']}]", "mod":"str", "act":"blur", "arg":"", "show_id":"comment_text_show_{$v['product_id']}","show_error":"必须填写", "must":true}
+	{$douhao}{"name":"comment_text[{$v['product_id']}]", "mod":"str", "act":"blur", "arg":"", "show_id":"comment_text_show_{$v['product_id']}","show_error":"必填 ", "must":true}
 	<!--{$douhao = ','}-->
 	<!--{endforeach;}-->
 ]
 $(":button").pe_submit(form_info, 'form');
 </script>
-<!--{include(pe_tpl('footer.html'));}-->
+<style type="text/css">
+.hy_tablelist td{padding:20px 8px; border-bottom:1px dashed #eaeaea}
+</style>
+</body>
+</html>

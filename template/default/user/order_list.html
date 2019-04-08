@@ -3,76 +3,57 @@
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
 		<div class="hy_tt">
-			<a href="{$pe['host_root']}user.php?mod=order" <!--{if(!$_g_state):}-->class="sel"<!--{endif;}-->>所有订单<span class="c999 mal3 num">({$tongji['all']})</span></a>
-			<a href="{$pe['host_root']}user.php?mod=order&state=notpay" <!--{if($_g_state=='notpay'):}-->class="sel"<!--{endif;}-->>待付款<span class="c999 mal3 num">({$tongji['notpay']})</span></a>
-			<a href="{$pe['host_root']}user.php?mod=order&state=paid" <!--{if($_g_state=='paid'):}-->class="sel"<!--{endif;}-->>待发货<span class="c999 mal3 num">({$tongji['paid']})</span></a>
-			<a href="{$pe['host_root']}user.php?mod=order&state=send" <!--{if($_g_state=='send'):}-->class="sel"<!--{endif;}-->>待确认<span class="c999 mal3 num">({$tongji['send']})</span></a>
-			<a href="{$pe['host_root']}user.php?mod=order&state=success" <!--{if($_g_state=='success'):}-->class="sel"<!--{endif;}-->>交易成功<span class="c999 mal3 num">({$tongji['success']})</span></a>
-		</div>
-		<div class="hy_tablelist">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<th>商品详情</th>
-				<th width="90">实付款(元)</th>
-				<th width="95" style="border-right:0;">交易操作</th>
-			</tr>
-			</table>
+			<a href="{$pe['host_root']}user.php?mod=order" <!--{if(!$_g_state):}-->class="sel"<!--{endif;}-->>全部订单<span>({$tongji['all']})</span></a>
+			<a href="{$pe['host_root']}user.php?mod=order&state=wpay" <!--{if($_g_state=='wpay'):}-->class="sel"<!--{endif;}-->>待付款<span>({$tongji['wpay']})</span></a>
+			<a href="{$pe['host_root']}user.php?mod=order&state=wsend" <!--{if($_g_state=='wsend'):}-->class="sel"<!--{endif;}-->>待发货<span>({$tongji['wsend']})</span></a>
+			<a href="{$pe['host_root']}user.php?mod=order&state=wget" <!--{if($_g_state=='wget'):}-->class="sel"<!--{endif;}-->>待收货<span>({$tongji['wget']})</span></a>
+			<a href="{$pe['host_root']}user.php?mod=order&state=success" <!--{if($_g_state=='success'):}-->class="sel"<!--{endif;}-->>已完成<span>({$tongji['success']})</span></a>
+			<a href="{$pe['host_root']}user.php?mod=order&state=wpj" <!--{if($_g_state=='wpj'):}-->class="sel"<!--{endif;}-->>待评价<span>({$tongji['wpj']})</span></a>
 		</div>
 		<!--{foreach($info_list as $v):}-->
-		<!--{$sel = in_array($v['order_state'], array('success', 'close'))?'hy_ordertw':'hy_ordertt'}-->
-		<!--{$order_state = order_state($v)}-->
-		<div class="{$sel} c666">
-			<span class="fl">订单编号：<span class="num">{$v['order_id']}</span></span>
-			<span class="fl" style="margin-left:60px">下单时间：<span class="num5 c333">{pe_date($v['order_atime'])}</span></span>
+		<div class="hy_ordertt">
+			<span class="fl num5">{pe_date($v['order_atime'])}</span>
+			<span class="fl" style="margin-left:30px">订单号：<span class="num5">{$v['order_id']}</span></span>
 			<div class="clear"></div>
 		</div>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_orderlist">
 		<tr>
 			<td style="text-align:left;">
 				<!--{foreach($v['product_list'] as $kk => $vv):}-->
-				<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0"<!--{endif;}-->>
-					<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5" target="_blank"><img src="{pe_thumb($vv['product_logo'], 40, 40)}" width="40" height="40"></a>
+				<div class="dingdan_list" <!--{if($kk==0):}-->style="padding-top:0;border-top:0"<!--{endif;}-->>
+					<a href="{pe_url('product-'.$vv['product_id'])}" class="fl mar5 dingdan_img" target="_blank"><img src="{pe_thumb($vv['product_logo'], 100, 100)}"></a>
 					<div class="fl">
-						<a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue dd_name">{$vv['product_name']}</a>
+						<a href="{pe_url('product-'.$vv['product_id'])}" target="_blank" class="dd_name">{$vv['product_name']}</a>
 						<!--{if($vv['prorule_name']):}-->
 						<p class="c888 mat5"><!--{foreach(unserialize($vv['prorule_name']) as $vvv):}-->[{$vvv['name']}：{$vvv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
 						<!--{endif;}-->
 					</div>
-					<span class="fr"><span class="num">{$vv['product_money']}</span>(×{$vv['product_num']})</span>
+					<span class="fr">{$vv['product_money']}(×{$vv['product_num']})</span>
 					<div class="clear"></div>
 				</div>
 				<!--{endforeach;}-->
 			</td>
-			<td width="90">
-				<p class="corg num strong">{$v['order_money']}</p>
-				<p class="c999 num">(含运费：{$v['order_wl_money']})</p>
-				<p class="c888">{$ini['payway'][$v['order_payway']]}</p>
+			<td width="120">
+				<p class="corg num1 font14 strong">{$v['order_money']}</p>
+				<p class="c999">(含运费：{$v['order_wl_money']})</p>
+				<p class="c666">{$cache_payway[$v['order_payway']]['payway_name']}</p>
 			</td>
-			<td width="100" style="padding:5px;">
-				<!--{if($order_state == 'notpay'):}-->
-				<p class="cred">等待买家付款</p>
-				<p class="mat3"><a class="tag_org" href="index.php?mod=order&act=pay&id={$v['order_id']}" target="_blank">立即付款</a></p>
-				<!--{elseif($order_state == 'paid'):}-->
-				<p class="cred">等待发货</p>
-				<!--{elseif($order_state == 'send'):}-->
-				<p class="cred">卖家已发货</p>
-					<!--{if($v['order_payway']=='alipay_db'):}-->
-					<p class="mat3"><a class="tag_green" href="https://lab.alipay.com/consume/queryTradeDetail.htm?tradeNo={$v['order_outid']}" onclick="alert('支付宝担保交易，需要您登录支付宝网站确认收货')" target="_blank">确认收货</a></p>
-					<!--{elseif($v['order_payway']!='cod'):}-->
-					<p class="mat3"><a class="tag_green" href="user.php?mod=order&act=success&id={$v['order_id']}&token={$pe_token}" onclick="return pe_cfone(this, '要确认收货')">确认收货</a></p>
-					<!--{endif;}-->
-				<!--{elseif($order_state == 'success'):}-->
-				<p class="cgreen">交易成功</p>
-					<!--{if(!$v['order_comment']):}--><a href="user.php?mod=order&act=comment&id={$v['order_id']}" target="_blank" class="hy_btn">评价</a><!--{endif;}-->
-				<!--{elseif($order_state == 'close'):}-->
-				<strike class="c999">交易关闭</strike>
+			<td width="100">{order_stateshow($v)}<p class="mat5"><a href="user.php?mod=order&act=view&id={$v['order_id']}" target="_blank">订单详情</a></p></td>
+			<td width="100">
+				<!--{if($v['order_state'] == 'wpay'):}-->
+				<a class="tag_org" href="index.php?mod=order&act=pay&id={$v['order_id']}" target="_blank">立即付款</a>
+				<p class="mat5"><a class="c999" href="user.php?mod=order&act=close&id={$v['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 350)">取消订单</a></p>
+				<!--{elseif($v['order_state'] == 'wsend'):}-->
+				<a class="c999" href="user.php?mod=order&act=close&id={$v['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 350)">取消订单</a>
+				<!--{elseif($v['order_state'] == 'wget' && $v['order_payway'] == 'alipay_db'):}-->
+				<a class="tag_green" href="javascript:alert('支付宝担保交易，需要您登录支付宝网站确认收货');">确认收货</a>
+				<!--{elseif($v['order_state'] == 'wget' && $v['order_payway'] != 'cod'):}-->
+				<a class="tag_green" href="user.php?mod=order&act=success&id={$v['order_id']}&token={$pe_token}" onclick="return pe_cfone(this, '已收到商品')">确认收货</a>
+				<!--{elseif($v['order_state'] == 'success' && !$v['order_comment']):}-->
+				<a class="tag_gray" href="user.php?mod=order&act=comment&id={$v['order_id']}" onclick="return pe_dialog(this, '发表评价', 800, 510)">发表评价</a>
+				<!--{else:}-->
+				-
 				<!--{endif;}-->
-				<p class="mat3">
-					<a href="user.php?mod=order&act=view&id={$v['order_id']}" target="_blank" class="cblue">详情</a>
-					<!--{if($v['order_state'] == 'notpay'):}-->
-					| <a href="user.php?mod=order&act=close&id={$v['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 290)" class="c999">取消</a>	
-					<!--{endif;}-->
-				</p>
 			</td>
 		</tr>
 		</table>
@@ -81,6 +62,4 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 <!--{include(pe_tpl('footer.html'));}-->

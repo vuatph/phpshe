@@ -1,11 +1,14 @@
-/*简好网络*/
-.newkefu {position:fixed; text-align:center; width:140px; right:-140px; top:150px;}
-.newkefu_bar {background: url(../images/kefu.png) no-repeat ; left:-33px; top:10px; height:168px; width:33px; display:block; margin-left:1px; cursor:pointer; position:absolute}
-.newkefu_bar_sel {background: url(../images/kefu.png) no-repeat -107px 0;}
-.newkefu_header {background: url(../images/kefu.png) no-repeat 0 -187px; width:140px; height:28px; display:block;}
-.newkefu_middle {background: url(../images/kefu.png) no-repeat 0 -230px; width:140px; height:24px; display:block;}
-.newkefu_footer {background: url(../images/kefu.png) no-repeat 0 -270px; width:140px; height:10px; display:block;}
-.newkefu_shouqian {background: url(../images/kefu_bg.png) repeat-y; padding:10px 0; overflow:hidden; display:block;}
-.newkefu_shouqian li {list-style:none; margin:5px 0;}
-.newkefu_shouhou {background: url(../images/kefu_bg.png) repeat-y; padding:15px 0; text-align;center; font-size:13px; overflow:hidden; display:block;}
-.newkefu_shouhou li {list-style:none; margin:5px 0;}
+/*main css*/
+.izl-rmenu{position:fixed; right:0; margin-right:20px; bottom:20px; padding-bottom:20px; z-index:999; }
+.izl-rmenu .btn{width:72px; height:73px; margin-bottom:1px; cursor:pointer; position:relative;}
+.izl-rmenu .btn-qq{background:url(../images/r_qq.png) 0px 0px no-repeat; background-color:#6da9de;}
+.izl-rmenu .btn-qq:hover{background-color:#488bc7;}
+.izl-rmenu a.btn-qq,.izl-rmenu a.btn-qq:visited{background:url(../images/r_qq.png) 0px 0px no-repeat; background-color:#6da9de; text-decoration:none; display:block;}
+.izl-rmenu .btn-wx{background:url(../images/r_wx.png) 0px 0px no-repeat; background-color:#78c340;}
+.izl-rmenu .btn-wx:hover{background-color:#58a81c;}
+.izl-rmenu .btn-wx .pic{position:absolute; left:-160px; top:0px; display:none;width:160px;height:160px;}
+.izl-rmenu .btn-phone{background:url(../images/r_phone.png) 0px 0px no-repeat; background-color:#fbb01f;}
+.izl-rmenu .btn-phone:hover{background-color:#ff811b;}
+.izl-rmenu .btn-phone .phone{background-color:#ff811b; position:absolute; width:160px; left:-160px; top:0px; line-height:73px; color:#FFF; font-size:18px; text-align:center; display:none;}
+.izl-rmenu .btn-top{background:url(../images/r_top.png) 0px 0px no-repeat; background-color:#666666; display:none;}
+.izl-rmenu .btn-top:hover{background-color:#444;}

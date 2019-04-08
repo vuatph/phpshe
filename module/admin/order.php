@@ -13,7 +13,6 @@ switch ($act) {
 		$order_id = pe_dbhold($_g_id);	
 		$info = $db->pe_select('order', array('order_id'=>$order_id));
 		$product_list = $db->pe_selectall('orderdata', array('order_id'=>$order_id));
-		$order_state = order_state($info);
 
 		$seo = pe_seo($menutitle='订单详情', '', '', 'admin');
 		include(pe_tpl('order_add.html'));
@@ -22,8 +21,10 @@ switch ($act) {
 	case 'del':
 		pe_token_match();
 		$order_id = pe_dbhold($_g_id);
+		$info = $db->pe_select('order', array('order_id'=>$order_id));
+		if ($info['order_state'] != 'close') pe_error('未关闭订单不能删除...');
 		if ($db->pe_delete('order', array('order_id'=>$order_id))) {
-			order_callback('del', $order_id);
+			$db->pe_delete('orderdata', array('order_id'=>$order_id));
 			pe_success('删除成功!');
 		}
 		else {
@@ -34,13 +35,16 @@ switch ($act) {
 	case 'pay':
 		$order_id = pe_dbhold($_g_id);
 		$info = $db->pe_select('order', array('order_id'=>$order_id));
-		if ($info['order_state'] != 'notpay') pe_error('请勿重复付款...', '', 'dialog');
+		if ($info['order_state'] != 'wpay') pe_error('请勿重复付款...', '', 'dialog');
+		$payway_list = payway_list('admin');
+		$user = $db->pe_select('user', array('user_id'=>$info['user_id']), 'user_money');
+		$user_money = pe_num($user['user_money'], 'round', 1);
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			$_p_info['order_state'] = 'paid';
-			$_p_info['order_ptime'] = time();
-			if ($db->pe_update('order', array('order_id'=>$order_id), pe_dbhold($_p_info))) {
-				order_callback('pay', $order_id);
+			if ($_p_order_payway == 'balance') {
+				if ($user_money < $info['order_money']) pe_error('账户余额不足...');
+			}
+			if (order_callback_pay($order_id, '', $_p_order_payway)) {
 				pe_success('付款成功!', '', 'dialog');
 			}
 			else {
@@ -53,17 +57,10 @@ switch ($act) {
 	case 'send':
 		$order_id = pe_dbhold($_g_id);
 		$info = $db->pe_select('order', array('order_id'=>$order_id));
-		if (!in_array($info['order_state'], array('notpay', 'paid'))) pe_error('请勿重复发货...', '', 'dialog');
+		if ($info['order_state'] != 'wsend') pe_error('请勿重复发货...', '', 'dialog');
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			//担保交易（自动同步支付宝）
-			if ($info['order_payway'] == 'alipay_db') {
-				include("{$pe['path_root']}include/plugin/payway/alipay/order_send.php");	
-			}
-			$_p_info['order_state'] = 'send';
-			$_p_info['order_stime'] = time();
-			if ($db->pe_update('order', array('order_id'=>$order_id), pe_dbhold($_p_info))) {
-				order_callback('send', $order_id);
+			if (order_callback_send($order_id, $_p_order_wl_id, $_p_order_wl_name)) {
 				pe_success('发货成功!', '', 'dialog');
 			}
 			else {
@@ -77,13 +74,8 @@ switch ($act) {
 		pe_token_match();
 		$order_id = pe_dbhold($_g_id);
 		$info = $db->pe_select('order', array('order_id'=>$order_id));
-		if ($info['order_state'] != 'send') pe_error('请勿重复确认...');
-		//货到付款（同时更新付款时间）
-		if ($info['order_payway'] == 'cod') $_p_info['order_ptime'] = time();	
-		$_p_info['order_ftime'] = time();
-		$_p_info['order_state'] = 'success';
-		if ($db->pe_update('order', array('order_id'=>$order_id), pe_dbhold($_p_info))) {
-			order_callback('success', $order_id);
+		if ($info['order_state'] != 'wget') pe_error('请勿重复确认...');
+		if (order_callback_success($order_id)) {
 			pe_success('交易完成!');
 		}
 		else {
@@ -97,10 +89,7 @@ switch ($act) {
 		if ($info['order_state'] == 'close') pe_error('请勿重复关闭...', '', 'dialog');
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			$_p_info['order_ftime'] = time();
-			$_p_info['order_state'] = 'close';
-			if ($db->pe_update('order', array('order_id'=>$order_id), pe_dbhold($_p_info))) {
-				order_callback('close', $order_id);
+			if (order_callback_close($order_id, $_p_order_closetext)) {
 				pe_success('关闭成功!', '', 'dialog');
 			}
 			else {
@@ -123,8 +112,7 @@ switch ($act) {
 			}
 			$sql_order['order_product_money'] = $order_product_money;
 			$sql_order['order_wl_money'] = $_p_order_wl_money;
-			$sql_order['order_money'] = $order_product_money + $_p_order_wl_money - $info['order_quan_money'] - $info['order_point_money'];			
-			$sql_order['order_payway'] = $_p_order_payway;
+			$sql_order['order_money'] = $order_product_money + $_p_order_wl_money - $info['order_quan_money'] - $info['order_point_money'];
 			if ($db->pe_update('order', array('order_id'=>$order_id), pe_dbhold($sql_order))) {
 				pe_success('操作成功!', '', 'dialog');
 			}
@@ -151,31 +139,35 @@ switch ($act) {
 	break;
 	//#####################@ 订单列表 @#####################//
 	default:
-		if ($_g_state == 'notpay') {
-			$sqlwhere .= " and `order_state` = 'notpay' and `order_payway` != 'cod'";
+		$_g_state && $sql_where .= " and `order_state` = '{$_g_state}'";	
+		$_g_id && $sql_where .= " and `order_id` = '{$_g_id}'";
+		$_g_user_id && $sql_where .= " and `user_id` = '{$_g_user_id}'";
+		$_g_user_tname && $sql_where .= " and `user_tname` = '{$_g_user_tname}'";
+		$_g_user_phone && $sql_where .= " and `user_phone` = '{$_g_user_phone}'";
+		$_g_user_name && $sql_where .= " and `user_name` = '{$_g_user_name}'";
+		$_g_date1 && $sql_where .= " and `order_atime` >= '".strtotime($_g_date1)."'";
+		$_g_date2 && $sql_where .= " and `order_atime` < '".(strtotime($_g_date2) + 86400)."'";
+		if ($_g_state == 'wsend') {
+			$sql_where .= " order by `order_ptime` desc";	
 		}
-		elseif ($_g_state == 'paid') {
-			$sqlwhere .= " and (`order_state` = 'paid' or (`order_state` = 'notpay' and `order_payway` = 'cod'))";
+		elseif ($_g_state == 'wget') {
+			$sql_where .= " order by `order_stime` desc";
 		}
-		elseif ($_g_state) {
-			$sqlwhere .= " and `order_state` = '{$_g_state}'";	
+		elseif (in_array($_g_state, array('success', 'close'))) {
+			$sql_where .= " order by `order_ftime` desc";
 		}
-		$_g_id && $sqlwhere .= " and `order_id` = '{$_g_id}'";
-		$_g_user_tname && $sqlwhere .= " and `user_tname` = '{$_g_user_tname}'";
-		$_g_user_phone && $sqlwhere .= " and `user_phone` = '{$_g_user_phone}'";
-		$_g_user_name && $sqlwhere .= " and `user_name` = '{$_g_user_name}'";
-		$_g_date1 && $sqlwhere .= " and `order_atime` >= '".strtotime($_g_date1)."'";
-		$_g_date2 && $sqlwhere .= " and `order_atime` < '".(strtotime($_g_date2) + 86400)."'";
-		$sqlwhere .= " order by `order_id` desc";
-		$info_list = $db->pe_selectall('order', $sqlwhere, '*', array(20, $_g_page));
+		else {
+			$sql_where .= " order by `order_id` desc";		
+		}	
+		$info_list = $db->pe_selectall('order', $sql_where, '*', array(20, $_g_page));
 		foreach ($info_list as $k => $v) {
 			$info_list[$k]['product_list'] = $db->pe_selectall('orderdata', array('order_id'=>$v['order_id']));
 		}
 		//统计订单数量
 		$tongji['all'] = $db->pe_num('order');
-		$tongji['notpay'] = $db->pe_num('order', " and `order_state` = 'notpay' and `order_payway` != 'cod'");
-		$tongji['paid'] = $db->pe_num('order', " and (`order_state` = 'paid' or (`order_state` = 'notpay' and `order_payway` = 'cod'))");
-		$tongji['send'] = $db->pe_num('order', array('order_state'=>'send'));
+		$tongji['wpay'] = $db->pe_num('order', array('order_state'=>'wpay'));
+		$tongji['wsend'] = $db->pe_num('order', array('order_state'=>'wsend'));
+		$tongji['wget'] = $db->pe_num('order', array('order_state'=>'wget'));
 		$tongji['success'] = $db->pe_num('order', array('order_state'=>'success'));
 		$tongji['close'] = $db->pe_num('order', array('order_state'=>'close'));
 

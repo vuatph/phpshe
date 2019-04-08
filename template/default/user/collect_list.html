@@ -2,7 +2,9 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tt">
+			<a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span></a>
+		</div>
 		<div class="hy_tablelist">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
@@ -13,16 +15,16 @@
 			</tr>
 			<!--{foreach($info_list as $v):}-->
 			<tr>
-				<td width="40"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank"><img src="{pe_thumb($v['product_logo'], 40, 40)}" width="40" height="40" class="imgbg" /></a></td>
+				<td width="50"><a href="{pe_url('product-'.$v['product_id'])}" class="dingdan_img" target="_blank"><img src="{pe_thumb($v['product_logo'], 100, 100)}" /></a></td>
 				<td class="aleft" style="padding-left:0"><a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="cblue">{$v['product_name']}</a></td>
-				<td class="num">¥ {$v['product_money']}</td>
-				<td class="num c666">{pe_date($v['collect_atime'], 'Y-m-d')}</td>
-				<td><a class="hy_btn" href="user.php?mod=collect&act=del&id={$v['collect_id']}&token={$pe_token}" onclick="return pe_cfone(this, '删除此收藏')">删除</a></td>
+				<td>¥{$v['product_money']}</td>
+				<td>{pe_date($v['collect_atime'], 'Y-m-d')}</td>
+				<td><a class="tag_gray" href="user.php?mod=collect&act=del&id={$v['collect_id']}&token={$pe_token}" onclick="return pe_cfone(this, '删除此收藏')">删除</a></td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>
-			<div class="fenye mat10">{$db->page->html}</div>
 		</div>
+		<div class="fenye mat10">{$db->page->html}</div>
 	</div>
 	<div class="clear"></div>
 </div>

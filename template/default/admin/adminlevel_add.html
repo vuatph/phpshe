@@ -4,45 +4,47 @@
 		<a href="javascript:;" class="sel">{$menutitle}</a>
 		<div class="clear"></div>
 	</div>
-	<form method="post">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20">
-	<tr>
-		<td align="right" width="150">权限名称：</td>
-		<td><input type="text" name="info[adminlevel_name]" value="{$info['adminlevel_name']}" class="inputall input200" /></td>
-	</tr>
-	<tr>
-		<td align="right" valign="top">权限分配：</td>
-		<td>
-			<div style="background:#fff; width:772px">
-			<!--{foreach($modact_list as $k=>$v):}-->
-			<div class="fl" style="width:{$k=='控制面板'?120:160}px">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang">
-			<tr>
-				<td class="bgtt" style="border-bottom:0;height:10px;line-height:10px"><input type="checkbox" name="modact_all" style="margin-right:8px" /><strong>{$k}</strong></td>
-			</tr>
-			<tr>
-				<td style="border-bottom:0;background:#fff">
-					<!--{foreach($v as $kk=>$vv):}-->
-					<label style="width:120px;display:inline-block"><input type="checkbox" name="modact[]" value="{$kk}" <!--{if(in_array($kk, (array)$info['adminlevel_modact'])):}-->checked="checked"<!--{endif;}--> /> {$vv}</label>
-					<!--{endforeach;}-->
-				</td>
-			</tr>
-			</table>
-			</div>
-			<!--{endforeach;}-->
-			<div class="clear"></div>
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td>
-			<input type="hidden" name="pe_token" value="{$pe_token}" />
-			<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
-		</td>
-	</tr>
-	</table>
-	</form>
+	<div class="right_main">
+		<form method="post">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang mat20 mab20">
+		<tr>
+			<td align="right" width="150">权限名称：</td>
+			<td><input type="text" name="info[adminlevel_name]" value="{$info['adminlevel_name']}" class="inputall input200" /></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top">权限分配：</td>
+			<td>
+				<div style="background:#fff; width:772px">
+				<!--{foreach($modact_list as $k=>$v):}-->
+				<div class="fl" style="width:{$k=='控制面板'?120:160}px">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang" style="margin:0">
+				<tr>
+					<td class="bgtt" style="border-bottom:0;height:10px;line-height:10px"><input type="checkbox" name="modact_all" style="margin-right:8px" /><strong>{$k}</strong></td>
+				</tr>
+				<tr>
+					<td style="border-bottom:0;background:#fff">
+						<!--{foreach($v as $kk=>$vv):}-->
+						<label style="width:120px;display:inline-block"><input type="checkbox" name="modact[]" value="{$kk}" <!--{if(in_array($kk, (array)$info['adminlevel_modact'])):}-->checked="checked"<!--{endif;}--> /> {$vv}</label>
+						<!--{endforeach;}-->
+					</td>
+				</tr>
+				</table>
+				</div>
+				<!--{endforeach;}-->
+				<div class="clear"></div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<input type="hidden" name="pe_token" value="{$pe_token}" />
+				<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
+			</td>
+		</tr>
+		</table>
+		</form>
+	</div>
 </div>
 <script type="text/javascript">
 $(function(){

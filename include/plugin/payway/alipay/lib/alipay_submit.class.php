@@ -102,7 +102,7 @@ class AlipaySubmit {
         }
 
 		//submit按钮控件请不要含有name属性
-        //$sHtml = $sHtml."<input type='submit' value='".$button_name."'></form>";
+        $sHtml = $sHtml."<input type='submit'  value='".$button_name."' style='display:none;'></form>";
 		
 		$sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
 		
@@ -151,7 +151,7 @@ class AlipaySubmit {
      * return 时间戳字符串
 	 */
 	function query_timestamp() {
-		$url = $this->alipay_gateway_new."service=query_timestamp&partner=".trim(strtolower($this->alipay_config['input_charset']));
+		$url = $this->alipay_gateway_new."service=query_timestamp&partner=".trim(strtolower($this->alipay_config['partner']))."&_input_charset=".trim(strtolower($this->alipay_config['input_charset']));
 		$encrypt_key = "";		
 
 		$doc = new DOMDocument();

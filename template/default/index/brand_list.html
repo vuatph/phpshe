@@ -1,17 +1,49 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
-	<!--{foreach((array)$cache_category_arr[0] as $v):}-->
-	<!--{if(count($cache_category_brand[$v['category_id']])):}-->
-	<div class="index_fenlei_tt1"><h3>{$v['category_name']}</h3></div>
-	<div class="pinpai_list">
-		<ul>
-		<!--{foreach($cache_category_brand[$v['category_id']] as $vv):}-->
-		<li><a href="{pe_url('brand-'.$vv['brand_id'])}" title="{$vv['brand_name']}" target="_blank"><img src="{pe_thumb($cache_brand[$vv['brand_id']]['brand_logo'])}" /></a></li>
-		<!--{endforeach;}-->
-		</ul>
+	<div class="brand_zm">
+		<div class="brand_zm_l">
+			全部品牌
+			<p>All Brands</p>
+		</div>
+		<div class="bradn_zm_r">
+			<a href="javascript:;" class="js_brandbtn sel">全部</a>
+			<!--{foreach($word_arr as $v):}-->
+			<a href="javascript:;" class="js_brandbtn brand_tt">{$v}</a>
+			<!--{endforeach;}-->
+			<div class="clear"></div>
+		</div>
 		<div class="clear"></div>
 	</div>
-	<!--{endif;}-->
-	<!--{endforeach;}-->
+	<div class="brand_list mat15">
+		<div class="pinpai">
+			<!--{foreach($info_list as $v):}-->
+			<a href="{pe_url('brand-'.$v['brand_id'])}" title="{$v['brand_name']}" class="js_brand word_{$v['brand_word']}" <!--{if(++$brand_index%5==0):}-->style="margin-right:0"<!--{endif;}-->>
+				<div class="pinpai_box">
+					<img src="{pe_thumb($v['brand_logo'])}" />
+					<p>{$v['brand_name']}</p>
+				</div>
+			</a>
+			<!--{endforeach;}-->
+			<div class="clear"></div>
+		</div>
+	</div>
 </div>
+<script type="text/javascript">
+$(function(){
+	$(".js_brandbtn").click(function(){
+		$(".js_brandbtn").removeClass("sel");
+		$(this).addClass("sel");
+		if ($(this).text() == '全部') {
+			$(".js_brand").show();		
+		}
+		else {
+			$(".js_brand").hide();
+			$(".word_"+$(this).text()).show();		
+		}
+	})
+})
+</script>
+<style type="text/css">
+body{background:#f8f8f8;}
+</style>
 <!--{include(pe_tpl('footer.html'));}-->

@@ -2,31 +2,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>关闭订单</title>
-<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<title>{$seo['title']}</title>
+<meta name="keywords" content="{$seo['keywords']}" />
+<meta name="description" content="{$seo['description']}" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
 </head>
-<body style="background:none">
-<form method="post">
-<table style="width:550px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<body style="background:#fff;padding:5px;">
+<form method="post" id="form" autocomplete="off">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <tr>
-	<td style="border-top:0;border-left:0" class="bgtt aright c888" width="120">订单编号</td>
-	<td style="border-top:0;border-right:0">{$info['order_id']}</td>
+	<td class="bgtt aright c888" width="120">订单编号</td>
+	<td>{$info['order_id']}</td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">实付金额</td>
-	<td style="border-right:0;"><span class="num strong corg">{$info['order_money']} 元</span> <!--{if($info['order_ptime']):}--><span class="cgreen">[已支付]</span><!--{else:}--><span class="cred">[未支付]</span><!--{endif}--></td>
+	<td class="bgtt aright c888">实付金额</td>
+	<td><span class="strong corg">{$info['order_money']} 元</span></td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">支付方式</td>
-	<td style="border-right:0;">{$ini['payway'][$info['order_payway']]}</td>
+	<td class="bgtt aright c888">支付方式</td>
+	<td>{$cache_payway[$info['order_payway']]['payway_name']}</td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">订单取消原因</td>
-	<td style="border-right:0;"><textarea name="order_closetext" style="width:300px; height:70px; resize:none"></textarea></td>
+	<td class="bgtt aright c888">取消原因</td>
+	<td><textarea name="order_closetext" style="width:300px; height:80px; resize:none"></textarea></td>
 </tr>
 </table>
-<div class="mat10" style="text-align:center">
+<div class="mat20" style="text-align:center">
 	<input type="hidden" name="pe_token" value="{$pe_token}" />
 	<input type="hidden" name="pesubmit" />
 	<input type="button" value="提 交" class="tjbtn" />
@@ -34,13 +37,13 @@
 </form>
 <script type="text/javascript">
 $(function(){
-$(":button").click(function(){
-	if ($(":input[name='order_closetext']").val() == '') {
-		alert('请填写订单取消原因');
-		return false;
-	}
-	$("form").submit();
-})
+	$(":button").click(function(){
+		if ($(":input[name='order_closetext']").val() == '') {
+			alert('请填写订单取消原因');
+			return false;
+		}
+		$("form").submit();
+	})
 })
 </script>
 </body>

@@ -19,14 +19,13 @@ switch ($act) {
 				$_p_info['ask_replytime'] = $_p_info['ask_state'] = 0;		
 			}
 			if ($db->pe_update('ask', array('ask_id'=>$ask_id), pe_dbhold($_p_info))) {
-				pe_success('咨询修改成功!', $_g_fromto);
+				pe_success('修改成功!', $_g_fromto);
 			}
 			else {
-				pe_error('咨询修改失败...');
+				pe_error('修改失败...');
 			}
 		}
-		$sql = "select * from `".dbpre."ask` a,`".dbpre."product` b where a.`product_id` = b.`product_id` and a.`ask_id` = '{$ask_id}'";
-		$info = $db->sql_select($sql);
+		$info = $db->pe_select('ask', array('ask_id'=>$ask_id));
 		$seo = pe_seo($menutitle='修改咨询', '', '', 'admin');
 		include(pe_tpl('ask_add.html'));
 	break;
@@ -37,26 +36,26 @@ switch ($act) {
 		$info_list = $db->pe_selectall('ask', array('ask_id'=>$ask_id));
 		if ($db->pe_delete('ask', array('ask_id'=>$ask_id))) {
 			foreach ($info_list as $v) {
-				product_num('asknum', $v['product_id']);
+				product_num($v['product_id'], 'asknum');
 			}
-			pe_success('咨询删除成功!');
+			pe_success('删除成功!');
 		}
 		else {
-			pe_error('咨询删除失败...');
+			pe_error('删除失败...');
 		}
 	break;
 	//#####################@ 咨询列表 @#####################//
 	default :
-		$sqlwhere = " where `ask_state` = '".intval($_g_state)."'";
-		$_g_name && $sqlwhere .= " and b.`product_name` like '%{$_g_name}%'";
-		$_g_text && $sqlwhere .= " and a.`ask_text` like '%{$_g_text}%'";
-		$_g_user_name && $sqlwhere .= " and a.`user_name` like '%{$_g_user_name}%'";
-		$sql = "select * from `".dbpre."ask` a left join `".dbpre."product` b on a.`product_id` = b.`product_id` {$sqlwhere} order by a.`ask_id` desc";
-		$info_list = $db->sql_selectall($sql, array(20, $_g_page));
+		$sql_where = " and `ask_state` = '".intval($_g_state)."'";
+		$_g_name && $sql_where .= " and `product_name` like '%{$_g_name}%'";
+		$_g_text && $sql_where .= " and `ask_text` like '%{$_g_text}%'";
+		$_g_user_name && $sql_where .= " and `user_name` like '%{$_g_user_name}%'";
+		$sql_where .= " order by `ask_id` desc";		
+		$info_list = $db->pe_selectall('ask', $sql_where, '*', array(20, $_g_page));
 
-		$num = $db->index('ask_state')->pe_selectall('ask', array('group by'=>'ask_state'), 'count(1) as num, `ask_state`');
-		$tongji[1] = intval($num[1]['num']);
-		$tongji[0] = intval($num[0]['num']);		
+		$tj = $db->index('ask_state')->pe_selectall('ask', array('group by'=>'ask_state'), 'count(1) as num, `ask_state`');
+		$tongji[1] = intval($tj[1]['num']);
+		$tongji[0] = intval($tj[0]['num']);		
 
 		$seo = pe_seo($menutitle='咨询管理', '', '', 'admin');
 		include(pe_tpl('ask_list.html'));

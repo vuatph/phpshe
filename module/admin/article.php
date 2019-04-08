@@ -13,10 +13,10 @@ switch ($act) {
 			pe_token_match();
 			$_p_info['article_atime'] = $_p_info['article_atime'] ? strtotime($_p_info['article_atime']) : time();		
 			if ($db->pe_insert('article', pe_dbhold($_p_info, array('article_text')))) {
-				pe_success('文章添加成功!', 'admin.php?mod=article');
+				pe_success('添加成功!', 'admin.php?mod=article');
 			}
 			else {
-				pe_error('文章添加失败...');
+				pe_error('添加失败...');
 			}
 		}
 		$seo = pe_seo($menutitle='添加文章', '', '', 'admin');
@@ -29,10 +29,10 @@ switch ($act) {
 			pe_token_match();
 			$_p_info['article_atime'] = $_p_info['article_atime'] ? strtotime($_p_info['article_atime']) : time();
 			if ($db->pe_update('article', array('article_id'=>$article_id), pe_dbhold($_p_info, array('article_text')))) {
-				pe_success('文章修改成功!', $_g_fromto);
+				pe_success('修改成功!', $_g_fromto);
 			}
 			else {
-				pe_error('文章修改失败...');
+				pe_error('修改失败...');
 			}
 		}
 		$info = $db->pe_select('article', array('article_id'=>$article_id));
@@ -43,10 +43,10 @@ switch ($act) {
 	case 'del':
 		pe_token_match();
 		if ($db->pe_delete('article', array('article_id'=>is_array($_p_article_id) ? $_p_article_id : $_g_id))) {
-			pe_success('文章删除成功!');
+			pe_success('删除成功!');
 		}
 		else {
-			pe_error('文章删除失败...');
+			pe_error('删除失败...');
 		}
 	break;
 	//#####################@ 文章列表 @#####################//
@@ -57,6 +57,9 @@ switch ($act) {
 		$sqlwhere .= " order by a.`article_id` desc";
 		$sql = "select * from `".dbpre."article` a left join `".dbpre."class` b on a.`class_id` = b.`class_id` where {$sqlwhere}";
 		$info_list = $db->sql_selectall($sql, array(20, $_g_page));
+
+		$tongji['news'] = $db->sql_num("select count(1) from `".dbpre."article` a left join `".dbpre."class` b on a.`class_id` = b.`class_id` where b.`class_type` = 'news'");
+		$tongji['help'] = $db->sql_num("select count(1) from `".dbpre."article` a left join `".dbpre."class` b on a.`class_id` = b.`class_id` where b.`class_type` = 'help'");
 		$seo = pe_seo($menutitle='文章列表', '', '', 'admin');
 		include(pe_tpl('article_list.html'));
 	break;

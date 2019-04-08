@@ -1,58 +1,53 @@
-<!--{include(pe_tpl('header.html'));}-->
-<div class="width980">
-	<div style="min-height:450px; _height:450px; margin-top:10px; background:url({$pe['host_tpl']}images/login_img.jpg) no-repeat;">
-		<div class="login_r fr" style="margin-top:40px;">
-			<div class="logintt1">
-				<p><img src="{$pe['host_tpl']}images/login_tt1.gif"></p>
-			</div>
+<!--{include(pe_tpl('do_header.html'));}-->
+<div class="login_bg">
+	<div style="width:1000px; margin:0 auto">
+		<div class="login_r">
+			<div class="zctt">{$menutitle}</div>
 			<form method="post" id="form">
-				<div class="login_input1">
-					用户名:<input type="text" name="user_name" class="login_input2" />
-				</div>
-				<div class="login_input1 login_input3">
-					密　码:<input type="password" name="user_pw" class="login_input2" />
-				</div>
-				<div class="login_input1" style="padding:0 0 0 10px; width:220px;">
-					<span class="fl">验证码:</span>
-					<input type="text" name="authcode" class="login_input2 fl" style="width:60px" />
-					<img src="{$pe['host_root']}include/class/authcode.class.php" onclick="pe_yzm(this)" class="fr mal5" style="cursor:pointer; border:0; margin-top:2px;" />
-					<div class="clear"></div>
-				</div>
-				<div style="width:232px; margin:15px 25px 0 25px;">
-					<input type="hidden" name="type" value="user" />
-					<input type="hidden" name="pesubmit" />
-					<input type="button" class="loginbtn1" value="立即登录" />
-					<div class="mat10">
-						<a style="color:#0697DA" href="{$pe['host_root']}user.php?mod=do&act=register&{pe_fromto()}" title="注册">免费注册</a>
-						| <a href="{$pe['host_root']}user.php?mod=do&act=getpw&{pe_fromto()}" style="color:#0697DA;">忘记密码</a>
-					</div>
-				</div>
+			<div class="zc_input1">
+				用户名：<input type="text" name="user_name" class="login_input1" />
+			</div>
+			<div class="zc_input1 mat20">
+				密　码：<input type="password" name="user_pw" class="login_input1" />
+			</div>
+			<div class="mat25">
+				<input type="hidden" name="pesubmit" />
+				<input type="button" class="loginbtn1" value="立即登录" />
+			</div>
 			</form>
+			<div class="login_other mat20">
+				<a href="{$pe['host_root']}user.php?mod=do&act=register" class="mar10">免费注册</a> |
+				<a href="{$pe['host_root']}user.php?mod=do&act=getpw" class="mal10">忘记密码</a>
+			</div>
 		</div>
-		<div class="clear"></div>
 	</div>
 </div>
-<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">
-$(":button").click(function(){
-	var result = false;
-	if ($(":input[name='user_name']").val() == '') {
-		alert('用户名必须填写');
-		return false;
-	}
-	if ($(":input[name='user_pw']").val() == '') {
-		alert('密码必须填写');
-		return false;
-	}
-	$.ajaxSettings.async = false;
-	$.getJSON("{$pe['host_root']}user.php", {'mod':'do','act':'check','type':'authcode','value':$(":input[name='authcode']").val()}, function(json){
-		result = json.result;
+$(function(){
+	$(":button").click(function(){
+		if ($(":input[name='user_name']").val() == '') {
+			pe_tip('请填写用户名');
+			return false;
+		}
+		if ($(":input[name='user_pw']").val() == '') {
+			pe_tip('请填写密码');
+			return false;
+		}
+		$(this).val('登录中...');
+		pe_submit('user.php?mod=do&act=login', function(json){
+			if (json.result) {
+				if ('{$_g_fromto}' != '') {
+					pe_open('back', 1000);
+				}
+				else {
+					pe_open('user.php', 1000);				
+				}
+			}
+			else {
+	    		$(":button").val('登 录');			
+			}
+		})
 	})
-	if (result == false) {
-		alert('验证码错误');
-		return false;
-	}
-	$("#form").submit();
 })
 </script>
-<!--{include(pe_tpl('footer.html'));}-->
+<!--{include(pe_tpl('do_footer.html'));}-->

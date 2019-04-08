@@ -2,120 +2,138 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-	<div class="ddzt" style="position:relative">订单编号：<span class="num c888">{$info['order_id']}</span>， 当前订单状态：
-		<!--{if($order_state=='notpay'):}-->
-		<span class="cred mar10">等待买家付款</span>
-		<a class="tag_org mar5 font12" style="padding:3px 10px" href="index.php?mod=order&act=pay&id={$info['order_id']}" target="_blank">立即付款</a>
-		<a class="hy_btn mar5" href="user.php?mod=order&act=close&id={$info['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 290)">取消订单</a>
-		<!--{elseif($order_state=='paid'):}-->
-		<span class="cred mar10">等待发货</span>
-			<!--{if($info['order_payway']=='cod'):}-->
-			<a class="hy_btn mar5" href="user.php?mod=order&act=close&id={$info['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 290)">取消订单</a>
-			<!--{endif;}-->		
-		<!--{elseif($order_state=='send'):}-->
-		<span class="cred mar10">卖家已发货</span>
-			<!--{if($info['order_payway']=='alipay_db'):}-->
-			<a class="tag_green mar5 font12" style="padding:3px 10px" href="https://lab.alipay.com/consume/queryTradeDetail.htm?tradeNo={$info['order_outid']}" onclick="alert('支付宝担保交易，需要您登录支付宝网站确认收货')" target="_blank">确认收货</a>
-			<!--{elseif($info['order_payway']!='cod'):}-->
-			<a class="tag_green mar5 font12" style="padding:3px 10px" href="user.php?mod=order&act=success&id={$info['order_id']}&token={$pe_token}" onclick="return pe_cfone(this, '要确认收货')">确认收货</a>
-			<!--{endif;}-->
-		<!--{elseif($order_state=='success'):}-->
-		<img src="{$pe['host_tpl']}images/dui_big.png" style="position:absolute;width:35px;top:30px;" />
-		<span class="cgreen mar10" style="margin-left:45px">交易成功</span>
-			<!--{if(!$info['order_comment']):}--><a class="hy_btn" href="user.php?mod=order&act=comment&id={$info['order_id']}">评价</a><!--{endif;}-->
-		<!--{elseif($order_state=='close'):}-->
-		<span class="c999">交易关闭</span>
-		<span class="cred font13">（原因：{$info['order_closetext']}）</span>
-		<!--{endif;}-->
-	</div>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_tablett">
+	<div class="order_view_tt mat10">订单状态</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="order_view mat10">
 	<tr>
-		<td class="bgtt" width="" style="border-top:1px solid #ddd;border-left:1px solid #ddd">商品详情</td>
-		<td class="bgtt" width="80" style="border-top:1px solid #ddd;">单价(元)</td>
-		<td class="bgtt" width="50" style="border-top:1px solid #ddd;">数量</td>
-		<td class="bgtt" width="120" style="border-top:1px solid #ddd;">商品优惠</td>
-		<td class="bgtt" width="120" style="border-top:1px solid #ddd;border-right:1px solid #ddd">实付款(元)</td>			
+		<td align="right" width="80">订单编号：</td>
+		<td>{$info['order_id']}</td>
+	</tr>
+	<tr>
+		<td align="right">当前状态：</td>
+		<td>{order_stateshow($info)}
+			<!--{if($info['order_state']=='wpay'):}-->
+			<a class="tag_org mal20" href="index.php?mod=order&act=pay&id={$info['order_id']}" target="_blank">立即付款</a>
+			<a class="tag_gray mal10" href="user.php?mod=order&act=close&id={$info['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 350)">取消订单</a>
+			<!--{elseif($info['order_state'] == 'wsend'):}-->
+			<a class="tag_gray mal20" href="user.php?mod=order&act=close&id={$info['order_id']}" onclick="return pe_dialog(this, '取消订单', 550, 350)">取消订单</a>
+			<!--{elseif($info['order_state'] == 'wget' && $info['order_payway'] == 'alipay_db'):}-->
+			<a class="tag_green mal20" href="javascript:alert('支付宝担保交易，需要您登录支付宝网站确认收货');">确认收货</a>
+			<!--{elseif($info['order_state'] == 'wget' && $info['order_payway'] != 'cod'):}-->
+			<a class="tag_green mal20" href="user.php?mod=order&act=success&id={$info['order_id']}&token={$pe_token}" onclick="return pe_cfone(this, '已收到商品')">确认收货</a>
+			<!--{elseif($info['order_state'] == 'success' && !$info['order_comment']):}-->
+			<a class="tag_gray mal20" href="user.php?mod=order&act=comment&id={$info['order_id']}" onclick="return pe_dialog(this, '发表评价', 800, 510)">发表评价</a>
+			<!--{endif;}-->
+		</td>
+	</tr>
+	<!--{if($info['order_state']=='close'):}-->
+	<tr>
+		<td align="right">关闭说明：</td>
+		<td>{$info['order_closetext']}</td>
+	</tr>	
+	<!--{endif;}-->
+	</table>
+	<div class="shixian mat20"></div>
+	<div class="order_view_tt mat20">收货信息</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="order_view mat10">
+	<tr>
+		<td align="right" width="80">姓　　名：</td>
+		<td>{$info['user_tname']}</td>
+	</tr>
+	<tr>
+		<td align="right">手机号码：</td>
+		<td>{$info['user_phone']}</td>
+	</tr>
+	<tr>
+		<td align="right">收货地址：</td>
+		<td>{$info['user_address']}</td>			
+	</tr>
+	<tr>
+		<td align="right">订单备注：</td>
+		<td>{$info['order_text']}</td>
+	</tr>	
+	<tr>
+		<td align="right">快递信息：</td>
+		<td><!--{if($info['order_wl_name']):}--><a href="{pe_url('order-kuaidi', 'id='.$info['order_wl_id'])}" target="_blank" class="tag_kd">{$info['order_wl_name']}：{$info['order_wl_id']}</a><!--{else:}-->--<!--{endif;}--></td>
+	</tr>	
+	</table>
+	<div class="shixian mat20"></div>
+	<div class="order_view_tt mat20">订单信息</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="order_view mat10">
+	<tr>
+		<td align="right" width="80">下单时间：</td>
+		<td>{pe_date($info['order_atime'])}</td>
+	</tr>
+	<tr>
+		<td align="right">付款时间：</td>
+		<td><!--{if($info['order_ptime']):}-->{pe_date($info['order_ptime'])}<!--{else:}-->--<!--{endif;}--></td>
+	</tr>
+	<tr>
+		<td align="right">发货时间：</td>
+		<td><!--{if($info['order_stime']):}-->{pe_date($info['order_stime'])}<!--{else:}-->--<!--{endif;}--></td>
+	</tr>	
+	<tr>
+		<td align="right" width="80">付款方式：</td>
+		<td>{$cache_payway[$info['order_payway']]['payway_name']}</td>
 	</tr>
 	</table>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+	<div class="shixian mat20"></div>
+	<div class="order_view_tt mat20">商品清单</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="order_view_list mat20">
+	<tr>
+		<td class="bgtt1" colspan="2">商品名称</td>
+		<td class="bgtt1" width="100">单价</td>
+		<td class="bgtt1" width="100">数量</td>
+		<td class="bgtt1" width="150">商品优惠</td>
+		<td class="bgtt1" width="100">小计</td>			
+	</tr>
 	<!--{foreach($product_list as $k=>$v):}-->
 	<tr>
-		<td style="text-align:left;border-left:1px solid #ddd">
-			<div class="dingdan_list" style="padding-top:0;">
-				<a href="{pe_url('product-'.$v['product_id'])}" class="fl mar5"><img src="{pe_thumb($v['product_logo'], 40, 40)}" width="40" height="40"></a>
-				<div class="fl font12">
-					<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank" class="cblue dd_name">{$v['product_name']}</a>
-					<!--{if($v['prorule_name']):}-->
-					<p class="c888 mat5"><!--{foreach(unserialize($v['prorule_name']) as $vv):}-->[{$vv['name']}：{$vv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
-					<!--{endif;}-->
-					</div>
-				<div class="clear"></div>
-			</div>
+		<td style="border-right:0;width:60px"><a href="{pe_url('product-'.$v['product_id'])}" class="dingdan_img"><img src="{pe_thumb($v['product_logo'], 100, 100)}"></a></td>
+		<td style="border-left:0;text-align:left;">
+			<a href="{pe_url('product-'.$v['product_id'])}" target="_blank" class="dd_name">{$v['product_name']}</a>
+			<!--{if($v['prorule_name']):}-->
+			<p class="c888 mat5"><!--{foreach(unserialize($v['prorule_name']) as $vv):}-->[{$vv['name']}：{$vv['value']}]&nbsp;&nbsp;<!--{endforeach;}--></p>
+			<!--{endif;}-->
 		</td>
-		<td width="80"><span class="num">{round($v['product_money'], 1)}</span></td>
-		<td width="50"><span class="num">{$v['product_num']}</span></td>
-		<td width="120"><!--{if(order_money_yh($v['product_money_yh'])):}-->卖家优惠{order_money_yh($v['product_money_yh'])}元<!--{else:}-->-<!--{endif;}--></td>
-		<!--{if($k==0):}-->
-		<td width="120" rowspan="{count($product_list)}" style="border-left:1px solid #ddd;border-right:1px solid #ddd;" nosel="1">
-			<span class="strong num font14 corg">{round($info['order_money'], 1)}</span>
-			<p class="c888 mat2">{$ini['payway'][$info['order_payway']]}</p>
-		</td>
-		<!--{endif;}-->
+		<td><span class="font13">¥{$v['product_money']}</span></td>
+		<td><span class="font13">{$v['product_num']}</span></td>
+		<td><!--{if(order_money_yh($v['product_money_yh'])):}-->卖家优惠{order_money_yh($v['product_money_yh'])}元<!--{else:}-->-<!--{endif;}--></td>
+		<td><span class="font13">¥{$v['product_money']*$v['product_num'] + $v['product_money_yh']}</span></td>
 	</tr>
 	<!--{endforeach;}-->
 	</table>
-	<div class="dingdan_heji">
-		<span class="fl">交易获得：<span class="cgreen num">{$info['order_point_get']}</span> 积分</span>
-		<div class="fr">
-			<span class="mar20">商品总金额：<span class="cred num">{round($info['order_product_money'], 1)}</span></span>
-			<span class="mar20">运费：<span class="cred num">{round($info['order_wl_money'], 1)}</span></span>
-			<span class="mar20">使用优惠券：<a class="cred num" href="javascript:;" title="{$info['order_quan_name']}">-{round($info['order_quan_money'], 1)}</a></span>
-			<span class="mar5">使用积分：<a class="cred num" href="javascript:;" title="使用{$info['order_point_use']}积分">-{round($info['order_point_money'], 1)}</a></span>
-		</div>
+	<div class="dingdan_jiesuan">
+		<!--{if($info['order_point_get']):}-->
+		<div class="dingdan_jiesuan_l">可获得积分：<span class="cgreen num1">{$info['order_point_get']}</span> 点</div>
+		<!--{endif;}-->
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>商品金额：</td>
+			<td width="100">¥ {$info['order_product_money']}</td>
+		</tr>
+		<tr>
+			<td>运费：</td>
+			<td>¥ {$info['order_wl_money']}</td>
+		</tr>
+		<!--{if($info['order_quan_money']):}-->
+		<tr>
+			<td>使用优惠券：</td>
+			<td><a href="javascript:;" title="{$info['order_quan_name']}">- ¥ {$info['order_quan_money']}</a></td>
+		</tr>
+		<!--{endif;}-->
+		<!--{if($info['order_point_use']):}-->
+		<tr>
+			<td>使用积分：</td>
+			<td><a href="javascript:;" title="使用{$info['order_point_use']}积分">- ¥ {$info['order_point_money']}</a></td>
+		</tr>
+		<!--{endif;}-->
+		<tr>
+			<td>应付金额：</td>
+			<td class="font18 cred strong">¥ {$info['order_money']}</td>
+		</tr>
+		</table>
 		<div class="clear"></div>
 	</div>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="hy_tablett mat10">
-	<tr>
-		<td class="bgtt" width="350" style="border-left:1px solid #e8e8e8">订单信息</td>
-		<td class="bgtt" width="350">收货信息</td>
-		<td class="bgtt" colspan="2" style="border-right:1px solid #e8e8e8"></td>		
-	</tr>
-	</table>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
-	<tr>
-		<td width="100" class="bgtt c888 aright" style="border-top:0;">下单时间</td>
-		<td width="230" style="border-top:0;background:#fff">{pe_date($info['order_atime'])}</td>
-		<td width="100" class="bgtt c888 aright" style="border-top:0">用户帐号</td>
-		<td style="border-top:0;background:#fff"><span class="cblue">{$info['user_name']}</span></td>
-	</tr>
-	<tr>
-		<td class="bgtt c888 aright">付款时间</td>
-		<td style="background:#fff"><!--{if($info['order_ptime']):}-->{pe_date($info['order_ptime'])}<!--{else:}--><span class="cred">未付款</span><!--{endif;}--></td>
-		<td class="bgtt c888 aright">收货姓名</td>
-		<td style="background:#fff;">{$info['user_tname']}</td>
-	</tr>
-	<tr>
-		<td class="bgtt c888 aright">发货时间</td>
-		<td style="background:#fff"><!--{if($info['order_stime']):}-->{pe_date($info['order_stime'])}<!--{else:}--><span class="cred">未发货</span><!--{endif;}--></td>
-		<td class="bgtt c888 aright">联系电话</td>
-		<td style="background:#fff;">{$info['user_phone']}</td>
-	</tr>
-	<tr>
-		<td class="bgtt c888 aright">完成时间</td>
-		<td style="background:#fff"><!--{if($info['order_ftime']):}-->{pe_date($info['order_ftime'])}<!--{else:}--><span class="cred">未确认</span><!--{endif;}--></td>	
-		<td class="bgtt c888 aright">收货地址</td>
-		<td style="background:#fff;">{$info['user_address']}</td>			
-	</tr>
-	<tr>
-
-		<td class="bgtt c888 aright">物流信息</td>
-		<td style="background:#fff"><!--{if($info['order_wl_name']):}--><a href="{pe_url('order-kuaidi', 'id='.$info['order_wl_id'])}" target="_blank" class="tag_green">{$info['order_wl_name']}：{$info['order_wl_id']}</a><!--{else:}-->无<!--{endif;}--></td>
-		<td class="bgtt c888 aright">买家留言</td>
-		<td style="background:#fff;">{$info['order_text']}</td>
-	</tr>		
-	</table>
 	</div>
 </div>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 <!--{include(pe_tpl('footer.html'));}-->

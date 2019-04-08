@@ -15,37 +15,18 @@ switch ($act) {
 	case 'add':
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			if ($_FILES['product_logo']['size']) {
-				pe_lead('include/class/upload.class.php');
-				$upload = new upload($_FILES['product_logo']);
-				$_p_info['product_logo'] = $upload->filehost;
-			}
 			$_p_info['product_money'] = $_p_info['product_smoney'];
 			$_p_info['product_atime'] = $_p_info['product_atime'] ? strtotime($_p_info['product_atime']) : time();
-			$_p_info['rule_id'] = is_array($_p_rule_id) ? implode(',', $_p_rule_id) : '';
 			if ($product_id = $db->pe_insert('product', pe_dbhold($_p_info, array('product_text')))) {
-				if (is_array($_p_prorule_key)) {
-					foreach ($_p_prorule_key as $k=>$v) {
-						$sql_prorule['product_id'] = $product_id;
-						$sql_prorule['product_money'] = $_p_product_money[$k];
-						$sql_prorule['product_mmoney'] = $_p_product_mmoney[$k];
-						$sql_prorule['product_num'] = $_p_product_num[$k];
-						$sql_prorule['prorule_key'] = $v;
-						$db->pe_insert('prorule', $sql_prorule);
-						$sql_product['product_num'] += $_p_product_num[$k];
-					}
-					$db->pe_update('product', array('product_id'=>$product_id), $sql_product);
-				}
+				product_callback($product_id);
 				cache_write('category');
-				pe_success('商品添加成功!', 'admin.php?mod=product&state=1');
+				pe_success('添加成功!', 'admin.php?mod=product&state=1');
 			}
 			else {
-				pe_error('商品添加失败...');
+				pe_error('添加失败...');
 			}
 		}
-		//商品规格
-		$rule_list = $info['rule_id'] ? explode(',', $info['rule_id']) : array();
-		$prorule_list = $db->pe_selectall('prorule', array('product_id'=>$product_id, 'order by'=>'prorule_id asc'));
+		$album_list = array();
 		$seo = pe_seo($menutitle='添加商品', '', '', 'admin');
 		include(pe_tpl('product_add.html'));
 	break;
@@ -54,68 +35,59 @@ switch ($act) {
 		$product_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			if ($_FILES['product_logo']['size']) {
-				pe_lead('include/class/upload.class.php');
-				$upload = new upload($_FILES['product_logo']);
-				$_p_info['product_logo'] = $upload->filehost;
-			}
-			$_p_info['product_money'] = $_p_info['product_smoney'];			
-			//$_p_info['product_atime'] = $_p_info['product_atime'] ? strtotime($_p_info['product_atime']) : time();
-			$_p_info['rule_id'] = is_array($_p_rule_id) ? implode(',', $_p_rule_id) : '';
+			$_p_info['product_money'] = $_p_info['product_smoney'];
 			if ($db->pe_update('product', array('product_id'=>$product_id), pe_dbhold($_p_info, array('product_text')))) {
-				$db->pe_delete('prorule', array('product_id'=>$product_id));
-				if (is_array($_p_prorule_key)) {
-					foreach ($_p_prorule_key as $k=>$v) {
-						$sql_prorule['product_id'] = $product_id;
-						$sql_prorule['product_money'] = $_p_product_money[$k];
-						$sql_prorule['product_mmoney'] = $_p_product_mmoney[$k];
-						$sql_prorule['product_num'] = $_p_product_num[$k];
-						$sql_prorule['prorule_key'] = $v;
-						$db->pe_insert('prorule', $sql_prorule);
-						$sql_product['product_num'] += $_p_product_num[$k];
-					}
-					$db->pe_update('product', array('product_id'=>$product_id), $sql_product);
-				}
+				product_callback($product_id);
 				cache_write('category');
-				pe_success('商品修改成功!', $_g_fromto);
+				pe_success('修改成功!', $_g_fromto);
 			}
 			else {
-				pe_error('商品修改失败!' );
+				pe_error('修改失败!' );
 			}
 		}
-		$info = $db->pe_select('product', array('product_id'=>$product_id));
-		//商品规格
-		$rule_list = $info['rule_id'] ? explode(',', $info['rule_id']) : array();
-		$prorule_list = $db->pe_selectall('prorule', array('product_id'=>$product_id, 'order by'=>'prorule_id asc'));	
+		$info = $db->pe_select('product', array('product_id'=>$product_id));	
+		$album_list = explode(',', $info['product_album']);	
 		$seo = pe_seo($menutitle='修改商品', '', '', 'admin');
 		include(pe_tpl('product_add.html'));
 	break;
 	//#####################@ 商品删除 @#####################//
 	case 'del':
 		pe_token_match();
-		if ($db->pe_delete('product', array('product_id'=>is_array($_p_product_id) ? $_p_product_id : $_g_id))) {
-			//删除商品相关表
-			$db->pe_delete('collect', array('product_id'=>is_array($_p_product_id) ? $_p_product_id : $_g_id));	
-			$db->pe_delete('comment', array('product_id'=>is_array($_p_product_id) ? $_p_product_id : $_g_id));
-			$db->pe_delete('ask', array('product_id'=>is_array($_p_product_id) ? $_p_product_id : $_g_id));
+		$product_id = is_array($_p_product_id) ? $_p_product_id : $_g_id;
+		if ($db->pe_delete('product', array('product_id'=>$product_id))) {
+			$db->pe_delete('prorule', array('product_id'=>$product_id));
 			cache_write('category');
-			pe_success('商品删除成功!');
+			pe_success('删除成功!');
 		}
 		else {
-			pe_error('商品删除失败...');
+			pe_error('删除失败...');
+		}
+	break;
+	//#####################@ 商品排序 @#####################//
+	case 'order':
+		pe_token_match();
+		foreach ($_p_product_order as $k=>$v) {
+			$result = $db->pe_update('product', array('product_id'=>$k), array('product_order'=>$v));
+		}
+		if ($result) {
+			pe_success('排序成功!');
+		}
+		else {
+			pe_error('排序失败...');
 		}
 	break;
 	//#####################@ 商品上下架 @#####################//
 	case 'state':
 		pe_token_match();
-		if ($db->pe_update('product', array('product_id'=>is_array($_p_product_id) ? $_p_product_id : $_g_id), array('product_state'=>$_g_state))) {
+		$product_id = is_array($_p_product_id) ? $_p_product_id : $_g_id;
+		if ($db->pe_update('product', array('product_id'=>$product_id), array('product_state'=>$_g_state))) {
 			pe_success("操作成功!");
 		}
 		else {
 			pe_error("操作失败...");
 		}
 	break;
-	//#####################@ 商品上下架 @#####################//
+	//#####################@ 商品批量推荐 @#####################//
 	case 'tuijian':
 		pe_token_match();
 		foreach ($_p_product_id as $v) {
@@ -152,45 +124,46 @@ switch ($act) {
 	break;
 	//#####################@ 选择规格 @#####################//
 	case 'rule':
-	case 'rule_html':
-		if ($act == 'rule_html') {
-			$ruledata_id = explode(',', $_g_ruledata_id);
-			foreach($cache_rule as $k=>$v) {
-				foreach((array)$v['list'] as $kk=>$vv) {
-					if (in_array($vv['ruledata_id'], $ruledata_id)) {
-						$ruledata_idarr[$k][] = $vv['ruledata_id'];
-					}
-				}
-			}
-			$rule_tablelist = rule_table($ruledata_idarr);
-$html = '<tr><th class="bgtt" width="50">序号</th>';
-foreach ($ruledata_idarr as $k=>$v) {
-	$html .= "<th class='bgtt'>{$cache_rule[$k]['rule_name']}<input type='hidden' name='rule_id[]' value='{$k}' /></th>";
-}
-$html .= <<<html
-	<th class="table_td bgtt" width="70">本店价</th>
-	<th class="table_td bgtt" width="70">市场价</th>
-	<th class="table_td bgtt" width="70">库存</th>
-	<th class="table_td bgtt" width="50">操作</th></tr>	
-html;
-foreach ($rule_tablelist as $k=>$v) {
-	$html .= "<tr><td>".($k+1)."</td>";
-	foreach (explode(',', $v) as $vv) {
-		$html .= "<td>{$cache_ruledata[$vv]['ruledata_name']}</td>";
-	}
-$html .= <<<html
-	<td class="table_td"><input type="text" name="product_money[]" value="" class="inputtext input40" /></td>
-	<td class="table_td"><input type="text" name="product_mmoney[]" value="" class="inputtext input40" /></td>
-	<td class="table_td"><input type="text" name="product_num[]" value="" class="inputtext input40" /></td>
-	<td class="table_td"><input type="hidden" name="prorule_key[]" value="{$v}" /><a href="javascript:;" class="hy_btn rule_del">删除</a></td></tr>		
-html;
-}
-			echo json_encode(array('result'=>$result, 'html'=>$html));
-			die();
-		}
-		$prorule_key = $_g_prorule_key ? array_unique(explode(',', $_g_prorule_key)) : array();
+		$ruledata_id = $_g_id ? explode(',', $_g_id) : array();
 		$seo = pe_seo($menutitle='选择规格', '', '', 'admin');
 		include(pe_tpl('product_rule.html'));
+	break;
+	//#####################@ 生成规格 @#####################//
+	case 'rule_list':
+		if ($_g_type == 'init') {
+			$product_id = intval($_g_id);
+			$info = $db->pe_select('product', array('product_id'=>$product_id));
+			if ($info['product_rule']) {
+				$info['product_rule'] = unserialize($info['product_rule']);
+				foreach ($info['product_rule'] as $k=>$v) {
+					$rule_list[] = array('id'=>$v['id'], 'name'=>$v['name']);
+				}
+				$prorule_list = $db->pe_selectall('prorule', array('product_id'=>$product_id, 'order by'=>'prorule_id asc'));
+				foreach ($prorule_list as $k=>$v) {
+					$ruledata_list[$k]['id'] = $v['prorule_key'];
+					$ruledata_list[$k]['name'] = $v['prorule_name'];
+					$ruledata_list[$k]['name_list'] = explode(',', $v['prorule_name']);
+					$ruledata_list[$k]['money'] = $v['product_money'];
+					$ruledata_list[$k]['mmoney'] = $v['product_mmoney'];				
+					$ruledata_list[$k]['num'] = $v['product_num'];	
+				}
+			}
+		}
+		else {
+			$ruledata_id = $_g_id ? explode(',', $_g_id) : array();
+			$rule_ids = array();
+			foreach($cache_ruledata as $k=>$v) {
+				if (!in_array($v['ruledata_id'], $ruledata_id)) continue;
+				if (!in_array($v['rule_id'], $rule_ids)) {
+					$rule_list[] = array('id'=>$v['rule_id'], 'name'=>$cache_rule[$v['rule_id']]['rule_name']);
+					$rule_ids[] = $v['rule_id'];
+				}
+				$ruledata_idarr[$v['rule_id']][] = $v['ruledata_id'];
+			}
+			$ruledata_list = ruledata_list($ruledata_idarr);
+		}
+		$result = is_array($rule_list) ? true : false;
+		pe_jsonshow(array('result'=>$result, 'rule_list'=>$rule_list, 'ruledata_list'=>$ruledata_list));
 	break;
 	//#####################@ 快速咨询 @#####################//
 	case 'ask':
@@ -198,26 +171,29 @@ html;
 		$product_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			$sql_set['product_id'] = $product_id;
+			$info = $db->pe_select('product', array('product_id'=>$product_id), 'product_id, product_name, product_logo');
 			$sql_set['ask_text'] = $_p_ask_text;
 			$sql_set['ask_atime']= $_p_ask_atime ? strtotime($_p_ask_atime) : time();
-			$sql_set['ask_replytext'] = $_p_ask_replytext;
-			$sql_set['user_ip'] = pe_ip();
+			$sql_set['product_id'] = $info['product_id'];
+			$sql_set['product_name'] = $info['product_name'];
+			$sql_set['product_logo'] = $info['product_logo'];
 			$sql_set['user_name'] = $_p_user_name;
-			$user = $db->pe_select('user', array('user_name'=>pe_dbhold($sql_set['user_name'])));
+			$sql_set['user_ip'] = pe_ip();
+			$user = $db->pe_select('user', array('user_name'=>pe_dbhold($_p_user_name)));
 			if ($user['user_id']) {
 				$sql_set['user_id'] = $user['user_id'];	
 			}
-			if ($sql_set['ask_replytext']) {
-				$sql_set['ask_replytime'] = $sql_set['ask_atime'] + rand(60, 300);
+			if ($_p_ask_replytext) {
+				$sql_set['ask_replytext'] = $_p_ask_replytext;				
+				$sql_set['ask_replytime'] = $sql_set['ask_atime'] + rand(300, 600);
 				$sql_set['ask_state'] = 1;			
 			}
 			if ($db->pe_insert('ask', pe_dbhold($sql_set))) {
-				product_num('asknum', $product_id);
-				pe_success('咨询添加成功!');
+				product_num($product_id, 'asknum');
+				pe_success('添加成功!');
 			}
 			else {
-				pe_error('咨询添加失败...');
+				pe_error('添加失败...');
 			}
 		}
 		$info = $db->pe_select('product', array('product_id'=>$product_id));
@@ -230,22 +206,25 @@ html;
 		$product_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			$sql_set['product_id'] = $product_id;
+			$info = $db->pe_select('product', array('product_id'=>$product_id), 'product_id, product_name, product_logo');
 			$sql_set['comment_star'] = intval($_p_comment_star);
 			$sql_set['comment_text'] = $_p_comment_text;
 			$sql_set['comment_atime']= $_p_comment_atime ? strtotime($_p_comment_atime) : time();
-			$sql_set['user_ip'] = pe_ip();
+			$sql_set['product_id'] = $info['product_id'];
+			$sql_set['product_name'] = $info['product_name'];
+			$sql_set['product_logo'] = $info['product_logo'];
 			$sql_set['user_name'] = $_p_user_name;
+			$sql_set['user_ip'] = pe_ip();
 			$user = $db->pe_select('user', array('user_name'=>pe_dbhold($sql_set['user_name'])));
 			if ($user['user_id']) {
 				$sql_set['user_id'] = $user['user_id'];	
 			}
 			if ($db->pe_insert('comment', pe_dbhold($sql_set))) {
-				product_num('commentnum', $product_id);
-				pe_success('评价添加成功!');
+				product_num($product_id, 'commentnum');
+				pe_success('添加成功!');
 			}
 			else {
-				pe_error('评价添加失败...');
+				pe_error('添加失败...');
 			}
 		}
 		$info = $db->pe_select('product', array('product_id'=>$product_id));
@@ -294,7 +273,7 @@ html;
 			$orderby = explode('|', $_g_orderby);
 			$sqlwhere .= " `product_{$orderby[0]}` {$orderby[1]},";
 		}
-		$sqlwhere .= " `product_id` desc";
+		$sqlwhere .= " `product_order` asc, `product_id` desc";
 		$info_list = $db->pe_selectall('product', $sqlwhere, '*', array(15, $_g_page));
 		$tongji['all'] = $db->pe_num('product');
 		$tongji['xiajia'] = $db->pe_num('product', array('product_state'=>2));
@@ -306,20 +285,77 @@ html;
 		include(pe_tpl('product_list.html'));
 	break;
 }
-function rule_table($arr = array()) {
-	if (count($arr) == 1) {
-		return $arr[key($arr)];
-	}
-	else {
-		$arr_1 = array_shift($arr);
-		$arr_2 = array_shift($arr);
-		foreach ($arr_1 as $v) {
-			foreach ($arr_2 as $vv) {
-				$arr_val[] = "{$v},{$vv}";
+function ruledata_list($all_list = array(), $zuhe_list = '') {
+	global $cache_ruledata;
+	$i = 0;
+	if (!count($all_list)) return $zuhe_list;
+	$info_list = array_shift($all_list);
+	if (is_array($zuhe_list)) {	
+		foreach ($zuhe_list as $v) {
+			foreach ($info_list as $vv) {
+				$info['id'] = "{$v['id']},{$vv}";
+				$info['name'] = "{$v['name']},{$cache_ruledata[$vv]['ruledata_name']}";				
+				$info['name_list'] = explode(',', $info['name']);
+				$zuhe_list[$i++] = $info;
 			}
 		}
-		array_unshift($arr, $arr_val);
-		return rule_table($arr);
 	}
-} 
+	else {
+		foreach ($info_list as $v) {
+			$info['id'] = $v;
+			$info['name'] = $cache_ruledata[$v]['ruledata_name'];				
+			$info['name_list'] = explode(',', $info['name']);
+			$zuhe_list[$i++] = $info;
+		}
+	}
+	return ruledata_list($all_list, $zuhe_list);
+}
+
+function product_callback($product_id) {
+	global $db;
+	$db->pe_delete('prorule', array('product_id'=>$product_id));
+	if (is_array($_POST['prorule_key'])) {
+		foreach ($_POST['prorule_key'] as $k=>$v) {
+			$sqlset_prorule['product_id'] = $product_id;
+			$sqlset_prorule['prorule_key'] = $v;
+			$sqlset_prorule['prorule_name'] = $_POST['prorule_name'][$k];
+			$sqlset_prorule['product_money'] = $_POST['product_money'][$k];
+			$sqlset_prorule['product_mmoney'] = $_POST['product_mmoney'][$k];
+			$sqlset_prorule['product_num'] = $_POST['product_num'][$k];
+			$db->pe_insert('prorule', $sqlset_prorule);
+			//格式化规格值到对应主规格中
+			$ruledata_idarr = explode(',', $_POST['prorule_key'][$k]);
+			$ruledata_namearr = explode(',', $_POST['prorule_name'][$k]);
+			foreach ($ruledata_idarr as $kk=>$vv) {
+				$ruledata_list[$kk][$vv] = array('id'=>$vv, 'name'=>$ruledata_namearr[$kk]);
+			}
+			//计算商品价格和库存
+			if ($_POST['product_money'][$k] <= $sqlset_product['product_money'] or !isset($sqlset_product['product_money'])) {
+				$sqlset_product['product_money'] = $_POST['product_money'][$k];
+				$sqlset_product['product_smoney'] = $_POST['product_money'][$k];
+				$sqlset_product['product_mmoney'] = $_POST['product_mmoney'][$k];
+			}
+			$sqlset_product['product_num'] += $_POST['product_num'][$k];
+		}
+		//组合规格数组
+		foreach($_POST['rule_id'] as $k=>$v) {
+			$info_list[$k]['id'] = $v;
+			$info_list[$k]['name'] = $_POST['rule_name'][$k];
+			$info_list[$k]['list'] = $ruledata_list[$k];
+		}
+		$sqlset_product['product_rule'] = serialize($info_list);
+		//$db->pe_update('product', array('product_id'=>$product_id), $sqlset_product);
+	}
+	else {
+		$sqlset_product['product_rule'] = '';
+	}
+	$product_album = array();
+	foreach ($_POST['product_album'] as $v) {
+		if (!$v) continue;
+		$product_album[] = $v;		
+	}
+	$sqlset_product['product_logo'] = $product_album[0];
+	$sqlset_product['product_album'] = implode(',', $product_album);
+	$db->pe_update('product', array('product_id'=>$product_id), $sqlset_product);
+}
 ?>

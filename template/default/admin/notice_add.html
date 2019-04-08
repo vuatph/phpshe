@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>设置模板</title>
-<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<title>{$seo['title']}</title>
+<meta name="keywords" content="{$seo['keywords']}" />
+<meta name="description" content="{$seo['description']}" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
 </head>
-<body style="background:none">
-<form method="post" id="form">
-<table style="width:700px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<body style="background:#fff;padding:10px">
+<form method="post" id="form" autocomplete="off">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <!--<tr>
 	<td align="right" class="bgtt c666" width="150">模板标签：</td>
 	<td>
@@ -16,26 +19,26 @@
 		<span class="tag_gray fl mar5 mab5" style="width:165px;padding:0 5px;line-height:20px">{$v} {{$k}}</span>
 		<!--{endforeach;}-->
 	</td>
-</tr>
-<tr>
-	<td align="right" class="bgtt c666">短信内容：</td>
-	<td><textarea name="sms" style="width:590px;height:60px">{$notice_info['smstpl_'.$_g_type]}</textarea></td>
 </tr>-->
 <tr>
-	<td class="bgtt aright" width="100">通知对象</td>
+	<td class="bgtt aright" width="120">通知对象</td>
 	<td>{$info['notice_obj']=='admin'?'管理员':'用户'}</td>
 </tr>
 <tr>
-	<td class="bgtt aright">邮件类型</td>
+	<td class="bgtt aright">通知类型</td>
 	<td>{$info['notice_name']}</td>
 </tr>
 <tr>
+	<td class="bgtt aright">短信内容</td>
+	<td><input name="info[notice_sms_text]" class="inputall input600" value="{$info[notice_sms_text]}" /></td>
+</tr>
+<tr>
 	<td class="bgtt aright">邮件标题</td>
-	<td><input name="info[notice_emailname]" class="inputall input550" value="{$info[notice_emailname]}" /></td>
+	<td><input name="info[notice_email_name]" class="inputall input600" value="{$info[notice_email_name]}" /></td>
 </tr>
 <tr>
 	<td class="bgtt aright">邮件内容</td>
-	<td><textarea name="info[notice_emailtext]" id="editortext" style="width:540px;height:250px">{htmlspecialchars($info['notice_emailtext'])}</textarea></td>
+	<td><textarea name="info[notice_email_text]" id="editortext" style="width:610px;height:210px">{htmlspecialchars($info['notice_email_text'])}</textarea></td>
 </tr>
 </table>
 <div class="mat10 mab10 center">

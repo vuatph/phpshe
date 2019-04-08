@@ -2,37 +2,41 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>修改收货信息</title>
-<link href="{$pe['host_tpl']}css/style.css" rel="stylesheet" type="text/css" />
+<title>{$seo['title']}</title>
+<meta name="keywords" content="{$seo['keywords']}" />
+<meta name="description" content="{$seo['description']}" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
 </head>
-<body style="background:none">
-<form method="post">
-<table style="width:550px;margin:0;" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<body style="background:#fff;padding:5px;">
+<form method="post" id="form" autocomplete="off">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
 <tr>
-	<td style="border-top:0;border-left:0" class="bgtt aright c888" width="120">订单编号</td>
-	<td style="border-top:0;border-right:0">{$info['order_id']}</td>
+	<td class="bgtt aright c888" width="120">订单编号</td>
+	<td>{$info['order_id']}</td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">收货姓名</td>
-	<td style="border-right:0;"><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputall input150"></td>
+	<td class="bgtt aright c888">收 货 人</td>
+	<td><input type="text" name="info[user_tname]" value="{$info['user_tname']}" class="inputall input150"></td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">联系电话</td>
-	<td style="border-right:0;"><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputall input150" /></td>
+	<td class="bgtt aright c888">手机号码</td>
+	<td><input type="text" name="info[user_phone]" value="{$info['user_phone']}" class="inputall input150" /></td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">收货地址</td>
-	<td style="border-right:0;"><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputall input400" /></td>
+	<td class="bgtt aright c888">收货地址</td>
+	<td><input type="text" name="info[user_address]" value="{$info['user_address']}" class="inputall input350" /></td>
 </tr>
 <tr>
-	<td style="border-left:0" class="bgtt aright c888">买家留言</td>
-	<td style="border-right:0;"><textarea name="info[order_text]" style="width:400px;height:80px">{$info['order_text']}</textarea></td>
+	<td class="bgtt aright c888">买家留言</td>
+	<td><textarea name="info[order_text]" style="width:350px;height:80px">{$info['order_text']}</textarea></td>
 </tr>
 </table>
-<div class="acenter mat10">
-	<input type="hidden" name="pe_token" value="{$pe_token}" />	
-	<input type="submit" name="pesubmit" value="提 交" class="tjbtn" />
+<div class="acenter mat20">
+	<input type="hidden" name="pesubmit" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="submit" value="提 交" class="tjbtn" />
 </div>
 </form>
 </body>

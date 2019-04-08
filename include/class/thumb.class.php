@@ -24,11 +24,14 @@ class thumb {
 		elseif ($new_height == 'auto') {
 			$type = 'auto_height';
 		}
+		elseif (stripos($new_width, '_') === 0 && stripos($new_height, '_') === 0) {
+			$type = 'fix';
+		}
 		else {
 			$type = 'diy';
 		}
 		$this->mark_image($new_width, $new_height, $type);
-		$this->save_image($new_path, 100);
+		$this->save_image($new_path, 90);
 	}
     private function open_image($file) {   
         // *** Get extension   
@@ -57,6 +60,10 @@ class thumb {
                 $fix_width = $size_arr['fix_width'];   
                 $fix_height = $size_arr['fix_height'];   
             break;   
+            case 'fix': 
+                $fix_width = substr($new_width, 1);
+                $fix_height = substr($new_height, 1);
+            break;
             case 'auto_width':
                 $fix_width = $this->get_autowidth($new_height);
                 $fix_height= $new_height;   
@@ -84,7 +91,7 @@ class thumb {
         	imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $fix_width, $fix_height, $this->width, $this->height);         
         }
     } 
-	public function save_image($savePath, $imageQuality="100") {
+	public function save_image($savePath, $imageQuality="90") {
 		$Path = substr($savePath, 0, strripos($savePath, '/'));
 		!is_dir($Path) && mkdir($Path , 0777 ,true);
 		// *** Get extension

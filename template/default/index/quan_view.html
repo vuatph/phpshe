@@ -1,18 +1,16 @@
 <!--{include(pe_tpl('header.html'));}-->
-<div class="content" style="min-height:500px; _height:500px;">
+<div class="lingquan_box">
 	<div class="lingquan">
-		<div class="fl lq_l num">{$info['quan_money']}元</div>
-		<div class="fr lq_r">
-			<p class="strong">{$info['quan_name']}</p>
-			<!--<div class="strong mat10">亲，确认领取本店 <span class="cred" style="font-size:40px">{$info['quan_money']}元</span> 优惠券么？</div>-->
-			<p class="mat10">使用条件：<!--{if($info['quan_limit']):}-->满{$info['quan_limit']}元可使用<!--{else:}-->无<!--{endif;}--></p>
-			<p class="mat8">限定商品：<!--{if($info['product_id']):}-->部分商品<!--{else:}-->全店通用<!--{endif;}--></p>
-			<p class="mat8">有效日期：{$info['quan_sdate']} 至 {$info['quan_edate']}</p>
-			<!--<p class="mat5">剩余数量：{$info['quan_num'] - $info['quan_num_get']} 个</p>-->
-			<!--{if($info['quan_edate'] <= date('Y-m-d')):}-->
+		<div class="lq_r fl"><i></i></div>
+		<div class="fl lq_l num">
+			<div>{$info['quan_name']}</div>
+			<p>￥ {$info['quan_money']}</p>
+			<div class="mat15 c888 font14">使用条件：<!--{if($info['quan_limit']):}-->满{$info['quan_limit']}元使用<!--{else:}-->无<!--{endif;}--></div>
+			<div class="mat15 c888 font14">有效日期：{$info['quan_sdate']} 至 {$info['quan_edate']}</div>			
+			<!--{if($info['quan_edate'] < date('Y-m-d')):}-->
 			<div class="lq_btn1"><input type="button" value="优惠券已过期" /></div>
 			<!--{elseif($info['quan_num'] - $info['quan_num_get'] <= 0):}-->		
-			<div class="lq_btn1"><input type="button" value="优惠券已抢光" /></div>	
+			<div class="lq_btn1"><input type="button" value="领光啦" /></div>	
 			<!--{elseif($quanlog_num):}-->
 			<div class="lq_btn1"><input type="button" value="已领取" /></div>
 			<!--{else:}-->
@@ -22,20 +20,21 @@
 			<!--{endif;}-->
 		</div>
 	</div>
-	<h3 class="mat10">此优惠券可用于<!--{if($info['product_id']):}-->以下<!--{else:}-->全店<!--{endif;}-->商品</h3>
+</div>
+<div class="content" style="min-height:500px; _height:500px;">
+	<h3 class="mat10">此优惠券可用于<!--{if($info['product_id']):}-->以下<!--{else:}-->全店<!--{endif;}-->商品</h3>	
 	<div class="tuijian_list">
 		<!--{foreach($info_list as $k=>$v):}-->
-		<div class="prolist_1" <!--{if(($k+1)%5==0):}-->style="margin-right:0"<!--{endif}-->>
-			<p class="prolist_img"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($v['product_logo'], 220, 220)}" title="{$v['product_name']}" width="220" height="220" class="js_imgload" /></a></p>
+		<div class="prolist_1" <!--{if(($k+1)%5==0):}-->style="margin-right:0"<!--{endif;}-->>
+			<a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">
+			<p class="prolist_img"><img src="{$pe['host_tpl']}images/pixel.gif" data-url="{pe_thumb($v['product_logo'], 226, 226)}" title="{$v['product_name']}" width="226" height="226" class="js_imgload" /></p>
+			<!--{if($v['product_hd_tag']):}--><div class="{huodong_tag($v['product_hd_tag'])}">{$v['product_hd_tag']}</div><!--{endif;}-->
 			<div style="padding:10px 10px 0">
-				<p>
-					<span class="money1 fl"><span class="num mar3">¥</span>{$v['product_money']}</span>
-					<!--{if($v['product_hd_tag']):}--><div class="{huodong_tag($v['product_hd_tag'])}">{$v['product_hd_tag']}</div><!--{endif;}-->
-					<s class="num c888 fr">¥ {$v['product_mmoney']}</s>
-				</p>
+				<p class="prolist_name">{$v['product_name']}</p>
+				<p class="mat8"><span class="money1 fl"><span class="num mar3">¥</span>{$v['product_money']}</span> <s class="num c888 fr">¥ {$v['product_mmoney']}</s></p>
 				<div class="clear"></div>
-				<p class="prolist_name"><a href="{pe_url('product-'.$v['product_id'])}" title="{$v['product_name']}" target="_blank">{$v['product_name']}</a></p>
 			</div>
+			</a>
 		</div>
 		<!--{endforeach;}-->
 		<div class="clear"></div>

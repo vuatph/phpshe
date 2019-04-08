@@ -1,120 +1,167 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
-	<div style="width:50%" class="fl">
-		<div class="now">
-			<a href="javascript:;" class="sel">系统信息</a>
-			<div class="clear"></div>
+	<div class="d_fk mat15" >
+		<div class="d_fk_01">
+			<div class="pad10">
+				<div class="dfk_img1"><i></i></div>
+				<div class="dfk_info1">
+					<a href="admin.php?mod=order&state=wpay" target="_blank">
+					<p>{$tongji['order_wpay']}</p>
+					待付款订单
+					</a>
+				</div>
+				<div class="clear"></div>
+			</div>
 		</div>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
-		<tr>
-			<td class="bgtt aright" style="border-top:0;border-left:0" width="100">系统版本</td>
-			<td style="border-top:0"><a href="http://www.phpshe.com" target="_blank" class="cgreen">PHPSHE{$ini['phpshe']['version']}免费版</a><span class="font13 mal5 corg">(授权编号:<span id="license_num">未授权</span>)</span></td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">购买授权</td>
-			<td>
-				<a href="http://wpa.qq.com/msgrd?v=3&uin=76265959&site=qq&menu=yes" target="_blank"><img border="0" src="http://www.phpshe.com/template/default/index/images/qq.png" alt="咨询客服" title="咨询客服"/></a>
-			</td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">官方网站</td>
-			<td><a href="http://www.phpshe.com" target="_blank">http://www.phpshe.com</a></td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">模板商店</td>
-			<td><a href="http://www.phpshe.com/shop/" target="_blank">http://www.phpshe.com/shop/</a></td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">服务器信息</td>
-			<td>{$php_os} {$php_apache} PHP/{$php_version} <a href="admin.php?mod=index&act=phpinfo" target="_blank" class="c888">[详情]</a></td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">数据库信息</td>
-			<td>{$php_mysql}</td>
-		</tr>
-		</table>
-	</div>
-	<div style="width:50%" class="fl">
-		<div class="now">
-			<a href="javascript:;" class="sel">官方动态</a>
-			<div class="clear"></div>
+		<div class="d_fk_01">
+			<div class="pad10">
+				<div class="dfk_img2"><i></i></div>
+				<div class="dfk_info1">
+					<a href="admin.php?mod=order&state=wsend" target="_blank">
+					<p>{$tongji['order_wsend']}</p>
+					待发货订单
+					</a>
+				</div>
+			</div>
 		</div>
-		<iframe src="http://www.phpshe.com/api/shop?type=news&v=1.4" frameborder="0" width="100%" height="269px" style="border-bottom:1px solid #e8e8e8"></iframe>
+		<div class="d_fk_01">
+			<div class="pad10">
+				<div class="dfk_img3"><i></i></div>
+				<div class="dfk_info1">
+					<a href="admin.php?mod=order&state=wget" target="_blank">
+					<p>{$tongji['order_wget']}</p>
+					待确认订单
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="d_fk_01">
+			<div class="pad10" style="margin-right:0">
+				<div class="dfk_img4"><i></i></div>
+				<div class="dfk_info1">
+					<a href="admin.php?mod=cashout" target="_blank">
+					<p>{$tongji['cashout_js']}</p>
+					待结算提现
+					</a>
+				</div>
+			</div>
+		</div>	
 	</div>
 	<div class="clear"></div>
-	<div style="width:50%" class="fl">
-		<div class="now">
-			<a href="javascript:;" class="sel">数据统计</a>
-			<div class="clear"></div>
+	<div class="xtxx_fl">
+		<div style="padding-right:15px;">
+		<div class="xtxx" style="height:auto; border-bottom:0">
+			<div class="xt_tt">
+				<span>用户统计</span>
+			</div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak tj_tb">
+			<tr>
+				<td class="aright" width="105"><span>今日访客：</span></td>
+				<td>{$tongji['iplog_today']} <span>人</span></td>
+			</tr>
+			<tr style="background:#f9fafc">
+				<td class=" aright"><span>昨日访客：</span></td>
+				<td>{$tongji['iplog_lastday']} <span>人</span></td>
+			</tr>
+			<tr>
+				<td class=" aright"><span>累计访客：</span></td>
+				<td>{$tongji['iplog_all']} <span>人</span></td>
+			</tr>
+			<tr style="background:#f9fafc">
+				<td class=" aright" ><span>今日注册：</span></td>
+				<td>{$tongji['user_today']} <span>人</span></td>
+			</tr>
+			<tr>
+				<td class=" aright"><span>昨日注册：</span></td>
+				<td>{$tongji['user_lastday']} <span>人</span></td>
+			</tr>	
+			<tr style="background:#f9fafc">
+				<td class=" aright"><span>累计注册：</span></td>
+				<td>{$tongji['user_all']} <span>人</span></td>
+			</tr>
+			</table>
 		</div>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
-		<tr>
-			<td class="bgtt aright" style="border-top:0;border-left:0" width="100">今日访客</td>
-			<td style="border-top:0;"><span class="num">{$tongji['iplog_today']}</span> 人</td>
-			<td class="bgtt aright" style="border-top:0;" width="100">今日订单</td>
-			<td style="border-top:0;"><span class="num">{$tongji['order_today']}</span> 个</td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">昨日访客</td>
-			<td><span class="num">{$tongji['iplog_lastday']}</span> 人</td>
-			<td class="bgtt aright">昨日订单</td>
-			<td><span class="num">{$tongji['order_lastday']}</span> 个</td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">累计访客</td>
-			<td><span class="num">{$tongji['iplog_all']}</span> 人</td>
-			<td class="bgtt aright">累计订单</td>
-			<td><span class="num">{$tongji['order_all']}</span> 个</td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">今日注册</td>
-			<td><span class="num">{$tongji['user_today']}</span> 人</td>
-			<td class="bgtt aright">产品总数</td>
-			<td><span class="num">{$tongji['product_num']}</span> 个</td>
-		</tr>
-		<tr>
-			<td class="bgtt aright" style="border-left:0">昨日注册</td>
-			<td><span class="num">{$tongji['user_lastday']}</span> 人</td>
-			<td class="bgtt aright">咨询总数</td>
-			<td><span class="num">{$tongji['ask_num']}</span> 条</td>
-		</tr>	
-		<tr>
-			<td class="bgtt aright" style="border-left:0">累计注册</td>
-			<td><span class="num">{$tongji['user_all']}</span> 人</td>
-			<td class="bgtt aright">评价总数</td>
-			<td><span class="num">{$tongji['comment_num']}</span> 条</td>
-		</tr>
-		</table>
+		</div>
 	</div>
-	<div style="width:50%;height:300px" class="fl">
-		<div class="now">
-			<a href="javascript:;" class="sel">待处理项</a>
-			<div class="clear"></div>
+	<div class="xtxx_fl">
+		<div class="xtxx" style="height:auto; border-bottom:0">
+			<div class="xt_tt">
+				<span>订单统计</span>
+			</div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak tj_tb">
+			<tr>
+				<td class=" aright" width="105"><span>今日订单：</span></td>
+				<td>{$tongji['order_today']} <span>个</span></td>
+			</tr>
+			<tr style="background:#f9fafc">
+				<td class=" aright"><span>昨日订单：</span></td>
+				<td>{$tongji['order_lastday']} <span>个</span></td>
+			</tr>
+			<tr>
+				<td class="aright"><span>累计订单：</span></td>
+				<td>{$tongji['order_all']} <span>个</span></td>
+			</tr>
+			<tr style="background:#f9fafc">
+				<td class="aright"><span>产品总数：</span></td>
+				<td>{$tongji['product_num']} <span>个</span></td>
+			</tr>	
+			<tr>
+				<td class=" aright"><span>评价总数：</span></td>
+				<td>{$tongji['comment_num']} <span>条</span></td>
+			</tr>
+			<tr style="background:#f9fafc">
+				<td class=" aright"><span>提现总数：</span></td>
+				<td>{$tongji['cashout_num']} <span>笔</span></td>
+			</tr>
+			</table>
 		</div>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
-		<tr>
-			<td style="width:25%;border-top:0;border-left:0;border-right:0;height:80px;line-height:80px;text-align:center;height:259px">
-				<div class="tag_org">
-					待付款订单<p class="num" style="font-size:30px;margin-top:-4px;color:#fff"><a href="admin.php?mod=order&state=notpay" target="_blank" style="color:#fff">{$tongji['order_notpay']}</a></p>
-				</div>
-			</td>
-			<td style="width:25%;border-top:0;border-left:0;border-right:0;height:80px;line-height:80px;text-align:center">
-				<div class="tag_blue">
-					待发货订单<p class="num" style="font-size:30px;margin-top:-4px;color:#fff"><a href="admin.php?mod=order&state=paid" target="_blank" style="color:#fff">{$tongji['order_waitsend']}</a></p>
-				</div>
-			</td>
-			<td style="width:25%;border-top:0;border-left:0;border-right:0;height:80px;line-height:80px;text-align:center">
-				<div class="tag_green">
-					待确认订单<p class="num" style="font-size:30px;margin-top:-4px;color:#fff"><a href="admin.php?mod=order&state=send" target="_blank" style="color:#fff">{$tongji['order_waitsure']}</a></p>
-				</div>
-			</td>
-			<td style="width:25%;border-top:0;border-left:0;border-right:0;height:80px;line-height:80px;text-align:center">
-				<div class="tag_gray">
-					待回复咨询<p class="num" style="font-size:30px;margin-top:-4px;color:#fff"><a href="admin.php?mod=ask" target="_blank" style="color:#fff">{$tongji['ask_waitreply']}</a></p>
-				</div>
-			</td>
-		</tr>
-		</table>	
+	</div>
+	<div class="xtxx_fl mab10">
+		<div style="padding-right:15px;">
+		<div class="xtxx">
+			<div class="xt_tt">
+				<span>系统信息</span>
+			</div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="xx_tb">
+			<tr>
+				<td align="right" width="100"><span>系统版本：</span></td>
+				<td style="border-top:0"><a href="http://www.phpshe.com" target="_blank" class="corg">PHPSHE{$ini['phpshe']['version']}免费版</a><span class="mal5">（授权编号：<span id="license_num">未授权</span>）</span></td>
+			</tr>
+			<tr>
+				<td align="right"><span>购买授权：</span></td>
+				<td>
+					<a href="http://wpa.qq.com/msgrd?v=3&uin=76265959&site=qq&menu=yes" target="_blank"><img border="0" src="http://www.phpshe.com/template/default/index/images/qq.png" alt="咨询客服" title="咨询客服"/></a>
+				</td>
+			</tr>
+			<tr>
+				<td align="right"><span>官方网站：</span></td>
+				<td><a class="cblue" href="http://www.phpshe.com" target="_blank">http://www.phpshe.com</a></td>
+			</tr>
+			<tr>
+				<td align="right"><span>咨询热线：</span></td>
+				<td>15839823500</td>
+			</tr>
+			<tr>
+				<td align="right"><span>服务器信息：</span></td>
+				<td>{$php_os} {$php_apache} PHP/{$php_version} <a href="admin.php?mod=index&act=phpinfo" target="_blank" class="c888">[详情]</a></td>
+			</tr>
+			<tr>
+				<td align="right"><span>数据库信息：</span></td>
+				<td>{$php_mysql}</td>
+			</tr>
+			</table>
+			</div>
+		</div>
+	</div>
+	<div class="xtxx_fl mab10">
+		<div class="xtxx">
+			<div class="xt_tt">
+				<span>官方动态</span>
+			</div>
+			<div class="gfdt">
+				<iframe src="http://www.phpshe.com/api/shop?type=news&v={$ini['phpshe']['version']}" frameborder="0" width="100%" height="275px"></iframe>
+			</div>
+		</div>
 	</div>
 	<div class="clear"></div>
 </div>
@@ -126,3 +173,6 @@ $(function(){
 })
 </script>
 <!--{include(pe_tpl('footer.html'));}-->
+<style type="text/css">
+.right{background:#fff;}
+</style>

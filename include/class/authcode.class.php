@@ -3,6 +3,7 @@
  * @copyright   2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
  */
+error_reporting(E_ALL ^ E_NOTICE);
 class authcode {
 	private $width, $height, $codenum;
 	public $checkcode;     //产生的验证码
@@ -49,7 +50,7 @@ class authcode {
 	{
 		$this->checkimage = @imagecreate($this->width, $this->height);
 		$black = imagecolorallocate($this->checkimage, 250, 250, 250);
-		//$border = imagecolorallocate($this->checkimage,0,0,0);  
+		$border = imagecolorallocate($this->checkimage, 250, 250, 250);  
 		imagefilledrectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$black); // 白色底
 		imagerectangle($this->checkimage,0,0,$this->width - 1,$this->height - 1,$border);   // 黑色边框
 	}

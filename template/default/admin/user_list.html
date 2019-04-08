@@ -1,72 +1,76 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="right">
 	<div class="now">
-		<a href="admin.php?mod=user" <!--{if($act=='index'):}-->class="sel"<!--{endif;}-->>会员列表</a>
-		<!--{if($act=='edit'):}--><a href="javascript:;" class="sel">修改信息</a><!--{endif;}-->
+		<a href="admin.php?mod=user" <!--{if($mod=='user'):}-->class="sel"<!--{endif;}-->>会员列表（{$tongji['user']}）</a>
+		<a href="admin.php?mod=userbank" <!--{if($mod=='userbank'):}-->class="sel"<!--{endif;}-->>收款账户（{$tongji['userbank']}）</a>
+		<a href="admin.php?mod=useraddr" <!--{if($mod=='useraddr'):}-->class="sel"<!--{endif;}-->>收货地址（{$tongji['userbank']}）</a>
 		<div class="clear"></div>
 	</div>
-	<div class="search">
-		<form method="get">
-			<input type="hidden" name="mod" value="{$_g_mod}" />
-			用户名：<input type="text" name="name" value="{$_g_name}" class="inputtext input100 mar10"/>
-			联系电话：<input type="text" name="phone" value="{$_g_phone}" class="inputtext input100 mar10" />
-			常用邮箱：<input type="text" name="email" value="{$_g_email}" class="inputtext input150" />
-			<select name="orderby" class="selectmini">
-			<option value="" href="{pe_updateurl('orderby', '')}">默认排序</option>
-			<!--{foreach(array('ltime|desc'=>'最近登录', 'point|desc'=>'最多积分') as $k=>$v):}-->
-			<option value="{$k}" href="{pe_updateurl('orderby', $k)}" <!--{if($_g_orderby==$k):}-->selected="selected"<!--{endif;}-->>{$v}</option>
-			<!--{endforeach;}-->
-			</select>
-			<input type="submit" value="搜索" class="input2" />
+	<div class="right_main">
+		<div class="search">
+			<form method="get">
+				<input type="hidden" name="mod" value="{$_g_mod}" />
+				用户名：<input type="text" name="name" value="{$_g_name}" class="inputtext input100 mar5"/>
+				联系电话：<input type="text" name="phone" value="{$_g_phone}" class="inputtext input100 mar5" />
+				常用邮箱：<input type="text" name="email" value="{$_g_email}" class="inputtext input150" />
+				<select name="orderby" class="selectmini">
+				<option value="" href="{pe_updateurl('orderby', '')}">= 默认排序 =</option>
+				<!--{$selnum=1;}-->
+				<!--{foreach(array('ltime|desc'=>'最近登录', 'point|desc'=>'最多积分', 'ordernum|desc'=>'最多订单') as $k=>$v):}-->
+				<option value="{$k}" href="{pe_updateurl('orderby', $k)}" <!--{if($_g_orderby==$k):}-->selected="selected"<!--{endif;}-->>{$selnum++}){$v}</option>
+				<!--{endforeach;}-->
+				</select>
+				<input type="submit" value="搜索" class="input_btn" />
+			</form>
+		</div>
+		<form method="post" id="form">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
+		<tr>
+			<th class="bgtt" width="20"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'user_id')" /></th>
+			<th class="bgtt" width="50">ID号</th>
+			<th class="bgtt">用户名</th>
+			<th class="bgtt" width="80">余额</td>
+			<th class="bgtt" width="80">积分</th>
+			<th class="bgtt" width="60">订单数</td>
+			<th class="bgtt" width="90">联系电话</th>
+			<th class="bgtt" width="160">常用邮箱</th>
+			<th class="bgtt" width="70">注册日期</th>
+			<th class="bgtt" width="70">上次登录</th>
+			<th class="bgtt" width="200">操作</th>
+		</tr>
+		<!--{foreach($info_list as $v):}-->
+		<tr>
+			<td><input type="checkbox" name="user_id[]" value="{$v['user_id']}"></td>
+			<td class="num">{$v['user_id']}</td>
+			<td>{$v['user_name']}</td>
+			<td><span class="num corg">{$v['user_money']}</span></td>
+			<td class="num">{$v['user_point']}</td>
+			<td class="num"><a href="admin.php?mod=order&user_id={$v['user_id']}" class="cblue" target="_blank">{$v['user_ordernum']}</a></td>
+			<td class="num">{$v['user_phone']}</td>
+			<td class="num">{$v['user_email']}</td>
+			<td class="num"><span <!--{if(pe_date($v['user_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['user_atime'], 'Y-m-d')}</span></td>
+			<td class="num"><span <!--{if(pe_date($v['user_ltime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_dayago($v['user_ltime'])}</span></td>
+			<td>
+				<a href="admin.php?mod=user&act=edit&id={$v['user_id']}&{pe_fromto()}" class="admin_edit mar3">修改</a>
+				<a href="admin.php?mod=user&act=del&id={$v['user_id']}&token={$pe_token}" class="admin_del mar3" onclick="return pe_cfone(this, '删除')">删除</a>
+				<a href="admin.php?mod=userbank&user_id={$v['user_id']}" class="admin_btn mar3" target="_blank">账户</a>
+				<a href="admin.php?mod=useraddr&user_id={$v['user_id']}" class="admin_btn" target="_blank">地址</a>
+			</td>
+		</tr>
+		<!--{endforeach;}-->
+		</table>
 		</form>
 	</div>
-	<form method="post" id="form">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="list">
-	<tr>
-		<th class="bgtt" width="20"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'user_id')" /></th>
-		<th class="bgtt" width="50">ID号</th>
-		<th class="bgtt">用户名</th>
-		<!--<th class="bgtt" width="80">账户余额</td>-->
-		<th class="bgtt" width="80">积分</th>
-		<th class="bgtt" width="90">联系电话</th>
-		<th class="bgtt" width="160">常用邮箱</th>
-		<th class="bgtt" width="150">注册地区</th>
-		<th class="bgtt" width="70">注册日期</th>
-		<th class="bgtt" width="70">上次登录</th>
-		<th class="bgtt" width="140">操作</th>
-	</tr>
-	<!--{foreach($info_list as $v):}-->
-	<tr>
-		<td><input type="checkbox" name="user_id[]" value="{$v['user_id']}"></td>
-		<td class="num">{$v['user_id']}</td>
-		<td>{$v['user_name']}</td>
-		<!--<td><span class="num5 strong cgreen">{$v['user_money']}</span></td>-->
-		<td class="num">{$v['user_point']}</td>
-		<td class="num">{$v['user_phone']}</td>
-		<td class="num">{$v['user_email']}</td>
-		<td class="ipname" ip="{$v['user_ip']}"><a href="http://www.ip138.com/ips138.asp?ip={$v['user_ip']}" target="_blank">{$v['user_ip']}</a></td>
-		<td class="num"><span <!--{if(pe_date($v['user_atime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_date($v['user_atime'], 'Y-m-d')}</span></td>
-		<td class="num"><span <!--{if(pe_date($v['user_ltime'], 'Y-m-d') == date('Y-m-d')):}-->class="cred"<!--{endif;}-->>{pe_dayago($v['user_ltime'])}</span></td>
-		<td>
-			<a href="admin.php?mod=user&act=edit&id={$v['user_id']}&{pe_fromto()}" class="admin_edit mar5">修改</a>
-			<a href="admin.php?mod=user&act=del&id={$v['user_id']}&token={$pe_token}" class="admin_del" onclick="return pe_cfone(this, '删除')">删除</a>
-			<a href="admin.php?mod=user&act=email&id={$v['user_id']}" class="hy_btn" onclick="return pe_dialog(this, '发送邮件', 730, 470, 'sendemail')">邮件</a>
-		</td>
-	</tr>
-	<!--{endforeach;}-->
-	<tr>
-		<th class="bgtt"><input type="checkbox" name="checkall" onclick="pe_checkall(this, 'user_id')" /></td>
-		<td class="bgtt aleft" colspan="9">
-			<span class="fl mar10"><button href="admin.php?mod=user&act=del&token={$pe_token}" onclick="return pe_cfall(this, 'user_id', 'form', '批量删除')">批量删除</button></span>
-			<span class="fl"><input type="button" value="批量发送邮件" id="sendemail" /></span>
-			<span class="fenye">{$db->page->html}</span>
-		</td>
-	</tr>
-	</table>
-	</form>
+	<div class="right_bottom">
+		<span class="fl mal10">
+			<input type="checkbox" name="checkall" onclick="pe_checkall(this, 'user_id')" />
+			<button href="admin.php?mod=user&act=del&token={$pe_token}" onclick="return pe_cfall(this, 'user_id', 'form', '批量删除')">批量删除</button>
+			<!--<input type="button" value="批量发送邮件" id="sendemail" />-->
+		</span>
+		<span class="fr fenye">{$db->page->html}</span>
+		<div class="clear"></div>
+	</div>
 </div>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 <script type="text/javascript">
 $(function(){
 	var ips = new Array();

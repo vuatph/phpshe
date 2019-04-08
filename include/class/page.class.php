@@ -72,19 +72,19 @@ class page {
 	{
 		if (count($this->get_pagelist()) > 1) {
 			$url = pe_updateurl('page',1);				
-			$pagelisthtml = "<ul class='fr'><li><a href='{$url}'>首页</a></li>";
+			$pagelisthtml = "<a href='{$url}'>首页</a>";
 			foreach ($this->get_pagelist() as $k => $v) {
 				$url = pe_updateurl('page', $v);
-				$pagelisthtml .= ($this->page == $v) ? "<li><a href='{$url}' class='sel'>{$v}</a></li>" : "<li><a href='{$url}'>{$v}</a></li>";	
+				$pagelisthtml .= ($this->page == $v) ? "<a href='{$url}' class='sel'>{$v}</a>" : "<a href='{$url}'>{$v}</a>";	
 			}
 			$url = pe_updateurl('page', $this->pagenums);
-			$pagelisthtml .= "<li><a href='{$url}'>末页</a></li></ul>";
+			$pagelisthtml .= "<a href='{$url}'>末页</a>";
 $pagelisthtml .=<<<html
 <style type="text/css">
-.fenye li{float:left; font-family:Arial, Helvetica, sans-serif; margin-left:6px; display:inline; line-height:23px;}
-.fenye a{border:1px #C2D5E3 solid; padding:0 12px; border-radius:3px; color:#0066CC; background:#fff; float:left;  height:23px;}
-.fenye a:hover{background:#fff5f5; border:1px #76a5c8 solid;}
-.fenye .sel{background:#E5EDF2; color:#333; font-weight:bold; border:1px #C2D5E3 solid;  padding:0 12px; border-radius:4px}
+.fenye{text-align:right;}
+.fenye a{border:1px #ccc solid; padding:0 10px; border-radius:2px; color:#666; background:#fff;display:inline-block;  height:24px; line-height:24px; font-weight:normal; margin-left:3px;}
+.fenye a:hover,.fenye .sel{background:#1DABDF; color:#fff; border:1px #0D95C7 solid;  padding:0 10px;}
+.fenye .sel{ font-weight:bold;}
 </style>
 html;
 			return $pagelisthtml;

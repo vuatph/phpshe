@@ -12,31 +12,34 @@ if (@ini_get('register_globals')) {
 	foreach ($_REQUEST as $name => $value) unset($$name);
 }
 
+//#################=====引入基本类库=====#################//
+include(dirname(__FILE__).'/config.php');
+include(dirname(__FILE__).'/hook/ini.hook.php');
+include(dirname(__FILE__).'/include/class/db.class.php');
+include(dirname(__FILE__).'/include/class/cache.class.php');
+include(dirname(__FILE__).'/include/function/global.func.php');
+include(dirname(__FILE__).'/include/function/license.func.php');
+
 //#################=====定义根路径=====#################//
-$pe['host_root'] = 'http://'.str_ireplace(rtrim(str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']), '/'), $_SERVER['HTTP_HOST'], str_replace('\\', '/', dirname(__FILE__))).'/';
-$pe['path_root'] = str_replace('\\','/',dirname(__FILE__)).'/';
+$pe['host_root'] = pe_root('host');
+$pe['path_root'] = pe_root('path');
 
-//#################=====包含常用类-函数文件=====#################//
-include($pe['path_root'].'config.php');
-include($pe['path_root'].'hook/ini.hook.php');
-include($pe['path_root'].'include/class/db.class.php');
-include($pe['path_root'].'include/class/page.class.php');
-include($pe['path_root'].'include/class/cache.class.php');
-include($pe['path_root'].'include/function/global.func.php');
-include($pe['path_root'].'include/function/license.func.php');
-//#################=====URL路由配置=====#################//
+//#################=====配置路由/模板路径=====#################//
 pe_urlroute();
-
-//#################=====定义模板路径=====#################//
-$cache_setting = cache::get('setting');
-$module_tpl = $cache_setting['web_tpl'];
-if (!is_dir("{$pe['path_root']}template/{$module_tpl}/{$module}/")) {
-	$module_tpl = 'default';
+$mobile_result = pe_mobile();
+if ($mobile_result && in_array($module, array('index', 'user'))) {
+	$module = "mobile_{$module}";
+	include(dirname(__FILE__).'/include/class/page_m.class.php');
 }
+else {
+	include(dirname(__FILE__).'/include/class/page.class.php');
+}
+$cache_setting = cache::get('setting');
+$module_tpl = is_dir("{$pe['path_root']}template/{$cache_setting['web_tpl']}/{$module}/") ? $cache_setting['web_tpl'] : 'default';
 $pe['host_tpl'] = "{$pe['host_root']}template/{$module_tpl}/{$module}/";
 $pe['path_tpl'] = "{$pe['path_root']}template/{$module_tpl}/{$module}/";
 
-//#################=====重新定义GPC=====#################//
+//#################=====定义GPC变量=====#################//
 if (get_magic_quotes_gpc()) {
 	!empty($_GET) && extract(pe_trim(pe_stripslashes($_GET)), EXTR_PREFIX_ALL, '_g');
 	!empty($_POST) && extract(pe_trim(pe_stripslashes($_POST)), EXTR_PREFIX_ALL, '_p');
@@ -51,5 +54,7 @@ session_start();
 $pe_token = $_s_pe_token;
 
 //#################=====连接数据库开始吧=====#################//
-$db = new db($pe['db_host'], $pe['db_user'], $pe['db_pw'], $pe['db_name'], $pe['db_coding']);
+if (stripos($_SERVER['SCRIPT_NAME'], 'install/index.php') === false) {
+	$db = new db($pe['db_host'], $pe['db_user'], $pe['db_pw'], $pe['db_name'], $pe['db_coding']);
+}
 ?>

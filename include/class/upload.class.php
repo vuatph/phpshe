@@ -15,8 +15,8 @@ class upload {
 	public $filename = '';
 	//允许上传的文件类型
 	public $filetype = array('jpg','jpeg','gif','png','psd','wps','doc','xls','ppt','pdf','zip','rar','tar','txt','text');
-	//文件上传大小控制(默认是2000kb)
-	public $filesize = 2000000;
+	//文件上传大小控制(默认是10000kb)
+	public $filesize = 10000000;
 	//文件验证结果
 	public $checkresult = true;
 	function __construct($file, $path_save = null, $ext_arr = array())

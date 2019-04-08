@@ -15,7 +15,6 @@ switch ($act) {
 	break;
 	//#####################@ 优惠券领取 @#####################//
 	default:
-		pe_lead('hook/product.hook.php');
 		$info = $db->pe_select('quan', array('quan_key'=>pe_dbhold($act)));
 		$quanlog_num = $db->pe_num('quanlog', array('quan_id'=>$info['quan_id'], 'user_id'=>$_s_user_id));
 		if (isset($_p_pesubmit)) {
@@ -44,12 +43,12 @@ switch ($act) {
 			}
 		}
 		if ($info['product_id']) {
-			$info_list = $db->pe_selectall('product', array('product_id'=>$info['product_id']));		
+			$info_list = $db->pe_selectall('product', array('product_id'=>explode(',', $info['product_id'])));		
 		}
 		else {
 			$info_list = $db->pe_selectall('product', array('order by'=>'product_istuijian desc, product_sellnum desc'), '*', array(20));
 		}
-		$seo = pe_seo('领取优惠券');
+		$seo = pe_seo($menutitle='领取优惠券');
 		include(pe_tpl('quan_view.html'));
 	break;
 }

@@ -1,61 +1,72 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
+	<form method="post" id="form" target="_blank">
 	<div class="order_cg">
-		<p>
-		<!--{if(stripos($_SERVER['HTTP_REFERER'], 'mod=order&act=add')===false):}-->
-		请您及时付款，以便订单尽快处理！
-		<!--{elseif($order['order_payway']=='cod'):}-->
-		您已成功提交订单，等待管理员审核发货！
+		<i class="tjcg_dui"></i>
+		<!--{if($info['order_payway'] == 'cod'):}-->
+		<div class="tjcg_tt">订单已提交，我们会尽快安排发货！</div>
 		<!--{else:}-->
-		您已成功提交订单，请及时付款！
+		<div class="tjcg_tt">订单已提交，请尽快付款！</div>		
 		<!--{endif;}-->
-		</p>
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您的订单编号：<span class="cblue mar20">{$order['order_id']}</span>
-		应付金额：<span class="cred font16 mar20 strong num">{$order['order_money']}元</span>
-		付款方式：<span class="cred font14 mar20">{$cache_payway[$order['order_payway']]['payway_name']}</span>
-		<!--{if(in_array($order['order_payway'], array('alipay', 'ebank'))):}-->
-		<form method="post"><input type="submit" name="pesubmit" value="去付款" class="btn_05" /></form>
-		<!--{elseif($order['order_payway']=='bank'):}-->
-		<div class="shouhuo_info">{nl2br($cache_payway[$order['order_payway']]['payway_config']['bank_text'])}</div>
-		<!--{endif;}-->
+		<!--<div class="mat8 c888">（请您在48小时内完成支付，否则订单会被自动取消）</div>-->
+		<div class="mat30">订单编号：<span class="c888 mal5">{$info['order_id']}</span></div>
+		<div class="mat10">支付方式：<span class="c888 mal5">{$cache_payway[$info['order_payway']]['payway_name']}</span>
+			<!--{if($info['order_state'] == 'wpay'):}-->
+			<a href="javascript:payway_show();" class="cblue mal10">[更改支付]</a>
+			<!--{endif;}-->
+		</div>
+		<div class="mat10">收货信息：<span class="c888 mal5">{$info['user_tname']}，{$info['user_phone']}，{$info['user_address']}</span></div>
+		<div class="dd_yingfu">应付金额：<span>{$info['order_money']}</span> 元</div>
 	</div>
-<!--	<div class="liucheng" style="margin-top:15px">请选择付款方式</div>
-	<div class="shouhuo_info">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		  <tr>
-			<td width="20"><input type="radio"></td>
-			<td><img src="{$pe['host_tpl']}images/zf_02.jpg" /></td>
-		  </tr>
-		</table>
-		<input type="submit" value="去付款" class="btn_05" />
-		<div class="hy_table">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<!--{foreach($cache_payway as $k=>$v):}-->
-			<!--{if(!$v['payway_state'])continue}-->
-			<tr>
-				<td width="200"><label for="{$k}"><img src="{pe_thumb($v['payway_logo'])}" title="{$v['payway_name']}" /></label></td>
-				<td style="text-align:left"><p class="cred">{$v['payway_name']}：</p><p>{$v['payway_text']}</p></td>
-				<td width="100">
-				<!--{if($v['payway_mark']=='bank'):}-->
-				<input type="button" value="支付信息" onclick='alert("订单金额：{$order['order_money']}元\n\n{$cache_payway['bank']['payway_config']['bank_text']}")' />
-				<!--{elseif($v['payway_mark']=='cod'):}-->
-				<form method="post">
-				<input type="hidden" name="info[order_payway]" value="{$k}" />
-				<input type="submit" name="pesubmit" value="通知发货" />
-				</form>
-				<!--{else:}-->
-				<form method="post" target="_blank">
-				<input type="hidden" name="info[order_payway]" value="{$k}" />
-				<input type="submit" name="pesubmit" value="在线支付" />
-				</form>
+	<div class="fkfs" id="payway_html" style="margin-top:20px; padding-bottom:70px; padding-left:50px; display:none">
+		<div class="fkfs_tt">请选择支付方式</div>
+		<ul>
+			<!--{foreach($payway_list as $k=>$v):}-->
+			<!--{if($v['payway_mark'] == 'cod')continue}-->
+			<li class="js_radio" val="{$k}">
+				<img src="{$pe['host_root']}include/plugin/payway/{$k}/logo.png" class="fl" />
+				<!--{if($v['payway_mark'] == 'balance'):}-->
+				<span class="fr corg mat5">（余额：{$user['user_money']}元）</span>
 				<!--{endif;}-->
-				</td>
-			</tr>
+				<div class="clear"></div><i></i>
+			</li>
 			<!--{endforeach;}-->
-			</table>
-		</div>-->
+		</ul>
+		<div class="clear"></div>	
 	</div>
+	<!--{if($info['order_state'] == 'wpay'):}-->
+	<input type="hidden" name="order_payway" value="" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="hidden" name="pesubmit" />
+	<input type="button" value="去付款" class="ddtj_btn" onclick="order_pay()" style="float:none; margin:50px 0 50px 530px;" />
+	<!--{endif;}-->	
+	</form>
 </div>
-<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=blue"></script>
-<script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
+<script type="text/javascript">
+$(function(){
+	pe_select_radio('order_payway', "{$info['order_payway']}");
+})
+function order_pay() {
+	if ($(":input[name='order_payway']").val() == 'bank') {
+		layer.open({
+			type: 2,
+			title: '转账汇款说明',
+			area: ['550px', '350px'],
+			fixed: false, //不固定
+			shadeClose: true,
+			shade: 0.5,
+			content: "{$pe['host_root']}include/plugin/payway/bank/order_pay.php"
+		});		
+	}
+	else {
+		$("#form").submit();
+	}
+}
+function payway_show() {
+	$("#payway_html").show();
+}
+</script>
+<style type="text/css">
+body{background:#f5f5f5;}
+</style>
 <!--{include(pe_tpl('footer.html'));}-->

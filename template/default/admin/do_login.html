@@ -10,26 +10,26 @@
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
 <style type="text/css">
-body{background:#3C7DBE; font-family:'Microsoft Yahei','Simsun',"宋体"}
+body{background:#3C7DBE url({$pe['host_tpl']}images/login_bg1.jpg) no-repeat center top; font-family:'Microsoft Yahei','Simsun',"宋体"}
 .login_tt{font-size:24px; line-height:30px; color:#fff; width:462px; margin:0 auto; margin-top:150px; text-align:center}
 .login{background:url({$pe['host_tpl']}images/login_bg.png) no-repeat; width:462px; height:244px; margin:0 auto; margin-top:15px; padding-top:40px;}
 .input1{margin:0px 0 0 65px; font-size:14px; color:#888;}
 .input1 input{width:140px; height:28px; border:0; line-height:28px; margin-left:5px;}
-.input2{margin:23px 0 0 60px; font-size:14px; color:#888;}
+.input2{margin:23px 0 0 65px; font-size:14px; color:#888;}
 .input2 input{width:140px; height:28px; border:0; line-height:28px; margin-left:5px;}
 .input3_box{background:#fff url({$pe['host_tpl']}images/login_bg.png) no-repeat -36px -87px; border:1px #bbb solid; border-radius:5px; height:35px; line-height:32px;width:182px; padding-left:30px; color:#666; float:left;}
 .input3{margin:20px 0 0 33px;}
 .input3_box input{width:53px; height:28px; border:0; line-height:28px; margin-left:5px; margin-top:2px;}
 .input3 img{margin-left:3px; width:80px; height:32px; border:0; float:left; display:inline; margin-top:2px;}
 .login_btn{margin:25px 0 0 33px;}
-.login_btn input{background:url({$pe['host_tpl']}images/login_btn.gif) no-repeat; width:216px; height:43px; border:0; cursor:pointer;}
+.login_btn input{background:#0099CC; border-radius:4px; color:#fff; font-size:16px; font-family:'微软雅黑'; width:213px; height:40px; border:0; cursor:pointer;}
 .copyright{text-align:center; color:#BECAD6;}
 .copyright a,.copyright a:hover{color:#BECAD6;}
 .login .input_name{float:left; margin-top:3px; display:block;}
 </style>
 </head>
 <body>
-<div class="login_tt"><!--<span class="num">PHPSHE</span>商城管理系统--><img src="{$pe['host_tpl']}images/admin_logo.png"></div>
+<div class="login_tt"><span class="num">PHPSHE</span>商城管理系统</div>
 <form method="post">
 <div class="login">	
 	<div class="input1"><span class="input_name">账 号:</span><input type="text" name="admin_name" /><div class="clear"></div></div>
@@ -43,10 +43,9 @@ body{background:#3C7DBE; font-family:'Microsoft Yahei','Simsun',"宋体"}
 		</div>
 		<div class="clear"></div>
 	</div>
-	<div class="login_btn"><input type="submit" name="pesubmit" value=" " /></div>
+	<div class="login_btn"><input type="submit" name="pesubmit" value="登 录" /></div>
 </div>
 </form>
-<div class="copyright">Copyright <span class="num">©</span> 2008-2015 <a href="http://www.phpshe.com" target="_blank">灵宝简好网络科技有限公司</a> 版权所有</div>
 </body>
 <script type="text/javascript">
 $(function(){

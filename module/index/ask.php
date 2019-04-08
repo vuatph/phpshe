@@ -1,44 +1,39 @@
 <?php
-pe_lead('hook/product.hook.php');
 switch ($act) {
 	//#####################@ 新增咨询 @#####################//
 	case 'add':
 		if (isset($_p_pesubmit)) {
-			$info['product_id'] = intval($_g_id);
+			$product_id = intval($_g_id);
+			if (!pe_login('user')) pe_jsonshow(array('result'=>false, 'show'=>'请先登录...'));
+			if (!$_p_ask_text) pe_jsonshow(array('result'=>false, 'show'=>'请填写咨询内容...'));
+			$info = $db->pe_select('product', array('product_id'=>$product_id), 'product_id, product_name, product_logo');
+			if (!$info['product_id']) pe_jsonshow(array('result'=>false, 'show'=>'无效商品...'));			
+			$info['product_id'] = $info['product_id'];
+			$info['product_name'] = $info['product_name'];
+			$info['product_logo'] = $info['product_logo'];
 			$info['ask_text'] = $_p_ask_text;
 			$info['ask_atime'] = time();
 			$info['user_id'] = $_s_user_id;
 			$info['user_name'] = $_s_user_name;
 			$info['user_ip'] = pe_ip();
 			if ($db->pe_insert('ask', pe_dbhold($info))) {
-				product_num('asknum', $info['product_id']);
-				$result = true;
-				$info['ask_atime'] = pe_date($info['ask_atime'], 'Y-m-d');
-				$info['ask_text'] = pe_dbhold($_p_ask_text);
-$html = <<<html
-<div class="ask_main"><i>Q</i><p><span class="cblue">{$info['user_name']}：</span>{$info['ask_text']}</p><span class="fr c888 font12">{$info['ask_atime']}</span><div class="clear"></div></div>
-<div class="rep_main"><i>A</i><p>{$info['ask_replytext']}</p><div class="clear"></div></div>
-html;
+				product_num($info['product_id'], 'asknum');
+				pe_jsonshow(array('result'=>true, 'show'=>'提交成功！管理员会尽快答复...'));
 			}
 			else {
-				$result = false;
+				pe_jsonshow(array('result'=>false, 'show'=>'提交失败，请重新提交...'));
 			}
-			echo json_encode(array('result'=>$result, 'html'=>$html));
 		}
 	break;
-	//#####################@ 资讯列表 @#####################//
+	//#####################@ 咨询列表 @#####################//
 	default:
-		$sql_where['product_id'] = intval($_g_product_id);
+		$sql_where['product_id'] = intval($_g_id);
 		$sql_where['order by'] = "`ask_id` desc";
-		$info_list = $db->pe_selectall('ask', $sql_where, '*', array('10', $_g_page));
-		foreach ($info_list as $v) {
-$ask_atime = pe_date($v['ask_atime'], 'Y-m-d');
-$html .= <<<html
-<div class="ask_main"><i>Q</i><p><span class="cblue">{$v['user_name']}：</span>{$v['ask_text']}</p><span class="fr c888 font12">{$ask_atime}</span><div class="clear"></div></div>
-<div class="rep_main"><i>A</i><p>{$v['ask_replytext']}</p><div class="clear"></div></div>
-html;
+		$info_list = $db->pe_selectall('ask', $sql_where, '*', array('20', $_g_page));
+		foreach ($info_list as $k=>$v) {
+			$info_list[$k]['ask_atime'] = pe_date($v['ask_atime'], 'Y-m-d');
 		}
-		echo json_encode(array('html'=>$html, 'page'=>$db->page->ajax('ask_page')));
+		pe_jsonshow(array('list'=>$info_list, 'page'=>$db->page->ajax('ask_page')));
 	break;
 }
 ?>

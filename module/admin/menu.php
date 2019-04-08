@@ -11,20 +11,20 @@ switch ($act) {
 		$menu_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			if ($_p_info['menu_type'] == 'sys') {
-				$menu_name = explode('|', $_p_menu_name);
-				$_p_info['menu_name'] = $menu_name[0];
-				$_p_info['menu_url'] = $menu_name[1];
+			if ($_p_info['menu_type'] != 'diy') {
+				$_p_info['menu_url'] = $_p_info['menu_type'];
+				$_p_info['menu_type'] = 'sys';
 			}
 			if ($db->pe_insert('menu', pe_dbhold($_p_info))) {
 				cache_write('menu');
-				pe_success('导航添加成功!', 'admin.php?mod=menu');
+				pe_success('添加成功!', 'admin.php?mod=menu');
 			}
 			else {
-				pe_error('导航添加失败...');
+				pe_error('添加失败...');
 			}
 		}
 		$menu_sys_arr = menu_sys_arr();
+		$info['menu_target'] = 1;
 		$seo = pe_seo($menutitle='导航添加', '', '', 'admin');
 		include(pe_tpl('menu_add.html'));
 	break;
@@ -33,17 +33,16 @@ switch ($act) {
 		$menu_id = intval($_g_id);
 		if (isset($_p_pesubmit)) {
 			pe_token_match();
-			if ($_p_info['menu_type'] == 'sys') {
-				$menu_name = explode('|', $_p_menu_name);
-				$_p_info['menu_name'] = $menu_name[0];
-				$_p_info['menu_url'] = $menu_name[1];
+			if ($_p_info['menu_type'] != 'diy') {
+				$_p_info['menu_url'] = $_p_info['menu_type'];
+				$_p_info['menu_type'] = 'sys';
 			}
 			if ($db->pe_update('menu', array('menu_id'=>$menu_id), pe_dbhold($_p_info))) {
 				cache_write('menu');
-				pe_success('导航修改成功!', 'admin.php?mod=menu');
+				pe_success('修改成功!', 'admin.php?mod=menu');
 			}
 			else {
-				pe_error('导航修改失败...');
+				pe_error('修改失败...');
 			}
 		}
 		$info = $db->pe_select('menu', array('menu_id'=>$menu_id));
@@ -54,12 +53,13 @@ switch ($act) {
 	//#####################@ 导航删除 @#####################//
 	case 'del':
 		pe_token_match();
-		if ($db->pe_delete('menu', array('menu_id'=>$_g_id))) {
+		$menu_id = is_array($_p_menu_id) ? $_p_menu_id : intval($_g_id);
+		if ($db->pe_delete('menu', array('menu_id'=>$menu_id))) {
 			cache_write('menu');
-			pe_success('导航删除成功!');
+			pe_success('删除成功!');
 		}
 		else {
-			pe_error('导航删除失败...');
+			pe_error('删除失败...');
 		}
 	break;
 	//#####################@ 导航排序 @#####################//
@@ -70,33 +70,34 @@ switch ($act) {
 		}
 		if ($result) {
 			cache_write('menu');
-			pe_success('导航排序成功!');
+			pe_success('排序成功!');
 		}
 		else {
-			pe_error('导航排序失败...');
+			pe_error('排序失败...');
 		}
 	break;
 	//#####################@ 导航列表 @#####################//
 	default :
 		$info_list = $db->pe_selectall('menu', array('order by'=>'`menu_order` asc, `menu_id` asc'));
+		$tongji['all'] = $db->pe_num('menu');
 		$seo = pe_seo($menutitle='导航设置', '', '', 'admin');
 		include(pe_tpl('menu_list.html'));
 	break;
 }
 function menu_sys_arr() {
 	pe_lead('hook/category.hook.php');
-	$arr['category'] = '========@商品分类@========';
+	$arr[] = 'line';
 	$category_treelist = category_treelist();
 	foreach ($category_treelist as $v) {
-		$arr[$v['category_showname']] = "{$v['category_name']}|product-list-{$v['category_id']}";
+		$arr["[商品分类] {$v['category_showname']}"] = array("modurl"=>"product-list-{$v['category_id']}", "url"=>pe_url("product-list-{$v['category_id']}"));
 	}
-	$arr['class'] = '========@文章分类@========';
+	$arr[] = 'line';
 	$cache_class = cache::get('class');
 	foreach ($cache_class as $v) {
-		$arr[$v['class_name']] = "{$v['class_name']}|article-list-{$v['class_id']}";
+		$arr["[文章分类] {$v['class_name']}"] = array("modurl"=>"article-list-{$v['class_id']}", "url"=>pe_url("article-list-{$v['class_id']}"));
 	}
-	$arr['brand'] = '========@品牌列表@========';
-	$arr['品牌街'] = "品牌街|brand-list";
+	//$arr['brand'] = '===品牌列表===';
+	$arr['[其他栏目] 品牌专区'] = array("modurl"=>"brand-list", "url"=>pe_url("brand-list"));
 	/*$arr['page'] = '========@单页列表@========';
 	$page_class = cache::get('page');
 	foreach ($page_class as $v) {

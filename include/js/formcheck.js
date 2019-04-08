@@ -8,8 +8,9 @@ function js_length(str) {
     return str.replace(/[^\x00-\xff]/g,"aaa").length;
 };
 //定制常用正则
-var rule_phone = /^((1[0-9]{10})|([0-9-]{7,12}))$/;
-var rule_qq = /^[0-9]{5,12}$/;
+//var rule_phone = /^((1[0-9]{10})|([0-9-]{7,12}))$/;
+var rule_phone = /^1[0-9]{10}$/;
+var rule_qq = /^[0-9]{5,15}$/;
 var rule_email = /^[-_A-Za-z0-9]+@([_A-Za-z0-9]+\.)+[a-z]{2,3}$/;
 var rule_zh = /^[\u4e00-\u9fa5]+$/;
 var rule_idcard = /^([1-9][0-9]{14})|([1-9][0-9]{17})$/;

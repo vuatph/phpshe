@@ -43,7 +43,8 @@ switch ($act) {
 	//#####################@ 链接删除 @#####################//
 	case 'del':
 		pe_token_match();
-		if ($db->pe_delete('link', array('link_id'=>is_array($_p_link_id) ? $_p_link_id : $_g_id))) {
+		$link_id = is_array($_p_link_id) ? $_p_link_id : intval($_g_id);
+		if ($db->pe_delete('link', array('link_id'=>$link_id))) {
 			cache_write('link');
 			pe_success('删除成功!');
 		}
@@ -68,6 +69,7 @@ switch ($act) {
 	//#####################@ 链接列表 @#####################//
 	default:
 		$info_list = $db->pe_selectall('link', array('order by'=>'`link_order` asc, `link_id` asc'), '*', array(10, $_g_page));
+		$tongji['all'] = $db->pe_num('link');
 		$seo = pe_seo($menutitle='友情链接', '', '', 'admin');
 		include(pe_tpl('link_list.html'));
 	break;

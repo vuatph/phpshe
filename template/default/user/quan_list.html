@@ -2,40 +2,38 @@
 <div class="huiyuan_content">
 	<!--{include(pe_tpl('user_menu.html'));}-->
 	<div class="fr huiyuan_main">
-		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}</a></div>
+		<div class="hy_tt"><a href="javascript:;" class="sel">{$menutitle}<span>({$tongji['all']})</span></a></div>
 		<div class="hy_tablelist">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<th>优惠券名称</th>
-				<th width="70">面值</th>
-				<th width="70">使用条件</th>
-				<th width="60">限定商品</th>
-				<th width="170">有效日期</th>
-				<th width="110">领取日期</th>
-				<th width="50">状态</td>
+				<th width="90">面值</th>
+				<th width="90">使用条件</th>
+				<th width="90">限定商品</th>
+				<th width="200">有效日期</th>
+				<th width="60">状态</td>
 			</tr>
 			<!--{foreach($info_list as $v):}-->
 			<tr>
 				<td class="aleft"><a href="{pe_url('quan-'.$v['quan_key'])}" title="{$v['quan_name']}" target="_blank" class="cblue">{$v['quan_name']}</a></td>
-				<td class="num">{$v['quan_money']}元</td>
+				<td><span class="corg">¥{$v['quan_money']}</span></td>
 				<td>满{$v['quan_limit']}元</td>
-				<td>{$v['product_id']?'部分商品':'全店通用'}</td>
-				<td class="num">{$v['quan_sdate']} 至 {$v['quan_edate']}</td>
-				<td class="num">{pe_date($v['quanlog_atime'])}</td>
+				<td>{$v['product_id']?'部分商品':'无'}</td>
+				<td class="num1">{$v['quan_sdate']} 至 {$v['quan_edate']}</td>
 				<td>
 					<!--{if($v['quanlog_state']==0):}-->
-					<span class="corg">未使用</span>				
+					<span class="tag_green">未使用</span>				
 					<!--{elseif($v['quanlog_state']==1):}-->
-					<span class="cgreen">已使用</span>					
+					<span class="tag_gray">已使用</span>					
 					<!--{elseif($v['quanlog_state']==2):}-->
-					<span class="c999">已过期</span>
+					<s class="tag_gray" style="color:#bbb">已过期</s>
 					<!--{endif;}-->
 				</td>
 			</tr>
 			<!--{endforeach;}-->
 			</table>
-			<div class="fenye mat10">{$db->page->html}</div>
 		</div>
+		<div class="fenye mat10">{$db->page->html}</div>
 	</div>
 	<div class="clear"></div>
 </div>

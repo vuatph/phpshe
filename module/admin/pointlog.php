@@ -11,8 +11,8 @@ switch ($act) {
 		$_g_type && $sql_where .= " and `pointlog_type` = '{$_g_type}'";
 		$sql_where .= ' order by pointlog_id desc';
 
-		$info_list = $db->pe_selectall('pointlog', $sql_where, '*', array(20, $_g_page));
-
+		$info_list = $db->pe_selectall('pointlog', $sql_where, '*', array(50, $_g_page));
+		$tongji['all'] = $db->pe_num('pointlog');
 		$seo = pe_seo($menutitle='积分明细');
 		include(pe_tpl('pointlog_list.html'));
 	break;

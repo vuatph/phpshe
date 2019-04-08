@@ -5,15 +5,14 @@
  */
 
 //网站公告
-$notice_list = $db->pe_selectall('article', array('class_id'=>1,'order by'=>'`article_atime` desc'), '*', array(8));
-//商品推荐
-$product_tuijian = $db->pe_selectall('product', array('product_istuijian'=>1, 'product_state'=>1, 'order by'=>'product_id desc'), '*', array(5));
+$notice_list = $db->pe_selectall('article', array('class_id'=>1,'order by'=>'`article_atime` desc'), '*', array(5));
+//新品推荐
+$product_newlist = product_newlist();
 
-pe_lead('hook/product.hook.php');
-pe_lead('hook/category.hook.php');
+$category_indexlist = array();
 foreach((array)$cache_category_arr[0] as $k=>$v) {
-	$v['product_newlist'] = $db->pe_selectall('product', array('category_id'=>category_cidarr($v['category_id']), 'product_state'=>1, 'order by'=>'product_id desc'), '*', array(10));
-	$v['product_selllist'] = $db->pe_selectall('product', array('category_id'=>category_cidarr($v['category_id']), 'product_state'=>1, 'order by'=>'product_sellnum desc'), '*', array(5));
+	$v['product_list'] = $db->pe_selectall('product', array('category_id'=>category_cidarr($v['category_id']), 'product_state'=>1, 'order by'=>'product_order asc, product_id desc'), '*', array(8));
+	$v['ad'] = $db->pe_select('ad', array('ad_position'=>'index_category', 'category_id'=>$v['category_id'], 'ad_state'=>1, 'order by'=>'ad_order asc, ad_id desc'));
 	$category_indexlist[] = $v;
 }
 

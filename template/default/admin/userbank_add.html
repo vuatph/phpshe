@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$seo['title']}</title>
+<meta name="keywords" content="{$seo['keywords']}" />
+<meta name="description" content="{$seo['description']}" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
+<script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
+<script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
+</head>
+<body style="background:#fff;padding:5px">
+<form method="post" id="form" autocomplete="off">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="wenzhang_bak">
+<tr>
+	<td class="bgtt aright c888" width="120">用 户 名：</td>
+	<td>{$info['user_name']}</td>
+</tr>
+<tr>
+	<td class="bgtt aright c888">账户类型：</td>
+	<td>
+		<select name="userbank_type" class="inputselect">
+		<!--{foreach($ini['userbank_type'] as $k=>$v):}-->
+		<option value="{$k}" <!--{if($info['userbank_type']==$k):}-->selected="selected"<!--{endif;}-->>{$v}</option>
+		<!--{endforeach;}-->
+		</select>
+	</td>
+</tr>
+<tr id="userbank_address">
+	<td class="bgtt aright c888">开户行名称：</td>
+	<td><input type="text" name="userbank_address" value="{$info['userbank_address']}" class="inputall input400" /> <span id="userbank_address_show"></span></td>
+</tr>
+<tr>
+	<td class="bgtt aright c888">收款账号：</td>
+	<td><input type="text" name="userbank_num" value="{$info['userbank_num']}" class="inputall input200" /> <span id="userbank_num_show"></span></td>
+</tr>
+<tr>
+	<td class="bgtt aright c888">收 款 人：</td>
+	<td><input type="text" name="userbank_tname" value="{$info['userbank_tname']}" class="inputall input200" /> <span id="userbank_tname_show"></span></td>
+</tr>
+<tr>
+	<td class="bgtt aright c888">添加日期：</td>
+	<td class="num">{pe_date($info['userbank_atime'])}</td>
+</tr>
+</table>
+<div class="acenter mat20">
+	<input type="hidden" name="pesubmit" />
+	<input type="hidden" name="pe_token" value="{$pe_token}" />
+	<input type="button" value="提 交" class="tjbtn" />
+</div>
+</form>
+<script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
+<script type="text/javascript">
+$(function(){
+	js_bankselect();
+	$(":input[name='userbank_type']").change(function(){
+		js_bankselect();
+	})
+})
+var checkbank = function () {
+	return	{'url':"{$pe['host_root']}index.php",
+			'data':{'mod':'check','act':'userbank','value':$(":input[name='userbank_num']").val(),'id':"{$info['userbank_id']}"}}
+}
+var form_info = [
+	{"name":"userbank_num", "mod":"str", "act":"blur", "arg":"", "show_id":"userbank_num_show","show_error":"必填", "must":true},
+	{"name":"userbank_num", "mod":"ajax", "act":"blur", "arg":checkbank, "show_id":"userbank_num_show","show_error":"帐号已存在", "must":true},
+	{"name":"userbank_tname", "mod":"str", "act":"blur", "arg":"", "show_id":"userbank_tname_show","show_error":"必填", "must":true},
+	{"name":"userbank_address", "mod":"str", "act":"blur", "arg":"", "show_id":"userbank_address_show","show_error":"必填", "must":true}
+]
+$(":button").pe_submit(form_info, 'form');
+function js_bankselect() {
+	var userbank_type = $(":input[name='userbank_type'] option:selected").val();
+	if (userbank_type == 'alipay' || userbank_type == 'tenpay') {
+		$("#userbank_address").hide().find(":input").attr("disabled", "disabled");
+	}
+	else {
+		$("#userbank_address").show().find(":input").removeAttr("disabled");
+	}
+}
+</script>
+</body>
+</html>

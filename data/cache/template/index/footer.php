@@ -1,18 +1,7 @@
 <div class="clear"></div>
-<div class="width980">
-<?php echo ad_show('footer') ?>
-<?php if($mod=='index'):?><?php echo ad_show('index_footer') ?><?php endif;?>
-</div>
 <div class="foot">
-	<?php if($mod=='index'):?>
-	<div class="flink">
-		<span class="strong">友情链接：</span>
-		<?php foreach($cache_link as $v):?>
-		<a href="<?php echo $v['link_url'] ?>" title="<?php echo $v['link_name'] ?>" target="_blank"><?php echo $v['link_name'] ?></a>
-		<?php endforeach;?>
-	</div>
-	<?php endif;?>
-	<div class="bottom_link mat10">
+	<div class="bottom_img"><img src="<?php echo $pe['host_tpl'] ?>images/bottom_img.jpg"></div>
+	<div class="bottom_link">
 		<div class="border_link">
 			<?php foreach($cache_class_arr['help'] as $v):?>
 			<?php if(++$help_index>5)break;?>
@@ -26,69 +15,65 @@
 				</ul>
 			</div>
 			<?php endforeach;?>
+			<div class="foot_telnum">
+				<div class="kfdh">客服电话</div>
+				<p><?php echo $cache_setting['web_phone'] ?></p>
+				<span class="font12 c888">周一至周五8:30-18:00</span>
+				<div class="mat10">
+				<img class="fl" src="<?php echo pe_thumb($cache_setting['web_qrcode']) ?>">
+				<div class="x_sm_text">扫扫有惊喜</div>
+				<div class="clear"></div>
+				</div>
+			</div>
 			<div class="clear"></div>
 		</div>
 	</div>
-	<div class="bottom_img"><img src="<?php echo $pe['host_tpl'] ?>images/bottom_img.jpg"></div>
 	<div class="subnav">
-		Copyright <span class="num">©</span> <?php echo $cache_setting['web_copyright'] ?> All Rights Reserved　<?php echo $cache_setting['web_icp'] ?>
-		<p>咨询热线：<?php echo $cache_setting['web_phone'] ?>　咨询QQ：<?php echo $cache_setting['web_qq'] ?>　<?php echo $cache_setting['web_tongji'] ?></p>
-		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统" class="cgreen">phpshe<?php echo $ini['phpshe']['version'] ?></a></p>
+		Copyright <span class="num">©</span> <?php echo $cache_setting['web_copyright'] ?> All Rights Reserved <?php echo $cache_setting['web_icp'] ?> <?php echo $cache_setting['web_tongji'] ?>&nbsp;
+		Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统">phpshe<?php echo $ini['phpshe']['version'] ?></a>
 	</div>
 </div>
-<link type="text/css" rel="stylesheet" href="<?php echo $pe['host_tpl'] ?>/kefu/css/style.css">
-<div class="newkefu">
-	<div class="newkefu_bar"></div>
-	<div class="newkefu_header"></div>
-	<div class="newkefu_shouqian">
-        <ul>
-		<?php foreach($web_qq as $v):?>
-		<li><a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $v ?>&site=qq&menu=yes"><img border="0" src="<?php echo $pe['host_tpl'] ?>images/qq.png" alt="在线客服" title="在线客服"></a></li>
-		<?php endforeach;?>
-        </ul>
+<div id="top">
+	<div id="izl_rmenu" class="izl-rmenu">
+		<a href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $cache_setting['web_qq'] ?>&site=qq&menu=yes" target="_blank" class="btn btn-qq"></a>
+		<div class="btn btn-wx"><img class="pic" src="<?php echo pe_thumb($cache_setting['web_qrcode']) ?>" /></div>
+		<div class="btn btn-phone"><div class="phone"><?php echo $cache_setting['web_phone'] ?></div></div>
+		<div class="btn btn-top"></div>
 	</div>
-	<div class="newkefu_middle"></div>
-	<div class="newkefu_shouhou">
-		<p class="c666">24小时客服热线<p>
-		<p class="mat10 font16 num corg strong"><?php echo $cache_setting['web_phone'] ?></p>
-    </div>
-    <div class="newkefu_footer"></div>
 </div>
+<link type="text/css" rel="stylesheet" href="<?php echo $pe['host_tpl'] ?>kefu/css/style.css">
+<script type="text/javascript" src="<?php echo $pe['host_tpl'] ?>kefu/js/index.js"></script>
 <script type="text/javascript" src="<?php echo $pe['host_root'] ?>include/js/jquery.scrollLoading.js"></script>
-<script type=text/javascript>
+<script type="text/javascript">
 $(function(){
 	$("img.js_imgload").scrollLoading();
-	$(".newkefu_bar").toggle(
-		function(){
-			$(".newkefu").animate({right:0});
-			$(".newkefu_bar").addClass("newkefu_bar_sel");
-		},
-		function(){
-			$(".newkefu").animate({right:"-140px"});
-			$(".newkefu_bar").removeClass("newkefu_bar_sel");
-		}
-	);
 	$(".fenlei_li").hover(
 		function(){	
 			$(".fenlei_li").find(".fenlei_h3 a").removeClass("sel");	
+			$(".fenlei_li").removeClass("fenlei_li_sel");
 			$(this).find(".fenlei_h3 a").addClass("sel");
-			$(".fenlei_li").find(".js_right").hide();	
-			$(this).find(".js_right").show();
+			$(this).addClass("fenlei_li_sel");
+			$(".fenlei_li").find(".js_right").hide();
+			var _top = $(this).index() * 35;
+			$(this).find(".js_right").css("top", "-"+_top+"px").show();
 		},
 		function(){
 			$(".fenlei_li").find(".fenlei_h3 a").removeClass("sel");
+			$(".fenlei_li").removeClass("fenlei_li_sel");
 			$(".fenlei_li").find(".js_right").hide();	
 		}
 	)
-	<?php if($mod=='index'):?>
-		$("#menu_html").show();
-	<?php else:?>
-		$("#menu_nav").hover(function(){
-			$("#menu_html").show();
-		}, function(){
-			$("#menu_html").hide();	
-		})
-	<?php endif;?>
+	var hoverTimer;
+	$("#menu_nav").hover(function(){
+        clearTimeout(hoverTimer);
+        $("#menu_html").add(".fenlei_li_more").show();
+	}, function(){
+        clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(function(){
+			<?php if($mod!='index'):?>$("#menu_html").hide();<?php endif;?>
+			$(".fenlei_li_more").hide();
+        }, 100);
+	})
 });
 pe_loadscript("<?php echo $pe['host_root'] ?>index.php?mod=notice");
 </script>

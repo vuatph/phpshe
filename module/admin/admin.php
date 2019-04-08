@@ -12,10 +12,10 @@ switch ($act) {
 			pe_token_match();
 			$_p_admin_pw && $_p_info['admin_pw'] = md5($_p_admin_pw);
 			if ($db->pe_insert('admin', $_p_info)) {
-				pe_success('帐号添加成功!', 'admin.php?mod=admin');
+				pe_success('添加成功!', 'admin.php?mod=admin');
 			}
 			else {
-				pe_error('帐号添加失败...');
+				pe_error('添加失败...');
 			}
 		}
 		$seo = pe_seo($menutitle='添加帐号', '', '', 'admin');
@@ -28,10 +28,10 @@ switch ($act) {
 			pe_token_match();
 			$_p_admin_pw && $_p_info['admin_pw'] = md5($_p_admin_pw);
 			if ($db->pe_update('admin', array('admin_id'=>$admin_id), $_p_info)) {
-				pe_success('帐号修改成功!', 'admin.php?mod=admin');
+				pe_success('修改成功!', 'admin.php?mod=admin');
 			}
 			else {
-				pe_error('帐号修改失败...');
+				pe_error('修改失败...');
 			}
 		}
 		$info = $db->pe_select('admin', array('admin_id'=>$admin_id));
@@ -43,15 +43,16 @@ switch ($act) {
 		pe_token_match();
 		$_g_id == 1 && pe_error('默认帐号不可删除...');
 		if ($db->pe_delete('admin', array('admin_id'=>$_g_id))) {
-			pe_success('帐号删除成功!');
+			pe_success('删除成功!');
 		}
 		else {
-			pe_error('帐号删除失败...');
+			pe_error('删除失败...');
 		}
 	break;
 	//#####################@ 管理帐号 @#####################//
 	default:
 		$info_list = $db->pe_selectall('admin', '', '*', array(20, $_g_page));
+		$tongji['all'] = $db->pe_num('admin');
 		$seo = pe_seo($menutitle='管理列表', '', '', 'admin');
 		include(pe_tpl('admin_list.html'));
 	break;

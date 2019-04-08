@@ -3,28 +3,7 @@
  * @copyright     2008-2015 简好网络 <http://www.phpshe.com>
  * @creatdate     2012-1111 koyshe <koyshe@gmail.com>
  */
-error_reporting(E_ALL ^ E_NOTICE);
-date_default_timezone_set('PRC');
-header('Content-Type: text/html; charset=utf-8');
-
-//改写不安全的register_global和防sql注入处理
-if (@ini_get('register_globals')) {
-	foreach($_REQUEST as $name => $value){unset($$name);}
-}
-
-$pe['host_root'] = 'http://'.str_ireplace(rtrim(str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']), '/'), $_SERVER['HTTP_HOST'], str_replace('\\', '/', dirname(__FILE__))).'/../';
-$pe['path_root'] = str_replace('\\','/',dirname(__FILE__)).'/../';
-include("{$pe['path_root']}/include/class/cache.class.php");
-include("{$pe['path_root']}/include/function/global.func.php");
-
-if (get_magic_quotes_gpc()) {
-	!empty($_GET) && extract(pe_trim(pe_stripslashes($_GET)), EXTR_PREFIX_ALL, '_g');
-	!empty($_POST) && extract(pe_trim(pe_stripslashes($_POST)), EXTR_PREFIX_ALL, '_p');
-}
-else {
-	!empty($_GET) && extract(pe_trim($_GET),EXTR_PREFIX_ALL,'_g');
-	!empty($_POST) && extract(pe_trim($_POST),EXTR_PREFIX_ALL,'_p');
-}
+include('../common.php');
 switch ($_g_step) {
 	//#####################@ 配置信息 @#####################//
 	case 'setting':
@@ -45,7 +24,7 @@ switch ($_g_step) {
 			}
 			if ($result) {
 				mysql_query("update `{$_p_dbpre}admin` set `admin_name` = '{$_p_admin_name}', `admin_pw` = '".md5($_p_admin_pw)."' where `admin_id`=1", $dbconn);
-				$config = "<?php\n\$pe['db_host'] = '{$_p_db_host}'; //数据库主机地址\n\$pe['db_name'] = '{$_p_db_name}'; //数据库名称\n\$pe['db_user'] = '{$_p_db_user}'; //数据库用户名\n\$pe['db_pw'] = '{$_p_db_pw}'; //数据库密码\n\$pe['db_coding'] = 'utf8';\n\$pe['url_model'] = 'pathinfo'; //url模式,可选项(pathinfo/pathinfo_safe/php)\ndefine('dbpre','{$_p_dbpre}'); //数据库表前缀\n?>";
+				$config = "<?php\n\$pe['db_host'] = '{$_p_db_host}'; //数据库主机地址\n\$pe['db_name'] = '{$_p_db_name}'; //数据库名称\n\$pe['db_user'] = '{$_p_db_user}'; //数据库用户名\n\$pe['db_pw'] = '{$_p_db_pw}'; //数据库密码\n\$pe['db_coding'] = 'utf8';\n\$pe['url_model'] = 'pathinfo_safe'; //url模式,可选项(pathinfo/pathinfo_safe/php)\ndefine('dbpre','{$_p_dbpre}'); //数据库表前缀\n?>";
 				file_put_contents("{$pe['path_root']}config.php", $config);
 				pe_goto("{$pe['host_root']}install/index.php?step=success");
 			}
@@ -82,9 +61,7 @@ switch ($_g_step) {
 	break;
 	//#####################@ 安装成功 @#####################//
 	case 'success':
-		include("{$pe['path_root']}/config.php");	
-		include("{$pe['path_root']}/include/class/db.class.php");
-		include("{$pe['path_root']}/hook/cache.hook.php");		
+		pe_lead('hook/cache.hook.php');
 		$db = new db($pe['db_host'], $pe['db_user'], $pe['db_pw'], $pe['db_name'], $pe['db_coding']);
 		cache_write();		
 		$menucss_3 = "sel";

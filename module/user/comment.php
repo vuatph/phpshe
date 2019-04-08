@@ -1,12 +1,11 @@
 <?php
 $menumark = 'comment';
-pe_lead('hook/product.hook.php');
 switch($act) {
 	//#####################@ 评价列表 @#####################//
 	default:
-		$sql = "select * from `".dbpre."comment` a, `".dbpre."product` b where a.`product_id` = b.`product_id` and a.`user_id` = '{$_s_user_id}' order by a.`comment_id` desc";
-		$info_list = $db->sql_selectall($sql, array(10, $_g_page));
-		
+		$info_list = $db->pe_selectall('comment', array('user_id'=>$_s_user_id, 'order by'=>'comment_id desc'), '*', array(20, $_g_page));
+
+		$tongji['all'] = $db->pe_num('comment', array('user_id'=>$_s_user_id));		
 		$seo = pe_seo($menutitle='我的评价');
 		include(pe_tpl('comment_list.html'));
 	break;

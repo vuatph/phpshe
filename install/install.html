@@ -9,21 +9,21 @@ print<<<html
 <title>{$seo['title']}</title>
 <meta name="keywords" content="{$seo['keywords']}" />
 <meta name="description" content="{$seo['description']}" />
-<link type="text/css" rel="stylesheet" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="{$pe['host_root']}/install/css/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
 </head>
 <body>
 <div class="content">
-	<div class="logo"><img src="images/logo.gif" alt="PHPSHE商城系统安装向导" /></div>
+	<div class="logo">PHPSHE商城系统安装向导</div>
 	<div class="liucheng">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td width="90"><a href="javascript:;" class="{$menucss_1}">安装协议</a></td>
+			<td width="90"><span class="{$menucss_1}">安装协议</span></td>
 			<td><img src="images/tb1.png" /></td>
-			<td width="90"><a href="javascript:;" class="{$menucss_2}">配置信息</a></td>
+			<td width="90"><span class="{$menucss_2}">配置信息</span></td>
 			<td><img src="images/tb1.png" /></td>
-			<td width="90"><a href="javascript:;" class="{$menucss_3}">安装成功</a></td>
+			<td width="90"><span class="{$menucss_3}">安装成功</span></td>
 		</tr>
 		</table>		
 	</div>
@@ -32,12 +32,11 @@ html;
 if(!$_g_step){
 print<<<html
 -->
-	<div class="main_l"></div>
 	<div class="main_m">
-		<h3 class="c666">欢迎使用PHPSHE商城系统（当前版本PHPSHE{$ini['phpshe']['version']}），请阅读PHPSHE安装许可协议！</h3>
+		<div class="c666">欢迎使用PHPSHE商城系统（当前版本PHPSHE{$ini['phpshe']['version']}），请阅读PHPSHE安装许可协议！</div>
 		<div class="xieyi">
 			<div class="xieyi_text">
-<p>版权所有 (c) 2008-2015，灵宝简好网络科技有限公司 保留所有权利。</p>
+<p>版权所有 (c) 2008-2017，灵宝简好网络科技有限公司 保留所有权利。</p>
 <p class="mat5">感谢您选择 PHPSHE 产品。希望我们的努力能为您提供一个高效便捷和可靠的电子商务网站解决方案。 
 <br/>PHPSHE 全称为 PHPSHE商城系统。 
 <br/>PHPSHE商城系统的官方网站为 http://www.phpshe.com，是 PHPSHE 产品的开发商，依法独立拥有 PHPSHE 的全部知识产权。无论您是个人或组织、盈利与否、用途如何（包括以学习和研究为目的），均需仔细阅读本协议，在理解、同意、并遵守本协议的全部条款后，方可开始使用 PHPSHE 软件。 
@@ -81,7 +80,6 @@ print<<<html
 			<a href="{$pe['host_root']}install/index.php?step=setting" onclick="return xieyi();"><img src="images/next.gif" /></a>
 		</div>
 	</div>
-	<div class="main_r"></div>
 	<div class="clear"></div>
 <script type="text/javascript">
 function xieyi() {
@@ -97,15 +95,14 @@ html;
 }elseif($_g_step=='setting') {
 print<<<html
 -->
-	<div class="main_l"></div>
-	<div class="main_m">
-		<h3 class="c666">确认您的配置</h3>
+	<div class="main_m" style="padding-bottom:30px; height:auto">
+		<div class="c666 font14 center">确认您的配置</div>
 		<form method="post">
-		<div class="xieyi" style="margin-top:5px">
+		<div class="xieyi" style="margin-top:10px; border:0; background:none; padding:0">
 			<div class="corg strong">①环境要求</div>
-			<table width="100%" border="1" cellspacing="0" cellpadding="0">
+			<table width="100%" border="1" cellspacing="0" cellpadding="0" class="mat10">
 			<tr>
-				<td colspan="2">PHPSHE商城系统对服务器环境没有特殊要求，但必须满足以下基础安装条件</td>
+				<td>PHPSHE商城系统对服务器环境没有特殊要求，但必须满足以下基础安装条件</td>
 			</tr>
 			<tr>
 				<td>检查./data及其子目录<span class="num cblue">777</span>权限：{$mod_data}</td>
@@ -118,7 +115,7 @@ print<<<html
 			</tr>
 			</table>
 			<div class="corg strong mat10">②数据库配置</div>
-			<table width="100%" border="1" cellspacing="0" cellpadding="0">
+			<table width="100%" border="1" cellspacing="0" cellpadding="0" class="mat10">
 			<tr>
 				<td align="right" width="100">数据库服务器</td>
 				<td>
@@ -142,8 +139,8 @@ print<<<html
 				<td><input type="text" name="dbpre" value="pe_" class="input200" /> <span class="c888">默认是 "pe_"</span></td>
 			</tr>
 			</table>
-			<div class="corg strong mat10">③管理帐号</div>
-			<table width="100%" border="1" cellspacing="0" cellpadding="0">
+			<div class="corg strong mat10">③管理员帐号</div>
+			<table width="100%" border="1" cellspacing="0" cellpadding="0" class="mat10">
 			<tr>
 				<td align="right" width="100" >管理帐号</td>
 				<td><input type="text" name="admin_name" class="input200" /> <span class="c888">网站管理员登录帐号</span></td>
@@ -154,13 +151,12 @@ print<<<html
 			</tr>
 			</table>
 		</div>
-		<div class="mat10 center">
+		<div class="mat20 center">
 			<input type="hidden" name="pesubmit" />
 			<input type="button" value=" " class="btn" />
 		</div>
 		</form>
 	</div>
-	<div class="main_r"></div>
 	<div class="clear"></div>
 <script type="text/javascript">
 $(function(){
@@ -214,19 +210,21 @@ html;
 }elseif($_g_step=='success') {
 print<<<html
 -->
-	<div class="main">
-		<h3 class="corg font18">恭喜！PHPSHE商城系统安装成功。</h3>
-		<p class="mat10 cred">请立即删除./install目录，以保证网站数据安全！</p>
-		<p class="mat15"><a href="{$pe['host_root']}" target="_blank">访问网站前台首页</a></p>
-		<p class="mat10"><a href="{$pe['host_root']}admin.php" target="_blank">访问网站后台管理</a></p>
-		<p class="mat10">尽情享用 PHPSHE 带来的乐趣!</p>
+	<div class="main" style="padding-bottom:0">
+		<div class="cg_ts">
+			恭喜！PHPSHE商城系统安装成功。
+			<p class="corg font12 mat5">为保证网站数据安全，请立即删除./install目录</p>
+		</div>
+		<div class="demo_btn01"><a href="{$pe['host_root']}" target="_blank" title="商城系统前台演示">前台地址</a></div>
+		<div class="demo_btn02"><a href="{$pe['host_root']}admin.php" target="_blank" title="商城系统前台演示">管理后台</a></div>
+
 	</div>
 <!--
 html;
 }
 print<<<html
 -->
-	<div class="center mat5">Copyright <span class="num">©</span> 2008-2015 <a href="http://www.phpshe.com" target="_blank" title="灵宝简好网络科技有限公司">灵宝简好网络科技有限公司</a> 版权所有</div>
+	<div class="center mat20 c888">Copyright <span class="num">©</span> 2008-2017 <a class="c888" href="http://www.phpshe.com" target="_blank" title="灵宝简好网络科技有限公司">灵宝简好网络科技有限公司</a> 版权所有</div>
 </div>
 </body>
 </html>
