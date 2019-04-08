@@ -22,10 +22,19 @@ Class thumb
     private $image;   
     private $width;
     private $height;   
-    private $imageResized;   
+    private $imageResized;
 
-	function __construct($fileName, $new_path, $new_width, $new_height)   
-	{   
+	function __construct($fileName, $new_path, $new_width, $new_height) 
+	{
+		if ($new_width == 'auto') {
+			$type = 'auto_width';
+		}
+		elseif ($new_height == 'auto') {
+			$type = 'auto_height';
+		}
+		else {
+			$type = 'diy';
+		}
 		// *** Open up the file
 		$this->image = $this->openImage($fileName);   
 
@@ -33,7 +42,7 @@ Class thumb
 		$this->width  = imagesx($this->image);   
 		$this->height = imagesy($this->image);
 		
-		$this->resizeImage($new_width, $new_height, 0);
+		$this->resizeImage($new_width, $new_height, $type);
 		$this->saveImage($new_path, 100);
 	}
 
@@ -88,19 +97,18 @@ Class thumb
     ## --------------------------------------------------------   
        
     private function getDimensions($newWidth, $newHeight, $option)   
-    {   
-
+    {
        switch ($option)   
         {   
-            case 'exact':   
+            case 'diy':   
                 $optimalWidth = $newWidth;   
                 $optimalHeight= $newHeight;   
                 break;   
-            case 'portrait':   
+            case 'auto_width'://portrait 
                 $optimalWidth = $this->getSizeByFixedHeight($newHeight);   
                 $optimalHeight= $newHeight;   
                 break;   
-            case 'landscape':   
+            case 'auto_height'://'landscape'
                 $optimalWidth = $newWidth;   
                 $optimalHeight= $this->getSizeByFixedWidth($newWidth);   
                 break;   

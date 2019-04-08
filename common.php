@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @creatdate   2011-0501 koyshe <koyshe@gmail.com>
+ */
 error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('PRC');
 header('Content-Type: text/html; charset=utf-8');
@@ -10,9 +14,9 @@ if (@ini_get('register_globals')) {
 
 //url路由配置
 $module = $mod = $act = 'index';
-
 $mod = $_POST['mod'] ? $_POST['mod'] : ($_GET['mod'] ? $_GET['mod'] : $mod);
 $act = $_POST['act'] ? $_POST['act'] : ($_GET['act'] ? $_GET['act'] : $act);
+$id = $_POST['id'] ? $_POST['id'] : ($_GET['id'] ? $_GET['id'] : $id);
 
 if ($_SERVER['PATH_INFO']) {
 	$module = 'index';
@@ -24,10 +28,7 @@ if ($_SERVER['PATH_INFO']) {
 	if ($_pathinfo[1]) {
 		$querystr = explode('-', $_pathinfo[1]);
 		$querystr[0] && $act = $querystr[0];
-		//预设3个参数值
-		$querystr[1] && $_g_urlarg[1] = $querystr[1];
-		$querystr[2] && $_g_urlarg[2] = $querystr[2];
-		$querystr[3] && $_g_urlarg[3] = $querystr[3];
+		$querystr[1] && $id = $querystr[1];
 	}
 }
 else {

@@ -1,5 +1,8 @@
 <?php
-//phpshe beta0.2版本内核 2012-02-12
+/**
+ * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @creatdate   2011-0501 koyshe <koyshe@gmail.com>
+ */
 //#####################@ 系统核心函数 @#####################//
 //模板函数
 function pe_tpl($tplname, $tplpath = '')
@@ -13,8 +16,7 @@ function pe_tpl($tplname, $tplpath = '')
 	!is_dir($tplpathcache) && mkdir($tplpathcache, 0777, true);
 	if (!is_file($tplpathcache_name) or @filemtime($tplpath_name) > @filemtime($tplpathcache_name)) {
 		if (!is_file($tplpath_name)) {
-			pe_bug('file', "模板文件不存在,路径：{$tplpath_name}");
-			$tplpath_name = "{$pe['path_host']}template/default/{$module}/{$tplname}";			
+			pe_bug("模板文件丢失,路径：./template/default/{$module}/{$tplname}", __LINE__);			
 		}
 		$html = file_get_contents($tplpath_name);
 		$html = preg_replace('/<\!\-\-\{/', '<?php ', $html);
@@ -39,18 +41,6 @@ function pe_dbhold($str, $exc=array())
 	return $str;
 }
 //导入hook
-function pe_hook($hookname)
-{
-	global $pe;
-	$hook = "{$pe['path_root']}hook/{$hookname}.hook.php";
-	if (is_file($hook)) {
-		include($hook);
-	}
-	else {
-		pe_debug('file', "{$hook}不存在！");
-	}
-}
-//导入hook
 function pe_lead($leadname)
 {
 	global $pe;
@@ -66,9 +56,9 @@ function pe_url($modact, $argstr=null)
 			$url = "{$pe['host_root']}index.php";
 			$modact[0] && $url .= "?mod={$modact[0]}";
 			$modact[1] && $url .= "&act={$modact[1]}";
-			$modact[2] && $url .= "&urlarg[1]={$modact[2]}";
-			$modact[3] && $url .= "&urlarg[2]={$modact[3]}";
-			$modact[4] && $url .= "&urlarg[3]={$modact[4]}";
+			$modact[2] && $url .= "&id={$modact[2]}";
+			//$modact[3] && $url .= "&urlarg[2]={$modact[3]}";
+			//$modact[4] && $url .= "&urlarg[3]={$modact[4]}";
 			$argstr && $url = "{$url}&{$argstr}";
 		break;
 		default:
@@ -83,14 +73,23 @@ function pe_url($modact, $argstr=null)
 	}
 	return $url;
 }
+//获取当前网址为下个地址的fromto
+function pe_fromto()
+{
+	$host = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+	stripos($host, 'fromto') !== false && $host = substr($host, 0, stripos($host, 'fromto')-1);
+	return 'fromto='.urlencode($host);
+	//return 'fromto='.urlencode(basename($_SERVER['SCRIPT_FILENAME'])."?{$_SERVER['QUERY_STRING']}");
+}
 //图片缩略图
-function pe_thumb($img = '', $w = null, $h = null, $type = null)
+function pe_thumb($img = '', $w = null, $h = null, $thumbtype = null)
 {
 	global $pe;
-	static $sington=false;
+	static $sington = false;
 //	$img = str_ireplace($pe['host_root'], $pe['path_root'], $img);
-	$img = $pe['path_root'] . strstr($img, 'data/attachment/');
-	switch ($type) {
+	//$img = $pe['path_root'] . strstr($img, 'data/attachment/');
+	$img = "{$pe['path_root']}$img";
+	switch ($thumbtype) {
 		case 'avatar':
 			$img_new = is_file($img) ? $img : "{$pe['path_root']}include/image/noavatar.gif";		
 		break;
@@ -114,7 +113,7 @@ function pe_thumb($img = '', $w = null, $h = null, $type = null)
 function pe_seo($title='', $keywords='', $description='', $type = 'index')
 {
 	if ($type == 'admin') {
-		$seo['title'] = $title ? "{$title} - 欢迎使用phpshe网上商城系统": '欢迎使用phpshe网上商城系统';
+		$seo['title'] = $title ? "{$title} - 欢迎使用PHPSHE商城系统": '欢迎使用PHPSHE商城系统';
 	}
 	else {
 		$setting = cache::get('setting');
@@ -144,28 +143,29 @@ function pe_result() {
 		if ($_SESSION['msg_result'] == 'success') {
 print<<<html
 	<style type="text/css">
-	#msgshow{width:300px; margin:0 auto; border:3px #98c601 solid; background:#effeb9; font-size:12px; padding:5px 10px; position:absolute; top:250px; left:40%; z-index:99999;}
-	#msgshow_img{background:url({$pe['host_root']}include/image/trueimg.gif) no-repeat; padding:8px 0 0 40px; min-height:26px; _height:26px;}
+	#msgshow{top:250px; left:40%; position:absolute;}
+	#msgshow_l{background:url({$pe['host_root']}include/image/dui_l.gif) no-repeat; width:38px; height:50px; float:left;}
+	#msgshow_r{background:url({$pe['host_root']}include/image/dui_r.gif) no-repeat; width:7px; height:50px; float:left;}
+	#msgshow_m{background:url({$pe['host_root']}include/image/dui_m.gif) repeat-x; height:33px; float:left; padding:17px 8px 0 5px; font-size:14px; font-weight:bold; color:#53663A; display:inline-block; min-width:200px; _width:200px;}
 	</style>
 html;
 		}
 		else {
 print<<<html
 	<style type="text/css">
-	#msgshow{width:300px; margin:0 auto; border:3px #eb5439 solid; background:#fccac1; font-size:12px; padding:5px 10px; position:absolute; top:250px; left:40%; z-index:99999;}
-	#msgshow_img{background:url({$pe['host_root']}include/image/falseimg.gif) no-repeat; padding:8px 0 0 40px; min-height:26px; _height:26px;}
+	#msgshow{top:250px; left:40%; position:absolute;}
+	#msgshow_l{background:url({$pe['host_root']}include/image/cuo_l.gif) no-repeat; width:38px; height:50px; float:left;}
+	#msgshow_r{background:url({$pe['host_root']}include/image/cuo_r.gif) no-repeat; width:7px; height:50px; float:left;}
+	#msgshow_m{background:url({$pe['host_root']}include/image/cuo_m.gif) repeat-x; height:33px; float:left; padding:17px 8px 0 4px; font-size:14px; font-weight:bold; color:#5E2C2C; display:inline-block; min-width:200px; _width:200px;}
 	</style>
 html;
 		}
 print<<<html
 	<script type="text/javascript">
 		$("#msgshow").remove();
-		$("body").append('<div id="msgshow"><div id="msgshow_img">{$show}</div></div>');
+		$("body").append('<div id="msgshow"><div id="msgshow_l"></div><div id="msgshow_m">{$show}</div><div id="msgshow_r"></div><div class="clear"></div></div>');
 		$("#msgshow").show();
-		function wait() {
-			$("#msgshow").fadeOut(2000);
-		}
-		setTimeout('wait()', 2000);
+		setTimeout(function(){ $("#msgshow").fadeOut(2000) }, 2000);
 	</script>
 html;
 	}
@@ -246,13 +246,12 @@ function pe_filename($path, $type = '')
 		break;
 	}
 }
+
 //#####################@ 杂项函数 @#####################//
-function pe_bug($type, $notice) {
-	switch($type) {
-		default:
-			echo "<p>-> 错误类型：{$type}<br/>提示：{$notice}<br/>报错代码：".__FILE__."(".__LINE__."行)</p>";
-		break;
-	}
+function pe_bug($notice, $line = null)
+{
+	$html = "<p style='width:800px;margin:100px auto;padding:50px 10px;background:#f8f8f8'>错误提示：{$notice}<br/>错误定位：{$_SERVER[SCRIPT_FILENAME]}(第{$line}行)</p>";
+	die($html);
 }
 //获取text
 function pe_text($str)
@@ -264,6 +263,11 @@ function pe_text($str)
 function pe_texthtml($str)
 {
 	return nl2br(str_replace(' ', '&nbsp;', $str));
+}
+//获取适合js输出的html
+function pe_jshtml($str, $isshow = 1) {
+	$str = addslashes(str_replace(array("\r", "\n", "\t"), array('', '', ''), $str));
+	return $isshow ? 'document.write("'.$str.'");' : $str;
 }
 //截取字符串
 function pe_cut($str, $len, $tail = '')
@@ -353,18 +357,16 @@ function pe_date($time, $type = 'Y-m-d H:i')
 {
 	return $time ? date($type, $time) : '';
 }
-
 //url处理函数
 function pe_updateurl($k, $v='')
 {
 	$querystr = $_SERVER['QUERY_STRING'];
 	$url = $v === ''
 		? preg_replace('/'.$k.'=[^&]*/', '', $querystr)
-		: (stripos($querystr, $k.'=') === false ? "{$querystr}&{$k}={$v}" : preg_replace('/'.$k.'=[^&]*/', "$k=$v", $querystr));
+		: ((stripos($querystr, "&{$k}=") === false && stripos($querystr, "{$k}=") === false) ? "{$querystr}&{$k}={$v}" : preg_replace('/'.$k.'=[^&]*/', "$k=$v", $querystr));
 	$url = trim($url, '&');
 	return $url ? "?{$url}" : '?';
 }
-
 //url批量处理函数
 function pe_updateurl_arr($arr)
 {
@@ -379,7 +381,6 @@ function pe_updateurl_arr($arr)
 	}
 	return $querystr ? '?'.$querystr : '';
 }
-
 //sql段函数。如时间段，但必须符合money=50-100的格式
 function pe_sqlrange($fieldname, $rangeval, $misc = '-')
 {
@@ -400,20 +401,24 @@ function pe_sqlrange($fieldname, $rangeval, $misc = '-')
 	}
 	return $sqlwhere;
 }
-
 //#####################@ 安全函数 @#####################//
 function pe_csrf_set() {
-	$csrf_token = md5($_SERVER['REMOTE_ADDR'].'koyshe vs andrea = phpshe'.time().rand(1,100));
+	$csrf_token = md5("{$_SERVER['REMOTE_ADDR']}koyshe+andrea=phpshe".time().rand(1,100));
 	setcookie("csrf_token", $csrf_token);
 	return "<input type='hidden' name='csrf_token' value='{$csrf_token}' />";
 }
 function pe_csrf_match() {
 	global $pe;
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
-	if (stripos($pe['host_root'], $referer['host']) === false or $_POST['csrf_token'] != $_COOKIE['csrf_token'] or $_POST['csrf_token'] == '' or $_COOKIE['csrf_token'] == '') {
+	if (@stripos($pe['host_root'], $referer['host']) === false or $_POST['csrf_token'] != $_COOKIE['csrf_token'] or $_POST['csrf_token'] == '' or $_COOKIE['csrf_token'] == '') {
 		unset($_COOKIE['csrf_token'], $_POST['csrf_token']);
-		die('程序民工不容易，就不要csrf了，谢谢(*^__^*)!');
+		pe_error('请勿csrf或重复提交数据');
 	}
 	unset($_COOKIE['csrf_token'], $_POST['csrf_token']);
+}
+//#####################@ 用户权限函数 @#####################//
+function pe_login($utype){
+	global $pe;
+	return (md5($_SESSION["{$utype}_id"].$pe['host_root']) == $_SESSION["{$utype}_idtoken"]) ? 1 : 0;
 }
 ?>

@@ -11,6 +11,11 @@ include('../../../../common.php');
 if ($_FILES['imgFile']['size']) {
 	pe_lead('include/class/upload.class.php');
 	$upload = new upload($_FILES['imgFile']);
-	echo json_encode(array('error' => 0, 'url' => $upload->fileurl));
+	if ($upload->checkresult) {
+		echo json_encode(array('error' => 0, 'url' => $upload->filehost_full));
+	}
+	else {
+		echo json_encode(array('error' => 1, 'message' => '请重新上传...'));
+	}
 }
 ?>

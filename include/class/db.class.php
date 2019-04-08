@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
+ */
 class db { 
 	var $pconnect = FALSE;
 	var $dbconn;
@@ -12,13 +16,13 @@ class db {
 	public function connect($db_host, $db_user, $db_pw, $db_name, $db_coding)
 	{
 		if ($this->pconnect) {
-			$this->dbconn = mysql_pconnect($db_host, $db_user, $db_pw);
+			$this->dbconn = @mysql_pconnect($db_host, $db_user, $db_pw);
 		}
 		else {
-			$this->dbconn = mysql_connect($db_host, $db_user, $db_pw);
+			$this->dbconn = @mysql_connect($db_host, $db_user, $db_pw);
 		}
-		if (!$this->dbconn) pe_bug('sql', '数据库连接失败...数据库ip，用户名，密码对吗？'); 
-		if (!mysql_select_db($db_name, $this->dbconn)) pe_bug('sql', '数据库选择失败...数据库名对吗？');
+		if (!$this->dbconn) pe_bug('数据库连接失败...数据库ip，用户名，密码对吗？', __LINE__); 
+		if (!mysql_select_db($db_name, $this->dbconn)) pe_bug('数据库选择失败...数据库名对吗？', __LINE__);
 		$this->query("SET NAMES {$db_coding}");
 		$this->query("SET sql_mode = ''");
 	}
@@ -52,9 +56,13 @@ class db {
 	public function sql_insert($sql)
 	{
 		$this->query($sql);
-		return mysql_insert_id();
-		//$result = mysql_affected_rows();
-		//return $result > 0 ? $result : 0;
+		if ($insert_id = mysql_insert_id()) {
+			return $insert_id;
+		}
+		else {
+			$result = mysql_affected_rows();
+			return $result > 0 ? $result : 0;
+		}
 	}
 	public function sql_delete($sql)
 	{
@@ -74,7 +82,7 @@ class db {
 	{
 		//每页数量显示+分页 or 每页数量显示+不分页
 		if (count($limit_page)==2) {
-			$allnum = $this->sql_num(preg_replace('/select [\s\S]* from/', 'select count(1) from', $sql));
+			$allnum = $this->sql_num(preg_replace('/select [\s\S]+?(?!from) from/', 'select count(1) from', $sql, 1));
 			$this->page = new page($allnum, $limit_page[1], $limit_page[0]);
 			$sqllimit = $this->page->limit;
 		}
@@ -144,13 +152,13 @@ class db {
 		$sqlwhere = $this->_dowhere($where);
 		return $this->sql_update("update `".dbpre."{$table}` {$sqlset} {$sqlwhere}");	
 	}
-	public function pe_delete($table, $where)
+	public function pe_delete($table, $where = '')
 	{
 		//处理条件语句
 		$sqlwhere = $this->_dowhere($where);
 		return $this->sql_delete("delete from `".dbpre."{$table}` {$sqlwhere}");
 	}
-	public function pe_num($table, $where)
+	public function pe_num($table, $where = '')
 	{
 		//处理条件语句
 		$sqlwhere = $this->_dowhere($where);

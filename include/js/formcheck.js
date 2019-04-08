@@ -1,19 +1,22 @@
-//#####################@ jq表单验证插件 20120328 koyshe @#####################//
+/**
+ * @copyright   2008-2012 简好技术 <http://www.phpshe.com>
+ * @creatdate   2010-1001 koyshe <koyshe@gmail.com>
+ */
 (function($){
 //定制常用正则
 var rule_phone = /^((1[0-9]{10})|(029[0-9]{8}))$/;
-var rule_qq = /^[0-9]{6,10}$/;
+var rule_qq = /^[0-9]{5,10}$/;
 var rule_email = /^[-_A-Za-z0-9]+@([_A-Za-z0-9]+\.)+[a-z]{2,3}$/;
 var rule_zh = /^[\u4e00-\u9fa5]+$/;
 var rule_idcard = /^([1-9][0-9]{14})|([1-9][0-9]{17})$/;
 function _success(_this, show_id, show_text) {
 	_this.attr("pe_result", "true");
-	_this.css("background-color","")
+	_this.css("border","")
 	$("#" + show_id).empty();
 }
 function _error(_this, show_id, show_text) {
 	_this.attr("pe_result", "false");
-	_this.css("background-color","red")
+	_this.css("border","1px solid #f00");
 	$("#" + show_id).html('<span style="color:#f00;">(×)'+show_text+'</span>');
 }
 //比较数字大小或比较字符串长短（内部调用）
@@ -96,7 +99,7 @@ function _core (my_config) {
 			_maxmin(_config, _val, 'num');
 		break;
 		case 'equal':
-			if (typeof(_config.arg) == 'object') _config.arg = _config.arg.val()
+			if (typeof(_config.arg) == 'object') _config.arg = _config.arg.val();
 			if (_val == _config.arg || (_val == '' && _config.must == false)) {
 				_success(_this, _config.show_id);
 			}
@@ -105,20 +108,30 @@ function _core (my_config) {
 			}
 		break;
 		case 'ajax':
-			$.ajaxSettings.async = false;
-			/*$.ajaxSetup({async: false}); // 使用同步方式执行AJAX*/
-			var _ajax_data = _config.arg();
-			$.getJSON(_ajax_data.url, _ajax_data.data, function(json){
-			  	if (json.result) {
-					_success(_this, _config.show_id);
-				}
-				else {
-					_error(_this, _config.show_id, _config.show_error);
-				}
-			});
+			if (_val == '' && _config.must == false) {
+				_success(_this, _config.show_id);
+			}
+			else {
+				$.ajaxSettings.async = false;//同步方式执行AJAX($.ajaxSetup({async: false});)
+				var _ajax_data = _config.arg();
+				$.getJSON(_ajax_data.url, _ajax_data.data, function(json){
+					if (_ajax_data.tf != false) _ajax_data.tf = true;
+				  	if (json.result == _ajax_data.tf) {
+						_success(_this, _config.show_id);
+					}
+					else {
+						_error(_this, _config.show_id, _config.show_error);
+					}
+				});
+			}
 		break;
-		case 'fun':
-
+		case 'func':
+			if (_config.arg() || (_val == '' && _config.must == false)) {
+				_success(_this, _config.show_id);
+			}
+			else {
+				_error(_this, _config.show_id, _config.show_error);
+			}
 		break;
 	}
 }

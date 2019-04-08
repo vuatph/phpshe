@@ -1,5 +1,5 @@
 #
-# robots.txt for phpshe1.0
+# robots.txt for phpshe1.1
 #
 User-agent: * 
 Disallow: /data

@@ -1,4 +1,26 @@
 <div class="clear"></div>
+<?php if($mod=='index' && is_array($cache_ad['index_footer'])):?>
+<?php foreach($cache_ad['index_footer'] as $v):?>
+<div class="ad980">
+<?php if($v['ad_url']):?>
+<a href="<?php echo $v['ad_url'] ?>" target="_blank"><img src="<?php echo pe_thumb($v['ad_logo']) ?>" /></a>
+<?php else:?>
+<img src="<?php echo pe_thumb($v['ad_logo']) ?>" />
+<?php endif;?>
+</div>
+<?php endforeach;?>
+<?php endif;?>
+<?php if(is_array($cache_ad['footer'])):?>
+<?php foreach($cache_ad['footer'] as $v):?>
+<div class="ad980">
+<?php if($v['ad_url']):?>
+<a href="<?php echo $v['ad_url'] ?>" target="_blank"><img src="<?php echo pe_thumb($v['ad_logo']) ?>" /></a>
+<?php else:?>
+<img src="<?php echo pe_thumb($v['ad_logo']) ?>" />
+<?php endif;?>
+</div>
+<?php endforeach;?>
+<?php endif;?>
 <div class="foot">
 	<div class="bottom_link">
 		<div class="border_link">
@@ -38,9 +60,14 @@
 				</ul>
 			</div>
 			<div class="bottom_libg fl"></div>
-			<div class="item_1 fl">
-				<h3>售后服务电话</h3>
-				<p class="mat8"><img src="<?php echo $pe['host_tpl'] ?>images/tel_bottom.gif" /></p>
+			<div class="foot_tel fl">
+				<h3 class="c666"><?php echo $cache_setting['web_title']['setting_value'] ?></h3>
+				<p class="mat10">
+					<?php foreach($web_qq as $v):?>
+					<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $v ?>&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $v ?>:41" alt="点击这里给我发消息" title="点击这里给我发消息"></a>
+					<?php endforeach;?>
+				</p>
+				<p class="tel_num"><?php echo $cache_setting['web_phone']['setting_value'] ?></p>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -53,7 +80,7 @@
 	</div>
 	<div class="subnav">
 		<p>Copyright <span class="num">©</span> <?php echo $cache_setting['web_copyright']['setting_value'] ?> All Rights Reserved <?php echo $cache_setting['web_icp']['setting_value'] ?> <?php echo $cache_setting['web_tongji']['setting_value'] ?></p>
-		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="phpshe(PE)以良好的服务为小企业提供B2C电子商务解决方案" class="cgreen">phpshe 1.0(2012-07-07)</a></p>
+		<p>Powered by <a href="http://www.phpshe.com" target="_blank" title="PHPSHE商城系统" class="cgreen">phpshe1.1</a></p>
 	</div>
 </div>
 </body>

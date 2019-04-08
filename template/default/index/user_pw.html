@@ -1,35 +1,35 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
-	<div class="width960" style="background:#fff;">
-		<!--{include(pe_tpl('user_menu.html'));}-->
-		<div class="fr huiyuan_main hy_add">
-			<div class="hymain_tt">
-				<span class="fl strong">亲，{$_s_user_name}，欢迎回来！</span>
-				<span class="fr c666">上次登录：{$_s_user_ltime}</span>
-			</div>
-			<form method="post" action="{$action}" id="form">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td width="80" align="right"> 帐　　号：</td>
-				<td>{$info['user_name']}</td>
-			</tr>
-			<tr>
-				<td align="right"><span class="cred1">*</span> 新 密 码：</td>
-				<td><input type="password" name="info[user_pw]" class="inputtext input150" autocomplete="off" /><span id="user_pw_show"></span></td>
-			</tr>
-			<tr>
-				<td align="right"><span class="cred1">*</span> 确认密码：</td>
-				<td><input type="password" name="info[user_pw1]" class="inputtext input150" autocomplete="off" /><span id="user_pw1_show"></span></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="button" value="提交"  class="tj_btn"></td>
-			</tr>
-			</table>
-			</form>
+	<!--{include(pe_tpl('user_menu.html'));}-->
+	<div class="fr huiyuan_main">
+		<h3 class="hy_rtt">{$menutitle}</h3>
+		<div class="hy_table">
+		<form method="post" id="form">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td class="bg_f8" style="text-align:right;" width="100">用 户 名：</td>
+			<td style="text-align:left;">{$info['user_name']}</td>
+		</tr>
+		<tr>
+			<td class="bg_f8" style="text-align:right;"><span class="cred1">*</span> 新 密 码：</td>
+			<td style="text-align:left;"><input type="password" name="info[user_pw]" class="inputtext input150" autocomplete="off" /><span id="user_pw_show"></span></td>
+		</tr>
+		<tr>
+			<td class="bg_f8" style="text-align:right;"><span class="cred1">*</span> 确认密码：</td>
+			<td style="text-align:left;"><input type="password" name="info[user_pw1]" class="inputtext input150" autocomplete="off" /><span id="user_pw1_show"></span></td>
+		</tr>
+		<tr>
+			<td class="bg_f8"></td>
+			<td style="text-align:left;">
+				<input type="hidden" name="pesubmit" />
+				<input type="button" value="提交"  class="tj_btn" />
+			</td>
+		</tr>
+		</table>
+		</form>
 		</div>
-		<div class="clear"></div>
 	</div>
+	<div class="clear"></div>
 </div>
 <script type="text/javascript" src="{$pe['host_root']}include/js/formcheck.js"></script>
 <script type="text/javascript">

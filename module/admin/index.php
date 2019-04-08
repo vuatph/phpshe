@@ -1,5 +1,0 @@
-<?php
-include(pe_tpl('index.html'));
-$seo = pe_seo('Ê×Ò³', '', '', 'admin');
-pe_result();
-?>

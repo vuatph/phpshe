@@ -5,60 +5,80 @@
 <title>{$seo['title']}</title>
 <meta name="keywords" content="{$seo['keywords']}" />
 <meta name="description" content="{$seo['description']}" />
-<link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/all.css"  />
 <link type="text/css" rel="stylesheet" href="{$pe['host_tpl']}css/style.css" />
 <script type="text/javascript" src="{$pe['host_root']}include/js/jquery.js"></script>
 <script type="text/javascript" src="{$pe['host_root']}include/js/global.js"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
-<script charset="utf-8" src="{$pe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
 </head>
 <body>
 <div class="pagetop">
-	<div class="width960">
-		<div class="quick_menu">
-			<p>
-			<!--{if($_s_user_id_key):}-->
-			您好，{$_s_user_name}！
-			<a href="{$pe['host_root']}index.php?mod=user&act=orderlist" title="会员中心">会员中心</a>
-			<a href="{$pe['host_root']}index.php?mod=order&act=cartlist" title="购物车">购物车 <span class="cred">{$cart_num}</span> 件</a>
-			<!--{if($cache_setting['web_weibo']['setting_value']):}-->
-			<a href="{pe_url('user-logout')}" title="退出">退出</a>
-			<a href="{$cache_setting['web_weibo']['setting_value']}" title="官方微博" target="_blank" style="border:0">官方微博</a>
-			<!--{else:}-->
-			<a href="{pe_url('user-logout')}" title="退出" style="border:0">退出</a>
-			<!--{endif;}-->
-			<!--{else:}-->
-			欢迎来到{$cache_setting['web_name']['setting_value']}！
-			<a href="{pe_url('user-login')}" title="登录">登录</a>
-			<!--{if($cache_setting['web_weibo']['setting_value']):}-->
-			<a href="{pe_url('user-register')}" title="注册">注册</a>
-			<a href="{$cache_setting['web_weibo']['setting_value']}" title="官方微博" target="_blank" style="border:0">官方微博</a>
-			<!--{else:}-->
-			<a href="{pe_url('user-register')}" title="注册" style="border:0">注册</a>
-			<!--{endif;}-->
-			<!--{endif;}-->
-			</p>
-		</div>
-		<div class="clear"></div>
+	<div class="quick_menu">
+		<p>
+		<!--{if(pe_login('user')):}-->
+		您好，<span class="cred">{$_s_user_name}</span>! 欢迎来到{$cache_setting['web_title']['setting_value']}！
+		<a href="{$pe['host_root']}index.php?mod=user&act=order" title="会员中心">会员中心</a>
+		<a href="{$pe['host_root']}index.php?mod=order&act=add" title="购物车">购物车 <span class="cred">{$cart_num}</span> 件</a>
+		<!--{if($cache_setting['web_weibo']['setting_value']):}-->
+		<a href="{$cache_setting['web_weibo']['setting_value']}" title="官方微博" target="_blank">官方微博</a>
+		<!--{else:}-->
+		<a href="{pe_url('user-logout')}" title="退出" style="border:0">退出</a>
+		<!--{endif;}-->
+		<!--{else:}-->
+		您好，欢迎来到{$cache_setting['web_title']['setting_value']}！
+		<a href="{pe_url('user-login',pe_fromto())}" title="登录">登录</a>
+		<a href="{pe_url('user-register',pe_fromto())}" title="注册">注册</a>
+		<!--{if($cache_setting['web_weibo']['setting_value']):}-->
+		<a href="{$cache_setting['web_weibo']['setting_value']}" title="官方微博" target="_blank">官方微博</a>
+		<!--{endif;}-->
+		<a href="{$pe['host_root']}index.php?mod=order&act=add" title="购物车" style="border:0">购物车 <span class="cred">{$cart_num}</span> 件</a>
+		<!--{endif;}-->
+		</p>
+	</div>
+	<div class="width980">
 		<div class="header">
-			<div class="fl"><a href="{$pe['host_root']}" title="{$cache_setting['web_name']['setting_value']}"><img src="{$pe['host_tpl']}images/logo.jpg" /></a></div>
+			<div class="fl logo"><a href="{$pe['host_root']}" title="{$cache_setting['web_name']['setting_value']}"><img src="{pe_thumb($cache_setting['web_logo']['setting_value'])}" alt="{$cache_setting['web_name']['setting_value']}" /></a></div>
 			<div class="sear fr">
+				<p>咨询热线：{$cache_setting['web_phone']['setting_value']}</p>
 				<form method="get" action="{pe_url('product-list')}">
-				<div class="inputbg fl"><input type="text" name="keyword" value="{$_g_keyword}" class="fl searinput" /></div>
-				<!--<a href="#"><img class="fl" src="{$pe['host_tpl']}images/sear.gif" /></a>-->
-				<input type="image" src="{$pe['host_tpl']}images/searbtn.gif" class="fl" onclick="this.form.submit();return false;" />
+				<div class="inputbg fl"><input type="text" name="keyword" value="{$_g_keyword}" class="fl searinput c666" /></div>
+				<input type="submit" class="fl sear_btn" onclick="this.form.submit();return false;" value=" " />
 				</form>
 			</div>
 		</div>
 		<div class="clear"></div>
+		<div class="nav">
+			<div class="nav_l fl"></div>
+			<div class="nav_m fl">
+				<ul>
+				<li class="sel"><a href="{$pe['host_root']}" title="首页">首页</a></li>
+				<!--{foreach((array)$cache_category_arr[0] as $v):}-->
+				<li><a href="{pe_url('product-list-'.$v['category_id'])}">{$v['category_name']}</a></li>
+				<!--{endforeach;}-->
+			</ul>
+			</div>
+			<div class="nav_r fl"></div>
+		</div>
+		<div class="clear"></div>
 	</div>
-	<div class="nav">
-		<ul>
-			<li class="sel"><a href="{$pe['host_root']}" title="首页">首页</a></li>
-			<!--{foreach((array)$category_productarr[0] as $v):}-->
-			<li><a href="{pe_url('product-list-'.$v['category_id'])}">{$v['category_name']}</a></li>
-			<!--{endforeach;}-->
-		</ul>
-	</div>
-	<div class="clear"></div>
 </div>
+<!--{if($mod=='index' && is_array($cache_ad['index_header'])):}-->
+<!--{foreach($cache_ad['index_header'] as $v):}-->
+<div class="ad980">
+<!--{if($v['ad_url']):}-->
+<a href="{$v['ad_url']}" target="_blank"><img src="{pe_thumb($v['ad_logo'])}" /></a>
+<!--{else:}-->
+<img src="{pe_thumb($v['ad_logo'])}" />
+<!--{endif;}-->
+</div>
+<!--{endforeach;}-->
+<!--{endif;}-->
+<!--{if(is_array($cache_ad['header'])):}-->
+<!--{foreach($cache_ad['header'] as $v):}-->
+<div class="ad980">
+<!--{if($v['ad_url']):}-->
+<a href="{$v['ad_url']}" target="_blank"><img src="{pe_thumb($v['ad_logo'])}" /></a>
+<!--{else:}-->
+<img src="{pe_thumb($v['ad_logo'])}" />
+<!--{endif;}-->
+</div>
+<!--{endforeach;}-->
+<!--{endif;}-->

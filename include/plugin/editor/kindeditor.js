@@ -253,7 +253,7 @@ K.options = {
 	minChangeSize : 5,
 	items : [
 		'fontsize', 'forecolor', 'hilitecolor', 'bold', 'underline', 'strikethrough', 'justifyleft', 'justifycenter',
-		'justifyright', 'insertorderedlist', 'insertunorderedlist', 'image', 'multiimage', 'flash', 'emoticons', 'link', 'unlink', 'clearhtml', 'source', 'about'
+		'justifyright', 'insertorderedlist', 'insertunorderedlist', 'image', 'multiimage', 'flash', 'emoticons', 'link', 'unlink','clearhtml', 'fullscreen', 'source', 'about'
 	],
 	noDisableItems : ['source', 'fullscreen'],
 	colorTable : [

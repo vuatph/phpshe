@@ -1,6 +1,6 @@
 <?php
 //侧栏商品列表
-function product_hotlist($num=10) {
+function product_hotlist($num=6) {
 	global $pe,$db;
 	return $db->pe_selectall('product', array('order by'=>'`product_clicknum` desc'), '*', array($num));
 }
@@ -10,13 +10,14 @@ function product_selllist($num) {
 	return $db->pe_selectall('product', array('order by'=>'`product_sellnum` desc'), '*', array($num));
 }
 //商品统计更新
-function product_num($type, $id, $change = 'add') {
+function product_num($type, $id) {
 	global $db;
 	$id = intval($id);
 	switch ($type) {
-		case 'num':
+		case 'addnum':
+		case 'delnum':
 			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>$id));
-			if ($change == 'add') {
+			if ($type == 'addnum') {
 				foreach ($orderdata_list as $v) {
 					$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_num`=`product_num`+{$v['product_num']}");
 				}
@@ -30,7 +31,7 @@ function product_num($type, $id, $change = 'add') {
 		case 'sellnum':
 			$orderdata_list = $db->pe_selectall('orderdata', array('order_id'=>$id));
 			foreach ($orderdata_list as $v) {
-				$db->pe_update('product', array('product_id'=>$v['product_id']), "`product_sellnum`=`product_sellnum`+{$v['product_num']}");
+				$db->pe_update('product', array('product_id' => $v['product_id']), "`product_sellnum` = `product_sellnum` + {$v['product_num']}");
 			}
 		break;
 		case 'clicknum':

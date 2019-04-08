@@ -1,57 +1,46 @@
 <!--{include(pe_tpl('header.html'));}-->
 <div class="content">
-	<div class="width960" style="background:#fff;">
-		<!--{include(pe_tpl('user_menu.html'));}-->
-		<div class="fr huiyuan_main">
-			<div class="gouwuche">
+	<!--{include(pe_tpl('user_menu.html'));}-->
+	<div class="fr huiyuan_main">
+		<h3 class="hy_rtt">我的订单</h3>
+			<div class="hy_table">
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<th class="bg1" width="50">订单号</th>
-					<th class="bg1">商品名称</th>
-					<th class="bg1" width="80">单价(×数量)</th>
-					<th class="bg1" width="100">实付(元)</th>
-					<th class="bg1" width="150">订单状态</th>
-					<th class="bg1" width="70">操作</th>
+					<td class="bg_f8" width="70">订单号</td>
+					<td class="bg_f8">商品名称</td>
+					<td class="bg_f8" width="80">单价/数量</td>
+					<td class="bg_f8" width="100">实付金额</td>
+					<td class="bg_f8" width="80">订单状态</td>
 				</tr>
 				<!--{foreach($info_list as $v):}-->
 				<tr>
-					<td>{$v['order_id']}</td>
-					<td style="text-align:left">
-						<!--{foreach($v['product_list'] as $vv):}-->
-						<p><a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="cblue">{$vv['product_name']}</a></p>
+					<td><a href="index.php?mod=user&act=orderview&id={$v['order_id']}" target="_blank" class="cblue" style="text-decoration:underline;">{$v['order_id']}</a></td>
+					<td style="text-align:left;">
+						<!--{foreach($v['product_list'] as $kk => $vv):}-->
+						<p class="dingdan_list" <!--{if($kk<count($v['product_list'])-1):}-->style="border-bottom:1px #ddd solid;"<!--{endif;}-->><a href="{pe_url('product-'.$vv['product_id'])}" title="{$vv['product_name']}" target="_blank" class="c666 dd_name">{$vv['product_name']}</a></p>
 						<!--{endforeach;}-->
 					</td>
 					<td>
 						<!--{foreach($v['product_list'] as $vv):}-->
-						<p>{$vv['product_smoney']}(×{$vv['product_num']})</p>
+						<p class="dingdan_list"><span class="num">¥{$vv['product_smoney']}</span>(×{$vv['product_num']})</p>
 						<!--{endforeach;}-->
 					</td>
-					<td class=" num">
-						<p class="strong">{$v['order_money']}</p>
-						<p class="c666"><!--{if($v['order_wlmoney'] == 0):}-->(卖家包邮)<!--{else:}-->(含{$v['order_wlmoney']}元邮费)<!--{endif;}--></p>
-					</td>
 					<td>
-						<p class="cgreen">已下单[{pe_date($v['order_atime'])}]</p>
+						<p class="cred num">¥{$v['order_money']}</p>
+						<p class="c888"><!--{if($v['order_wlmoney']==0):}-->(卖家包邮)<!--{else:}-->(含运费{$v['order_wlmoney']}元)<!--{endif;}--></p>
+					</td>
+					<td style="">
+						<!--{if($v['order_state']=='notpay'):}-->
+						<a class="pay_btn mal15" href="index.php?mod=order&act=pay&id={$v['order_id']}" target="_blank">付款</a>
 						<!--{if($v['order_state'] == 'notpay'):}-->
-						<p class="cred">等待买家付款<button onclick="window.open('index.php?mod=order&act=pay&id={$v['order_id']}')">付款</button></p>
-						<!--{elseif($v['order_state'] == 'paid'):}-->
-						<p class="cgreen">已付款[{pe_date($v['order_ptime'])}]</p>
-						<p class="cred">等待卖家发货</p>
-						<!--{elseif($v['order_state'] == 'send'):}-->
-						<p class="cgreen">已付款[{pe_date($v['order_ptime'])}]</p>
-						<p class="cgreen">已发货[{pe_date($v['order_stime'])}]</p>
-						<p class="cred">等待买家确认<button onclick="window.open('https://lab.alipay.com/consume/queryTradeDetail.htm?tradeNo={$v['order_outid']}')">确认</button></p>
-						<!--{elseif($v['order_state'] == 'success'):}-->
-						<p class="cgreen">已付款[{pe_date($v['order_ptime'])}]</p>
-						<p class="cgreen">已发货[{pe_date($v['order_stime'])}]</p>
-						<p class="cgreen">交易成功</p>
+						<p><a href="index.php?mod=user&act=orderdel&id={$v['order_id']}" onclick="return pe_cfone(this, '删除订单')" class="cblue">删除订单</a></p>
 						<!--{endif;}-->
-						# {$ini_paytype[$v['order_paytype']]} #
-					</td>
-					<td>
-						<a href="index.php?mod=user&act=ordersh&id={$v['order_id']}" onclick="return pe_dialog(this, '订单收货信息', 400, 300)">收货信息</a>
-						<!--{if($v['order_state'] == 'notpay'):}-->
-						<p><a href="index.php?mod=user&act=orderdelsql&id={$v['order_id']}" onclick="return pe_cfone('取消订单')" class="cred">取消订单</a></p>
+						<!--{elseif($v['order_state']=='paid'):}-->
+						等待发货
+						<!--{elseif($v['order_state']=='send'):}-->
+						<a class="shouhuo_btn" href="https://lab.alipay.com/consume/queryTradeDetail.htm?tradeNo={$v['order_outid']}" target="_blank">确认收货</a>
+						<!--{elseif($v['order_state']=='success'):}-->
+						<span class="cgreen">交易成功</span>
 						<!--{endif;}-->
 					</td>
 				</tr>
@@ -61,9 +50,8 @@
 					<div class="fenye">{$db->page->html}</div>
 				</div>
 			</div>
-		</div>
-		<div class="clear"></div>
 	</div>
+	<div class="clear"></div>
 </div>
 <script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/jquery.artDialog.js?skin=chrome"></script>
 <script charset="utf-8" src="{$phpshe['host_root']}include/plugin/artdialog/plugins/iframeTools.js"></script>
